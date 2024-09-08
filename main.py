@@ -5,22 +5,23 @@ import sys
 from Window import Ui_MainWindow
 
 #region Переменные
-gas_min = 0
-gas = 0
-gas_max = 50
-
-flach_E = 0
-flash_O = 0
-
-Voltage = 0
-ShuntVoltage = 0
-
-Temp = 0
-
-Traction = 0
-
-Weight_1 = 0
-Weight_2 = 0
+gas_min = -1 #безразмерная
+gas_max = 0 #безразмерная
+gas = 55 #безразмерная
+T_flach_E = 0 #время одного оборота двигателя в микросекундах
+T_flash_O = 0 #время между срабатыванием датчика
+Voltage = 0.00 #вольт
+ShuntVoltage = 0.000 #вольт
+Temp = 0.0 #градусов
+Traction = 0.0 #грамм
+Weight_1 = 0.0 #грамм
+Weight_2 = 0.0 #грамм
+#region вычисления
+current = (ShuntVoltage * 0.075) / 75 # значение силы тока
+flach_E = 60000000 // T_flach_E #обороты в минуту
+Time_flash_O = T_flash_O * 2 #время 1 оборота двигателя в микросекундах
+flach_O = 60000000 // Time_flash_O #обороты в минуту с оптического датчика
+#endregion
 #endregion
 
 #region Инициализация
@@ -30,6 +31,18 @@ app = QtWidgets.QApplication(sys.argv)
 MainWindow = QtWidgets.QMainWindow()
 ui = Ui_MainWindow()
 ui.setupUi(MainWindow)
+#endregion
+
+#region тарирование тензодатчиков
+cargo = 200 # вес груза в граммах
+def calibration_Tract():
+    tar_1 = Traction
+    tar_Traction = Traction - tar_1
+def calibration_Weight():
+    tar_2 = Weight_1 - cargo
+    tar_3 = Weight_2 - cargo
+    tar_Weight_1 = Weight_1 - tar_2
+    tar_Weight_2 = Weight_2 - tar_3
 #endregion
 
 #region список портов
@@ -78,3 +91,8 @@ ui.SlidePower.valueChanged.connect(getValue)
 if __name__ == "__main__":
     MainWindow.show()
     sys.exit(app.exec_())
+
+    # для Димы:
+    # на графики по оси y нужно выводить значения следующих переменных: tar_Traction, current, flach_E, flach_O, Voltage, Temp, tar_Weight_1, tar_Weight_2
+    # графики доложны быть широко растянуты по x. Фон графиков белый и цвет линии у кажлого графика должен быть свой
+    # добавь 2 кнопки которые будут вызввать функции calibration_Tract() и calibration_Weight
