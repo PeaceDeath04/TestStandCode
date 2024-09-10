@@ -1,8 +1,6 @@
 import json
 
-
 Name_save_file = "save_file.json"
-
 
 dict_variables = {"Gas": 0 , "gas_min": 0 , "gas_max": 50,                # безразмерные
                   "T_flach_E":0,"T_flash_O":0,                            #время одного оборота двигателя в микросекундах, время между срабатыванием датчика
@@ -36,8 +34,6 @@ def ExportToJson(key, value):
     except Exception as e:
         print(f"Произошла непредвиденная ошибка: {e}")
 
-
-
 def ImportFromJson(key):
     try:
         with open(Name_save_file, mode="r", encoding="Latin-1") as save_file:
@@ -49,6 +45,10 @@ def ImportFromJson(key):
     except json.JSONDecodeError:
         print(f"Ошибка декодирования JSON в файле {Name_save_file}.")
         return None
+
+
+
+
 
 
 
