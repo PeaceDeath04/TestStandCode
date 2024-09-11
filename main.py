@@ -5,6 +5,7 @@ import sys
 from Window import Ui_MainWindow
 from saving import ExportToJson,ImportFromJson
 from ProjectProcessing import TxToARDU
+import math
 
 
 
@@ -20,12 +21,22 @@ ui.setupUi(MainWindow)
 
 
 
-
 #endregion
 
 #region методы определения кнопнок
 
+def GetProsent():
+    try:
+        a = ImportFromJson("gas_min")
+        b = ImportFromJson("gas_max")
+        c = ImportFromJson("gas")
+        per = (c-a)/(b-a) *100
+        return round(per)
+    except:
+        print("ошибка при вычислении")
+
 def UpdatePortList():
+    ui.ListPorts.clear()
     port_list = []
     ports = QSerialPortInfo.availablePorts()
     for port in ports:
@@ -49,8 +60,9 @@ def closeport():
         print(f"Порт: {ui.ListPorts.currentText()} Уже закрыт")
 
 def getValue():
+    prozent = GetProsent()
     gas = ui.SlidePower.value()
-    ui.valueGas.setText(str(gas))
+    ui.valueGas.setText(str(prozent))
     TxToARDU("o", gas)
     ExportToJson("gas",gas)
 

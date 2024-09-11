@@ -1,7 +1,7 @@
 {
-    "gas": 261,
+    "gas": 3200,
     "gas_min": 800,
-    "gas_max": 2200,
+    "gas_max": 3200,
     "T_flach_E": 0,
     "T_flash_O": 0,
     "Voltage": 0.0,
