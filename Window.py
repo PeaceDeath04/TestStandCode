@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'C:/Users/Дмитрий (и Лера)/AppData/Local/Temp/WindowttaqHH.ui'
+# Form implementation generated from reading ui file 'C:/Users/Dmitriy/AppData/Local/Temp/WindowGwMRQF.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.9
 #
@@ -9,35 +9,39 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from saving import ImportFromJson,ExportToJson
+
+from saving import ImportFromJson
+
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(845, 455)
+        MainWindow.resize(1031, 489)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
-        self.widget = QtWidgets.QWidget(self.centralwidget)
-        self.widget.setGeometry(QtCore.QRect(0, 10, 521, 141))
-        self.widget.setObjectName("widget")
-        self.GlobalMenu = QtWidgets.QVBoxLayout(self.widget)
-        self.GlobalMenu.setContentsMargins(0, 0, 0, 0)
+        self.layoutWidget = QtWidgets.QWidget(self.centralwidget)
+        self.layoutWidget.setGeometry(QtCore.QRect(0, 10, 661, 151))
+        self.layoutWidget.setObjectName("layoutWidget")
+        self.horizontalLayout = QtWidgets.QHBoxLayout(self.layoutWidget)
+        self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
+        self.horizontalLayout.setObjectName("horizontalLayout")
+        self.GlobalMenu = QtWidgets.QVBoxLayout()
         self.GlobalMenu.setObjectName("GlobalMenu")
         self.MenuPorts = QtWidgets.QHBoxLayout()
         self.MenuPorts.setObjectName("MenuPorts")
-        self.ListPorts = QtWidgets.QComboBox(self.widget)
+        self.ListPorts = QtWidgets.QComboBox(self.layoutWidget)
         self.ListPorts.setObjectName("ListPorts")
         self.MenuPorts.addWidget(self.ListPorts)
-        self.ButOpenPort = QtWidgets.QPushButton(self.widget)
+        self.ButOpenPort = QtWidgets.QPushButton(self.layoutWidget)
         self.ButOpenPort.setObjectName("ButOpenPort")
         self.MenuPorts.addWidget(self.ButOpenPort)
-        self.ButClosePort = QtWidgets.QPushButton(self.widget)
+        self.ButClosePort = QtWidgets.QPushButton(self.layoutWidget)
         self.ButClosePort.setObjectName("ButClosePort")
         self.MenuPorts.addWidget(self.ButClosePort)
         self.GlobalMenu.addLayout(self.MenuPorts)
         self.MenuChangeGas = QtWidgets.QVBoxLayout()
         self.MenuChangeGas.setObjectName("MenuChangeGas")
-        self.ButCalibration = QtWidgets.QPushButton(self.widget)
+        self.ButCalibration = QtWidgets.QPushButton(self.layoutWidget)
         self.ButCalibration.setObjectName("ButCalibration")
         self.MenuChangeGas.addWidget(self.ButCalibration)
         self.verticalLayout = QtWidgets.QVBoxLayout()
@@ -45,27 +49,31 @@ class Ui_MainWindow(object):
         self.horizontalLayout_2 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
 
-        self.spinBoxMin = QtWidgets.QSpinBox(self.widget)
+        self.spinBoxMin = QtWidgets.QSpinBox(self.layoutWidget)
         self.spinBoxMin.setObjectName("spinBoxMin")
         self.spinBoxMin.setMaximum(999999)
         self.spinBoxMin.setValue(ImportFromJson("gas_min"))
-        self.horizontalLayout_2.addWidget(self.spinBoxMin)
 
-        self.spinBoxMax = QtWidgets.QSpinBox(self.widget)
+        self.horizontalLayout_2.addWidget(self.spinBoxMin)
+        self.spinBoxMax = QtWidgets.QSpinBox(self.layoutWidget)
         self.spinBoxMax.setObjectName("spinBoxMax")
         self.spinBoxMax.setMaximum(999999)
         self.spinBoxMax.setValue(ImportFromJson("gas_max"))
-        self.horizontalLayout_2.addWidget(self.spinBoxMax)
 
+        self.horizontalLayout_2.addWidget(self.spinBoxMax)
         self.verticalLayout.addLayout(self.horizontalLayout_2)
-        self.SlidePower = QtWidgets.QSlider(self.widget)
+
+        self.SlidePower = QtWidgets.QSlider(self.layoutWidget)
         self.SlidePower.setMaximum(ImportFromJson("gas_max"))
+        self.SlidePower.setMinimum(ImportFromJson("gas_min"))
+        self.SlidePower.setValue(ImportFromJson("gas"))
         self.SlidePower.setPageStep(0)
-        self.SlidePower.setProperty("value", ImportFromJson("gas"))
+        self.SlidePower.setProperty("value", 50)
         self.SlidePower.setOrientation(QtCore.Qt.Horizontal)
         self.SlidePower.setObjectName("SlidePower")
+
         self.verticalLayout.addWidget(self.SlidePower)
-        self.valueGas = QtWidgets.QLabel(self.widget)
+        self.valueGas = QtWidgets.QLabel(self.layoutWidget)
         self.valueGas.setEnabled(True)
         self.valueGas.setAutoFillBackground(False)
         self.valueGas.setScaledContents(False)
@@ -75,9 +83,13 @@ class Ui_MainWindow(object):
         self.verticalLayout.addWidget(self.valueGas)
         self.MenuChangeGas.addLayout(self.verticalLayout)
         self.GlobalMenu.addLayout(self.MenuChangeGas)
+        self.horizontalLayout.addLayout(self.GlobalMenu)
+        self.butRefresh = QtWidgets.QPushButton(self.layoutWidget)
+        self.butRefresh.setObjectName("butRefresh")
+        self.horizontalLayout.addWidget(self.butRefresh)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 845, 21))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 1031, 21))
         self.menubar.setObjectName("menubar")
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
@@ -94,3 +106,4 @@ class Ui_MainWindow(object):
         self.ButClosePort.setText(_translate("MainWindow", "закрыть порт"))
         self.ButCalibration.setText(_translate("MainWindow", "Калибровка"))
         self.valueGas.setText(_translate("MainWindow", "0"))
+        self.butRefresh.setText(_translate("MainWindow", "Обновить список портов"))

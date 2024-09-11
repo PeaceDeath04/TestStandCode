@@ -31,17 +31,22 @@ def UpdatePortList():
     for port in ports:
         port_list.append(port.portName())
     ui.ListPorts.addItems(port_list)
-UpdatePortList()
 
 def openPort():
-    serial.setPortName(ui.ListPorts.currentText())
-    serial.open(QIODevice.ReadWrite)
-    print(f"Порт:",ui.ListPorts.currentText(),"открыт")
+    if not serial.isOpen():
+        serial.setPortName(ui.ListPorts.currentText())
+        serial.open(QIODevice.ReadWrite)
+        print(f"Порт:", ui.ListPorts.currentText(), "открыт")
+    else:
+        print(f"Порт: {ui.ListPorts.currentText()} Уже открыт")
 
 
 def closeport():
-    serial.close()
-    print("Порт:", ui.ListPorts.currentText(), "закрыт")
+    if serial.isOpen():
+        serial.close()
+        print("Порт:", ui.ListPorts.currentText(), "закрыт")
+    else:
+        print(f"Порт: {ui.ListPorts.currentText()} Уже закрыт")
 
 def getValue():
     gas = ui.SlidePower.value()
@@ -63,6 +68,7 @@ def GetRangeGas(min):
 
 
 
+ui.butRefresh.clicked.connect(UpdatePortList)
 ui.ButOpenPort.clicked.connect(openPort)
 ui.ButClosePort.clicked.connect(closeport)
 ui.SlidePower.valueChanged.connect(getValue)
