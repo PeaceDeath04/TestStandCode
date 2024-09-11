@@ -2,7 +2,7 @@ import json
 
 Name_save_file = "save_file.json"
 
-dict_variables = {"Gas": 0 , "gas_min": 0 , "gas_max": 50,                # безразмерные
+dict_variables = {"gas": 25 , "gas_min": 0 , "gas_max": 50,                # безразмерные
                   "T_flach_E":0,"T_flash_O":0,                            #время одного оборота двигателя в микросекундах, время между срабатыванием датчика
                   "Voltage":0.00,"ShuntVoltage":0,                        # вольт
                   "Temp":0.0,                                             # градусы
@@ -40,15 +40,12 @@ def ImportFromJson(key):
             data = json.load(save_file)
             return data.get(key, None)  # Возвращает значение по ключу, если ключа нет - возвращает None
     except FileNotFoundError:
-        print(f"Файл {Name_save_file} не найден.")
-        return None
+            with open(Name_save_file,mode="w",encoding="Latin-1") as save_file:
+                json.dump(dict_variables,save_file,ensure_ascii=False, indent=4)
+            return dict_variables[key]
     except json.JSONDecodeError:
         print(f"Ошибка декодирования JSON в файле {Name_save_file}.")
         return None
 
 
-
-
-
-
-
+print(ImportFromJson('gas'))

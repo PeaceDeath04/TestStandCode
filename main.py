@@ -1,3 +1,5 @@
+from types import NoneType
+
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtSerialPort import QSerialPort, QSerialPortInfo
 from PyQt5.QtCore import QIODevice
@@ -5,7 +7,6 @@ import sys
 from Window import Ui_MainWindow
 from saving import ExportToJson,ImportFromJson
 from ProjectProcessing import TxToARDU
-import math
 
 
 
@@ -18,6 +19,8 @@ app = QtWidgets.QApplication(sys.argv)
 MainWindow = QtWidgets.QMainWindow()
 ui = Ui_MainWindow()
 ui.setupUi(MainWindow)
+ui.onStartUp(ImportFromJson("gas_min"), ImportFromJson("gas_max"), ImportFromJson("gas"))
+
 
 
 
@@ -94,6 +97,15 @@ ui.ButCalibration.clicked.connect(lambda :TxToARDU('k',0))
 if __name__ == "__main__":
     MainWindow.show()
     sys.exit(app.exec_())
+
+    """
+    self.spinBoxMin.setValue(ImportFromJson("gas_min"))
+    self.spinBoxMax.setValue(ImportFromJson("gas_max"))
+    self.SlidePower.setMaximum(ImportFromJson("gas_max"))
+    self.SlidePower.setMinimum(ImportFromJson("gas_min"))
+    self.SlidePower.setValue(ImportFromJson("gas"))
+    self.SlidePower.setProperty("value", 50)
+    """
 
     # для Димы:
     # на графики по оси y нужно выводить значения следующих переменных: tar_Traction, current, flach_E, flach_O, Voltage, Temp, tar_Weight_1, tar_Weight_2

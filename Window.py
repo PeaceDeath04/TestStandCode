@@ -10,7 +10,6 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-from saving import ImportFromJson
 
 
 class Ui_MainWindow(object):
@@ -52,23 +51,22 @@ class Ui_MainWindow(object):
         self.spinBoxMin = QtWidgets.QSpinBox(self.layoutWidget)
         self.spinBoxMin.setObjectName("spinBoxMin")
         self.spinBoxMin.setMaximum(999999)
-        self.spinBoxMin.setValue(ImportFromJson("gas_min"))
+        self.spinBoxMin.setValue(0)
 
         self.horizontalLayout_2.addWidget(self.spinBoxMin)
         self.spinBoxMax = QtWidgets.QSpinBox(self.layoutWidget)
         self.spinBoxMax.setObjectName("spinBoxMax")
         self.spinBoxMax.setMaximum(999999)
-        self.spinBoxMax.setValue(ImportFromJson("gas_max"))
+        self.spinBoxMax.setValue(0)
 
         self.horizontalLayout_2.addWidget(self.spinBoxMax)
         self.verticalLayout.addLayout(self.horizontalLayout_2)
 
         self.SlidePower = QtWidgets.QSlider(self.layoutWidget)
-        self.SlidePower.setMaximum(ImportFromJson("gas_max"))
-        self.SlidePower.setMinimum(ImportFromJson("gas_min"))
-        self.SlidePower.setValue(ImportFromJson("gas"))
+        self.SlidePower.setMaximum(800)
+        self.SlidePower.setMinimum(3200)
+        self.SlidePower.setValue(0)
         self.SlidePower.setPageStep(0)
-        self.SlidePower.setProperty("value", 50)
         self.SlidePower.setOrientation(QtCore.Qt.Horizontal)
         self.SlidePower.setObjectName("SlidePower")
 
@@ -107,3 +105,12 @@ class Ui_MainWindow(object):
         self.ButCalibration.setText(_translate("MainWindow", "Калибровка"))
         self.valueGas.setText(_translate("MainWindow", "0"))
         self.butRefresh.setText(_translate("MainWindow", "Обновить список портов"))
+
+    def onStartUp(self,gas_min,gas_max,gas):
+        self.spinBoxMin.setValue(gas_min)
+        self.spinBoxMax.setValue(gas_max)
+        self.SlidePower.setMinimum(gas_min)
+        self.SlidePower.setMaximum(gas_max)
+        self.SlidePower.setValue(gas)
+        self.SlidePower.setProperty("value", gas)
+

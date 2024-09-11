@@ -1,14 +1,13 @@
 {
-    "gas": 500,
-    "gas_min": 500,
-    "gas_max": 3300,
+    "gas": 3200,
+    "gas_min": 800,
+    "gas_max": 3200,
     "T_flach_E": 0,
     "T_flash_O": 0,
     "Voltage": 0.0,
     "ShuntVoltage": 0,
     "Temp": 0.0,
-    "Traction": 3.5,
+    "Traction": 0.0,
     "Weight_1": 0.0,
-    "Weight_2": 0.0,
-    "cargo": 0.3
+    "Weight_2": 0.0
 }
