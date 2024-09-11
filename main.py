@@ -66,18 +66,16 @@ def getValue():
     TxToARDU("o", gas)
     ExportToJson("gas",gas)
 
-def GetRangeGas(min):
-    if min == True:
-        gas_min = ui.spinBoxMin.value()
-        ui.SlidePower.setMinimum(gas_min)
-        TxToARDU("i",gas_min)
-        ExportToJson("gas_min",gas_min)
-    else:
-        gas_max = ui.spinBoxMax.value()
-        ui.SlidePower.setMaximum(gas_max)
-        TxToARDU("a", gas_max)
-        ExportToJson("gas_max",gas_max)
+def GetRangeGas():
+    gas_min = ui.spinBoxMin.value()
+    ui.SlidePower.setMinimum(gas_min)
+    TxToARDU("i", gas_min)
+    ExportToJson("gas_min", gas_min)
 
+    gas_max = ui.spinBoxMax.value()
+    ui.SlidePower.setMaximum(gas_max)
+    TxToARDU("a", gas_max)
+    ExportToJson("gas_max", gas_max)
 
 
 ui.butRefresh.clicked.connect(UpdatePortList)
@@ -85,8 +83,8 @@ ui.ButOpenPort.clicked.connect(openPort)
 ui.ButClosePort.clicked.connect(closeport)
 ui.SlidePower.valueChanged.connect(getValue)
 
-ui.spinBoxMin.valueChanged.connect(lambda :GetRangeGas(True))
-ui.spinBoxMax.valueChanged.connect(lambda :GetRangeGas(False))
+ui.spinBoxMin.valueChanged.connect(GetRangeGas)
+ui.spinBoxMax.valueChanged.connect(GetRangeGas)
 ui.ButCalibration.clicked.connect(lambda :TxToARDU('k',0))
 
 
