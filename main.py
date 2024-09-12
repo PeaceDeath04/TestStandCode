@@ -1,30 +1,13 @@
-from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtSerialPort import QSerialPort, QSerialPortInfo
+from PyQt5.QtSerialPort import QSerialPortInfo,QSerialPort
 from PyQt5.QtCore import QIODevice
 import sys
-from Window import Ui_MainWindow
+from Window import ui,app,MainWindow
 from saving import ExportToJson, ImportFromJson, ArduToJson
 from ProjectProcessing import TxToARDU
 
-
-
-
-#region Инициализация
-
 serial = QSerialPort()
 serial.setBaudRate(115200)
-app = QtWidgets.QApplication(sys.argv)
-MainWindow = QtWidgets.QMainWindow()
-ui = Ui_MainWindow()
-ui.setupUi(MainWindow)
-ui.onStartUp(ImportFromJson("gas_min"), ImportFromJson("gas_max"), ImportFromJson("gas"))
-
-
-
-
-#endregion
-
-#region методы определения кнопнок
+ui.onStartUp(ImportFromJson("gas_min"),ImportFromJson("gas_max"),ImportFromJson("gas"),)
 
 def OnRead():
     rx = serial.readLine()
@@ -41,7 +24,7 @@ def GetProsent():
         per = (c-a)/(b-a) *100
         return round(per)
     except:
-        print("ошибка при вычислении")
+        ui.sendDb("ошибка при вычислении")
 
 def UpdatePortList():
     ui.ListPorts.clear()
@@ -50,22 +33,23 @@ def UpdatePortList():
     for port in ports:
         port_list.append(port.portName())
     ui.ListPorts.addItems(port_list)
+    ui.sendDb("Список портов обновлен")
 
 def openPort():
     if not serial.isOpen():
         serial.setPortName(ui.ListPorts.currentText())
         serial.open(QIODevice.ReadWrite)
-        print(f"Порт:", ui.ListPorts.currentText(), "открыт")
+        ui.sendDb(f"Порт:{ui.ListPorts.currentText()} открыт")
     else:
-        print(f"Порт: {ui.ListPorts.currentText()} Уже открыт")
+        ui.sendDb(f"Порт: {ui.ListPorts.currentText()} Уже открыт")
 
 
 def closeport():
     if serial.isOpen():
         serial.close()
-        print("Порт:", ui.ListPorts.currentText(), "закрыт")
+        ui.sendDb(f"Порт: {ui.ListPorts.currentText()} закрыт")
     else:
-        print(f"Порт: {ui.ListPorts.currentText()} Уже закрыт")
+        ui.sendDb(f"Порт: {ui.ListPorts.currentText()} Уже закрыт")
 
 def getValue():
     prozent = GetProsent()

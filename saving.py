@@ -1,4 +1,5 @@
 import json
+from Window import ui
 Name_save_file = "save_file.json"
 
 
@@ -21,14 +22,14 @@ def ExportToJson(key, value):
         with open(Name_save_file, mode="w", encoding="Latin-1") as save_file:
             json.dump(data, save_file, ensure_ascii=False, indent=4)
 
-        print(f"Значение для ключа '{key}' успешно обновлено в {Name_save_file}.")
+        #ui.sendDb(f"Значение для ключа '{key}' успешно обновлено в {Name_save_file}.")
 
     except json.JSONDecodeError:
-        print(f"Ошибка декодирования JSON в файле {Name_save_file}.")
+        ui.sendDb(f"Ошибка декодирования JSON в файле {Name_save_file}.")
     except IOError as e:
-        print(f"Ошибка при работе с файлом {Name_save_file}: {e}")
+        ui.sendDb(f"Ошибка при работе с файлом {Name_save_file}: {e}")
     except Exception as e:
-        print(f"Произошла непредвиденная ошибка: {e}")
+        ui.sendDb(f"Произошла непредвиденная ошибка: {e}")
 
 def ImportFromJson(key):
     try:
@@ -40,7 +41,7 @@ def ImportFromJson(key):
                 json.dump(dict_variables,save_file,ensure_ascii=False, indent=4)
             return dict_variables[key]
     except json.JSONDecodeError:
-        print(f"Ошибка декодирования JSON в файле {Name_save_file}.")
+        ui.sendDb(f"Ошибка декодирования JSON в файле {Name_save_file}.")
         return None
 
 def ArduToJson(object):
@@ -57,3 +58,4 @@ def ArduToJson(object):
     #сохраняем
     for item in res:
         ExportToJson(list(item)[0],list(item)[1])
+        #ui.sendDb("Данные с ардуино успешно сохранены")
