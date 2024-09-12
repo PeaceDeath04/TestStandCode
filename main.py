@@ -1,11 +1,9 @@
-from types import NoneType
-
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtSerialPort import QSerialPort, QSerialPortInfo
 from PyQt5.QtCore import QIODevice
 import sys
 from Window import Ui_MainWindow
-from saving import ExportToJson,ImportFromJson
+from saving import ExportToJson, ImportFromJson, ArduToJson
 from ProjectProcessing import TxToARDU
 
 
@@ -27,6 +25,13 @@ ui.onStartUp(ImportFromJson("gas_min"), ImportFromJson("gas_max"), ImportFromJso
 #endregion
 
 #region методы определения кнопнок
+
+def OnRead():
+    rx = serial.readLine()
+    rxs =str(rx,'utf-8').strip()
+    data = rxs.split(",")
+    for i in data:
+        ArduToJson(i)
 
 def GetProsent():
     try:
@@ -80,7 +85,7 @@ def GetRangeGas():
     TxToARDU("a", gas_max)
     ExportToJson("gas_max", gas_max)
 
-
+serial.readyRead.connect(OnRead)
 ui.butRefresh.clicked.connect(UpdatePortList)
 ui.ButOpenPort.clicked.connect(openPort)
 ui.ButClosePort.clicked.connect(closeport)
