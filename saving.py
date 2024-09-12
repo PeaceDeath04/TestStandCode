@@ -45,21 +45,27 @@ def ImportFromJson(key):
         return None
 
 def ArduToJson(object):
-    #в начале получаем name =[]
-    #получаем список ключей (названия)
-    with open(Name_save_file, mode="r", encoding="Latin-1") as save_file:
-        data = json.load(save_file)
+    try:
+        # в начале получаем name =[]
+        # получаем список ключей (названия)
+        with open(Name_save_file, mode="r", encoding="Latin-1") as save_file:
+            data = json.load(save_file)
 
-    #делаем список ключей
-    keys = list(data)
+        # делаем список ключей
+        keys = list(data)
 
-    #собираем в zip и обращаемся к каждому элементу сохраняя его
-    res = zip(keys,object)
-    #сохраняем
-    for item in res:
-        ExportToJson(list(item)[0],float(item[1]))
-        #ui.sendDb("Данные с ардуино успешно сохранены")
+        # собираем в zip и обращаемся к каждому элементу сохраняя его
+        res = zip(keys, object)
+        # сохраняем
+        for item in res:
+            ExportToJson(list(item)[0], float(item[1]))
+            # ui.sendDb("Данные с ардуино успешно сохранены")
+    except FileNotFoundError:
+        # Если файл не найден, используем пустой словарь
+        data = dict_variables.copy()
+        # Сохраняем обновлённые данные обратно в файл
+        with open(Name_save_file, mode="w", encoding="Latin-1") as save_file:
+            json.dump(data, save_file, ensure_ascii=False, indent=4)
 
-spisok = ["1","2","3","4","5","6","7","999999999"]
 
-ArduToJson(spisok)
+
