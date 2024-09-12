@@ -57,5 +57,9 @@ def ArduToJson(object):
     res = zip(keys,object)
     #сохраняем
     for item in res:
-        ExportToJson(list(item)[0],list(item)[1])
+        ExportToJson(list(item)[0],float(item[1]))
         #ui.sendDb("Данные с ардуино успешно сохранены")
+
+spisok = ["1","2","3","4","5","6","7","999999999"]
+
+ArduToJson(spisok)

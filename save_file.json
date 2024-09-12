@@ -1,13 +1,13 @@
 {
-    "T_flach_E": 0,
-    "T_flash_O": 427,
-    "Voltage": 727,
-    "ShuntVoltage": 26.86,
-    "Temp": 0.0,
-    "Traction": 0.0,
-    "Weight_1": 0.0,
-    "Weight_2": 0.0,
-    "gas": 3300,
+    "T_flach_E": 1.0,
+    "T_flash_O": 2.0,
+    "Voltage": 3.0,
+    "ShuntVoltage": 4.0,
+    "Temp": 5.0,
+    "Traction": 6.0,
+    "Weight_1": 7.0,
+    "Weight_2": 999999999.0,
+    "gas": 1574,
     "gas_min": 800,
     "gas_max": 3300
 }

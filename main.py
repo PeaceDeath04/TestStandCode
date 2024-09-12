@@ -13,6 +13,7 @@ def OnRead():
     rx = serial.readLine()
     rxs =str(rx,'utf-8').strip()
     data = rxs.split(",")
+    data = data[:-1]
     for i in data:
         ArduToJson(i)
 
@@ -42,7 +43,6 @@ def openPort():
         ui.sendDb(f"Порт:{ui.ListPorts.currentText()} открыт")
     else:
         ui.sendDb(f"Порт: {ui.ListPorts.currentText()} Уже открыт")
-
 
 def closeport():
     if serial.isOpen():
@@ -79,24 +79,6 @@ ui.spinBoxMin.valueChanged.connect(GetRangeGas)
 ui.spinBoxMax.valueChanged.connect(GetRangeGas)
 ui.ButCalibration.clicked.connect(lambda :TxToARDU('k',0))
 
-
-#endregion
-
-
 if __name__ == "__main__":
     MainWindow.show()
     sys.exit(app.exec_())
-
-    """
-    self.spinBoxMin.setValue(ImportFromJson("gas_min"))
-    self.spinBoxMax.setValue(ImportFromJson("gas_max"))
-    self.SlidePower.setMaximum(ImportFromJson("gas_max"))
-    self.SlidePower.setMinimum(ImportFromJson("gas_min"))
-    self.SlidePower.setValue(ImportFromJson("gas"))
-    self.SlidePower.setProperty("value", 50)
-    """
-
-    # для Димы:
-    # на графики по оси y нужно выводить значения следующих переменных: tar_Traction, current, flach_E, flach_O, Voltage, Temp, tar_Weight_1, tar_Weight_2
-    # графики доложны быть широко растянуты по x. Фон графиков белый и цвет линии у кажлого графика должен быть свой
-    # добавь 2 кнопки которые будут вызввать функции calibration_Tract() и calibration_Weight

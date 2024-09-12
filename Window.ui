@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1031</width>
-    <height>489</height>
+    <width>1126</width>
+    <height>678</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,92 +19,81 @@
      <rect>
       <x>0</x>
       <y>10</y>
-      <width>661</width>
-      <height>151</height>
+      <width>1041</width>
+      <height>611</height>
      </rect>
     </property>
-    <layout class="QHBoxLayout" name="horizontalLayout">
+    <layout class="QVBoxLayout" name="verticalLayout_2">
      <item>
-      <layout class="QVBoxLayout" name="GlobalMenu">
+      <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
-        <layout class="QHBoxLayout" name="MenuPorts">
+        <layout class="QVBoxLayout" name="GlobalMenu">
          <item>
-          <widget class="QComboBox" name="ListPorts"/>
-         </item>
-         <item>
-          <widget class="QPushButton" name="ButOpenPort">
-           <property name="text">
-            <string>открыть порт</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="ButClosePort">
-           <property name="text">
-            <string>закрыть порт</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <layout class="QVBoxLayout" name="MenuChangeGas">
-         <item>
-          <widget class="QPushButton" name="ButCalibration">
-           <property name="text">
-            <string>Калибровка</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <layout class="QVBoxLayout" name="verticalLayout">
+          <layout class="QHBoxLayout" name="MenuPorts">
            <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_2">
+            <widget class="QComboBox" name="ListPorts"/>
+           </item>
+           <item>
+            <widget class="QPushButton" name="ButOpenPort">
+             <property name="text">
+              <string>открыть порт</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="ButClosePort">
+             <property name="text">
+              <string>закрыть порт</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <widget class="QPushButton" name="butRefresh">
+           <property name="text">
+            <string>Обновить список портов</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <layout class="QVBoxLayout" name="MenuChangeGas">
+           <item>
+            <widget class="QPushButton" name="ButCalibration">
+             <property name="text">
+              <string>Калибровка</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <layout class="QVBoxLayout" name="verticalLayout">
              <item>
-              <widget class="QSpinBox" name="spinBoxMin"/>
+              <layout class="QHBoxLayout" name="horizontalLayout_2">
+               <item>
+                <widget class="QSpinBox" name="spinBoxMin"/>
+               </item>
+               <item>
+                <widget class="QSpinBox" name="spinBoxMax"/>
+               </item>
+              </layout>
              </item>
              <item>
-              <widget class="QSpinBox" name="spinBoxMax"/>
+              <widget class="QSlider" name="SlidePower">
+               <property name="maximum">
+                <number>50</number>
+               </property>
+               <property name="pageStep">
+                <number>0</number>
+               </property>
+               <property name="value">
+                <number>50</number>
+               </property>
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+              </widget>
              </item>
             </layout>
-           </item>
-           <item>
-            <widget class="QSlider" name="SlidePower">
-             <property name="maximum">
-              <number>50</number>
-             </property>
-             <property name="pageStep">
-              <number>0</number>
-             </property>
-             <property name="value">
-              <number>50</number>
-             </property>
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLabel" name="valueGas">
-             <property name="enabled">
-              <bool>true</bool>
-             </property>
-             <property name="autoFillBackground">
-              <bool>false</bool>
-             </property>
-             <property name="text">
-              <string>0</string>
-             </property>
-             <property name="scaledContents">
-              <bool>false</bool>
-             </property>
-             <property name="wordWrap">
-              <bool>false</bool>
-             </property>
-             <property name="indent">
-              <number>250</number>
-             </property>
-            </widget>
            </item>
           </layout>
          </item>
@@ -113,9 +102,29 @@
       </layout>
      </item>
      <item>
-      <widget class="QPushButton" name="butRefresh">
+      <widget class="QLabel" name="valueGas">
+       <property name="autoFillBackground">
+        <bool>false</bool>
+       </property>
        <property name="text">
-        <string>Обновить список портов</string>
+        <string>TextLabel</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QTextBrowser" name="debugWindow">
+       <property name="autoFormatting">
+        <set>QTextEdit::AutoNone</set>
+       </property>
+       <property name="html">
+        <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Привет&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
       </widget>
      </item>
@@ -127,7 +136,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1031</width>
+     <width>1126</width>
      <height>21</height>
     </rect>
    </property>
