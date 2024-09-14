@@ -7,7 +7,7 @@ from ProjectProcessing import TxToARDU
 
 serial = QSerialPort()
 serial.setBaudRate(115200)
-ui.onStartUp(ImportFromJson("gas_min"),ImportFromJson("gas_max"),ImportFromJson("gas"),)
+ui.onStartUp(ImportFromJson("gas_min"),ImportFromJson("gas_max"),ImportFromJson("gas"))
 
 def OnRead():
     rx = serial.readLine()
