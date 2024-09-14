@@ -22,7 +22,7 @@ def ExportToJson(key, value):
         with open(Name_save_file, mode="w", encoding="Latin-1") as save_file:
             json.dump(data, save_file, ensure_ascii=False, indent=4)
 
-        #ui.sendDb(f"Значение для ключа '{key}' успешно обновлено в {Name_save_file}.")
+        ui.sendDb(f"Значение для ключа '{key}' успешно обновлено в {Name_save_file}.")
 
     except json.JSONDecodeError:
         ui.sendDb(f"Ошибка декодирования JSON в файле {Name_save_file}.")
@@ -46,26 +46,30 @@ def ImportFromJson(key):
 
 def ArduToJson(object):
     try:
-        # в начале получаем name =[]
-        # получаем список ключей (названия)
+        # Открываем файл и загружаем данные
         with open(Name_save_file, mode="r", encoding="Latin-1") as save_file:
             data = json.load(save_file)
 
-        # делаем список ключей
-        keys = list(data)
+        # Создаем список ключей, которые нужно обновить (в примере это 8 значений, можно настроить под конкретные поля)
+        keys_to_update = ["T_flach_E", "T_flash_O", "Voltage", "ShuntVoltage", "Temp", "Traction", "Weight_1", "Weight_2"]
 
-        # собираем в zip и обращаемся к каждому элементу сохраняя его
-        res = zip(keys, object)
-        # сохраняем
-        for item in res:
-            ExportToJson(list(item)[0], float(item[1]))
-            # ui.sendDb("Данные с ардуино успешно сохранены")
+        # Проверяем, что длина объекта совпадает с количеством ключей
+        if len(object) == len(keys_to_update):
+            # Собираем в zip и обновляем значения
+            for key, value in zip(keys_to_update, object):
+                data[key] = float(value)
+
+            # Сохраняем обновленные данные обратно в файл
+            with open(Name_save_file, mode="w", encoding="Latin-1") as save_file:
+                json.dump(data, save_file, ensure_ascii=False, indent=4)
+
+            #ui.sendDb("Данные с ардуино успешно сохранены")
+        else:
+            pass
+            #("Ошибка: некорректный формат данных с ардуино")
+
     except FileNotFoundError:
         # Если файл не найден, используем пустой словарь
         data = dict_variables.copy()
-        # Сохраняем обновлённые данные обратно в файл
         with open(Name_save_file, mode="w", encoding="Latin-1") as save_file:
             json.dump(data, save_file, ensure_ascii=False, indent=4)
-
-
-

@@ -4,18 +4,41 @@ import sys
 from Window import ui,app,MainWindow
 from saving import ExportToJson, ImportFromJson, ArduToJson
 from ProjectProcessing import TxToARDU
+import traceback
 
 serial = QSerialPort()
-serial.setBaudRate(115200)
+serial.setBaudRate(9600)
 ui.onStartUp(ImportFromJson("gas_min"),ImportFromJson("gas_max"),ImportFromJson("gas"))
 
+
+buffer = ""  # Инициализация буфера
+
 def OnRead():
-    rx = serial.readLine()
-    rxs =str(rx,'utf-8').strip()
-    data = rxs.split(",")
-    data = data[:-1]
-    for i in data:
-        ArduToJson(i)
+    global buffer  # Указываем, что используем глобальную переменную
+    try:
+        rx = serial.readAll()
+        rxs = str(rx, 'utf-8', errors='ignore')  # Игнорировать ошибки декодирования
+        buffer += rxs  # Добавляем новые данные в буфер
+
+        # Проверяем, есть ли завершённый пакет (по символу ';')
+        if ';' in buffer:
+            packets = buffer.split(';')  # Разделяем буфер на пакеты
+            for packet in packets[:-1]:  # Обрабатываем все завершённые пакеты
+                if packet:
+                    data = packet.strip().split(",")  # Разбиваем пакет по запятым
+
+                    # Проверка на наличие пустых строк в данных
+                    if all(item != '' for item in data):  # Проверяем, чтобы в списке не было пустых значений
+                        print(f"Поступил пакет данных: {data}")
+                        ArduToJson(data)  # Отправка пакета данных для сохранения
+                    else:
+                        print(f"Неполный пакет данных: {data}")
+
+            buffer = packets[-1]  # Сохраняем последний неполный пакет в буфер
+    except Exception as e:
+        print(f"Ошибка при чтении данных: {e}")
+        traceback.print_exc()
+        print(buffer)
 
 def GetProsent():
     try:
