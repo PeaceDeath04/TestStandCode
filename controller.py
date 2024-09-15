@@ -49,7 +49,7 @@ class Controller:
                     if packet:
                         data = packet.strip().split(",")
                         if all(item != '' for item in data):
-                            self.save.ardu_to_json(data, self.log_function)
+                            self.save.ardu_to_json(data)
                 self.buffer = packets[-1]
         except Exception as e:
             traceback.print_exc()

@@ -95,7 +95,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.setupUi(self)
         self.controller = Controller(self.sendDb)
         self.controller.serial.readyRead.connect(self.controller.read_data)
-        self.onStartUp(self.controller.save.import_from_json("gas_min"),self.controller.save.import_from_json("gas_max"), self.controller.save.import_from_json("gas"))
         self.spinBoxMin.valueChanged.connect(self.GetRangeGas)
         self.spinBoxMax.valueChanged.connect(self.GetRangeGas)
         self.ButCalibration.clicked.connect(lambda : self.controller.processing.TxToARDU('k',0))
@@ -103,6 +102,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.ButClosePort.clicked.connect(self.close_port)
         self.butRefresh.clicked.connect(self.update_ports)
         self.SlidePower.valueChanged.connect(self.get_gas_value)
+        self.onStartUp(self.controller.save.import_from_json("gas_min"),self.controller.save.import_from_json("gas_max"), self.controller.save.import_from_json("gas"))
     def open_port(self):
         port_name = self.ListPorts.currentText()
         result = self.controller.open_port(port_name)
@@ -113,13 +113,20 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.sendDb(result)
 
     def GetRangeGas(self):
-        self.SlidePower.setMinimum(self.spinBoxMin.value())
-        self.controller.processing.TxToARDU("i",self.spinBoxMin.value())
-        self.controller.save.export_to_json("gas_min",self.spinBoxMin.value())
+        gas_min = self.spinBoxMin.value()
+        gas_max= self.spinBoxMax.value()
+        if gas_min>= gas_max:
+            gas_min = 0
 
-        self.SlidePower.setMaximum(self.spinBoxMax.value())
-        self.controller.processing.TxToARDU("a", self.spinBoxMin.value())
-        self.controller.save.export_to_json("gas_max", self.spinBoxMin.value())
+
+        self.SlidePower.setMinimum(gas_min)
+        self.SlidePower.setMaximum(gas_max)
+        self.SlidePower.setValue(gas_min)
+        self.controller.processing.TxToARDU("o",gas_min)
+        self.controller.processing.TxToARDU("i",gas_min)
+        self.controller.processing.TxToARDU("a", gas_max)
+        self.controller.save.export_to_json("gas_min",gas_min)
+        self.controller.save.export_to_json("gas_max", gas_max)
 
     def update_ports(self):
         ports = self.controller.update_port_list()
