@@ -18,9 +18,7 @@
   <a target="code" href="///C:/Users/Dmitriy/PycharmProjects/TestStandCode/main.py" type="text/plain"><tt>main.py</tt></a>
 <span class="moduletype">Script</span>  <div class="import">
 imports:
-    <a href="#ProjectProcessing">ProjectProcessing</a>
- &#8226;   <a href="#PyQt5.QtCore">PyQt5.QtCore</a>
- &#8226;   <a href="#PyQt5.QtSerialPort">PyQt5.QtSerialPort</a>
+    <a href="#PyQt5.QtWidgets">PyQt5.QtWidgets</a>
  &#8226;   <a href="#Window">Window</a>
  &#8226;   <a href="#_collections_abc">_collections_abc</a>
  &#8226;   <a href="#_weakrefset">_weakrefset</a>
@@ -172,7 +170,6 @@ imports:
  &#8226;   <a href="#re._constants">re._constants</a>
  &#8226;   <a href="#re._parser">re._parser</a>
  &#8226;   <a href="#reprlib">reprlib</a>
- &#8226;   <a href="#saving">saving</a>
  &#8226;   <a href="#sre_compile">sre_compile</a>
  &#8226;   <a href="#sre_constants">sre_constants</a>
  &#8226;   <a href="#sre_parse">sre_parse</a>
@@ -262,7 +259,7 @@ imports:
   </div>
   <div class="import">
 imported by:
-    <a href="#main.py">main.py</a>
+    <a href="#controller">controller</a>
 
   </div>
 
@@ -273,8 +270,8 @@ imported by:
   <a target="code" href="///C:/Users/Dmitriy/AppData/Local/Programs/Python/Python311/Lib/site-packages/PyQt5/__init__.py" type="text/plain"><tt>PyQt5</tt></a>
 <span class="moduletype">Package</span>  <div class="import">
 imports:
-    <a href="#PyQt5.QtGui">PyQt5.QtGui</a>
- &#8226;   <a href="#PyQt5.QtWidgets">PyQt5.QtWidgets</a>
+    <a href="#PyQt5.QtCore">PyQt5.QtCore</a>
+ &#8226;   <a href="#PyQt5.QtGui">PyQt5.QtGui</a>
  &#8226;   <a href="#PyQt5.sip">PyQt5.sip</a>
  &#8226;   <a href="#os">os</a>
  &#8226;   <a href="#pkgutil">pkgutil</a>
@@ -303,11 +300,12 @@ imports:
   </div>
   <div class="import">
 imported by:
-    <a href="#PyQt5.QtGui">PyQt5.QtGui</a>
+    <a href="#PyQt5">PyQt5</a>
+ &#8226;   <a href="#PyQt5.QtGui">PyQt5.QtGui</a>
  &#8226;   <a href="#PyQt5.QtSerialPort">PyQt5.QtSerialPort</a>
  &#8226;   <a href="#PyQt5.QtWidgets">PyQt5.QtWidgets</a>
  &#8226;   <a href="#Window">Window</a>
- &#8226;   <a href="#main.py">main.py</a>
+ &#8226;   <a href="#controller">controller</a>
 
   </div>
 
@@ -342,8 +340,7 @@ imports:
   <div class="import">
 imported by:
     <a href="#ProjectProcessing">ProjectProcessing</a>
- &#8226;   <a href="#Window">Window</a>
- &#8226;   <a href="#main.py">main.py</a>
+ &#8226;   <a href="#controller">controller</a>
 
   </div>
 
@@ -360,8 +357,8 @@ imports:
   </div>
   <div class="import">
 imported by:
-    <a href="#PyQt5">PyQt5</a>
- &#8226;   <a href="#Window">Window</a>
+    <a href="#Window">Window</a>
+ &#8226;   <a href="#main.py">main.py</a>
 
   </div>
 
@@ -390,15 +387,13 @@ imports:
     <a href="#PyQt5">PyQt5</a>
  &#8226;   <a href="#PyQt5.QtCore">PyQt5.QtCore</a>
  &#8226;   <a href="#PyQt5.QtGui">PyQt5.QtGui</a>
- &#8226;   <a href="#PyQt5.QtSerialPort">PyQt5.QtSerialPort</a>
  &#8226;   <a href="#PyQt5.QtWidgets">PyQt5.QtWidgets</a>
- &#8226;   <a href="#sys">sys</a>
+ &#8226;   <a href="#controller">controller</a>
 
   </div>
   <div class="import">
 imported by:
     <a href="#main.py">main.py</a>
- &#8226;   <a href="#saving">saving</a>
 
   </div>
 
@@ -1710,6 +1705,26 @@ imports:
   <div class="import">
 imported by:
     <a href="#_pydecimal">_pydecimal</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="controller"></a>
+  <a target="code" href="///C:/Users/Dmitriy/PycharmProjects/TestStandCode/controller.py" type="text/plain"><tt>controller</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#ProjectProcessing">ProjectProcessing</a>
+ &#8226;   <a href="#PyQt5.QtCore">PyQt5.QtCore</a>
+ &#8226;   <a href="#PyQt5.QtSerialPort">PyQt5.QtSerialPort</a>
+ &#8226;   <a href="#saving">saving</a>
+ &#8226;   <a href="#traceback">traceback</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#Window">Window</a>
 
   </div>
 
@@ -6653,13 +6668,12 @@ imported by:
   <a target="code" href="///C:/Users/Dmitriy/PycharmProjects/TestStandCode/saving.py" type="text/plain"><tt>saving</tt></a>
 <span class="moduletype">SourceModule</span>  <div class="import">
 imports:
-    <a href="#Window">Window</a>
- &#8226;   <a href="#json">json</a>
+    <a href="#json">json</a>
 
   </div>
   <div class="import">
 imported by:
-    <a href="#main.py">main.py</a>
+    <a href="#controller">controller</a>
 
   </div>
 
@@ -6975,7 +6989,6 @@ imported by:
   <tt>sys</tt> <span class="moduletype"><i>(builtin module)</i></span>  <div class="import">
 imported by:
     <a href="#PyQt5">PyQt5</a>
- &#8226;   <a href="#Window">Window</a>
  &#8226;   <a href="#_collections_abc">_collections_abc</a>
  &#8226;   <a href="#_compression">_compression</a>
  &#8226;   <a href="#_pydecimal">_pydecimal</a>
@@ -7239,7 +7252,8 @@ imports:
   </div>
   <div class="import">
 imported by:
-    <a href="#logging">logging</a>
+    <a href="#controller">controller</a>
+ &#8226;   <a href="#logging">logging</a>
  &#8226;   <a href="#main.py">main.py</a>
  &#8226;   <a href="#py_compile">py_compile</a>
  &#8226;   <a href="#threading">threading</a>
