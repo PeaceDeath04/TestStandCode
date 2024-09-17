@@ -78,4 +78,9 @@ class JsonHandler:
             self.export_local_data(key,value)
             self.export_to_json(key,value)
 
+    def create_json(self):
+        with open(self.save_file, "w", encoding="utf-8") as file:
+            json.dump(self.data, file)
+
+
 

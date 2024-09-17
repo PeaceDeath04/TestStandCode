@@ -1,13 +1,13 @@
 {
     "T_flach_E": 0.0,
     "T_flash_O": 0.0,
-    "Voltage": 0.001,
+    "Voltage": 0.0,
     "ShuntVoltage": 0.0,
-    "Temp": 11011.0,
-    "Traction": -12055.0,
-    "Weight_1": -5567.0,
-    "Weight_2": -9288.0,
-    "gas": 25,
+    "Temp": 11100.0,
+    "Traction": -9169.0,
+    "Weight_1": -6610.0,
+    "Weight_2": -4500.0,
+    "gas": 0,
     "gas_min": 0,
-    "gas_max": 50
+    "gas_max": 300
 }
