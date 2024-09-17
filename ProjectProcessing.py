@@ -1,7 +1,3 @@
-from PyQt5.QtSerialPort import QSerialPort, QSerialPortInfo
-
-
-
 class processing():
     def __init__(self,serial):
         self.serial =serial
@@ -12,10 +8,10 @@ class processing():
         return ((ShuntVoltage * 0.075) / 75)
 
     # посылаем на ардуинку
-    def TxToARDU(self,string, gas_int):
-        string += str(gas_int)
-        print(f"мы отправили {string}")
-        self.serial.write(string.encode())
+    def TxToARDU(self,**packet_data):
+        for string,value in packet_data.items():
+            string += str(value)
+            self.serial.write(string.encode())
 
     # получаем Rpm Rotate per min / оборотов в минуту
     def TakeRpmE(self,t_flach):

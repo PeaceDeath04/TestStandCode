@@ -51,7 +51,6 @@ class JsonHandler:
     def import_local_data(self,key):
         return self.data.get(key)
 
-
     def export_local_data(self,key,value):
         self.data[key] = value
 
@@ -78,4 +77,5 @@ class JsonHandler:
         for key,value in packet_data.items():
             self.export_local_data(key,value)
             self.export_to_json(key,value)
+
 

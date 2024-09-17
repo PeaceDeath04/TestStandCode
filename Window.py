@@ -104,13 +104,12 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.controller.serial.readyRead.connect(self.controller.read_data)
         self.spinBoxMin.valueChanged.connect(self.GetRangeGas)
         self.spinBoxMax.valueChanged.connect(self.GetRangeGas)
-        self.ButCalibration.clicked.connect(lambda : self.controller.processing.TxToARDU('k',0))
+        self.ButCalibration.clicked.connect(lambda : self.controller.processing.TxToARDU(k=0))
         self.ButOpenPort.clicked.connect(self.open_port)
         self.ButClosePort.clicked.connect(self.close_port)
         self.butRefresh.clicked.connect(self.update_ports)
         self.SlidePower.valueChanged.connect(self.get_gas_value)
-        self.onStartUp(self.controller.save.import_from_json("gas_min"),self.controller.save.import_from_json("gas_max"), self.controller.save.import_from_json("gas"))
-        self.graph_Layout.addWidget(self.controller.table_with_timer.canvas)
+        self.onStartUp(self.controller.save.import_local_data("gas_min"),self.controller.save.import_local_data("gas_max"),self.controller.save.import_local_data("gas"))
 
     def open_port(self):
         port_name = self.ListPorts.currentText()
@@ -131,11 +130,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.SlidePower.setMinimum(gas_min)
         self.SlidePower.setMaximum(gas_max)
         self.SlidePower.setValue(gas_min)
-        self.controller.processing.TxToARDU("o",gas_min)
-        self.controller.processing.TxToARDU("i",gas_min)
-        self.controller.processing.TxToARDU("a", gas_max)
-        self.controller.save.export_to_json("gas_min",gas_min)
-        self.controller.save.export_to_json("gas_max", gas_max)
+        self.controller.processing.TxToARDU(i=gas_min,a=gas_max)
+        self.controller.save.export_data(gas_max=gas_max,gas_min =gas_min)
 
     def update_ports(self):
         ports = self.controller.update_port_list()
@@ -145,7 +141,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
     def get_gas_value(self):
         gas_percentage = self.controller.get_gas_percentage()
-        self.controller.save.export_to_json("gas",self.SlidePower.value())
+        self.controller.save.export_data(gas=self.SlidePower.value())
         self.valueGas.setText(str(gas_percentage))
 
     def onStartUp(self, gas_min, gas_max, gas):
