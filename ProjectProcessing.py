@@ -1,8 +1,8 @@
 class processing():
     def __init__(self,serial):
         self.serial =serial
-    def calibration_Tract(self,object_weight):
-        return (object_weight - object_weight)
+    def calibration_Tract(self,w1,w2):
+        return (w1 - w2)
 
     def GetValueCurrent(self,ShuntVoltage):
         return ((ShuntVoltage * 0.075) / 75)
