@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>94</width>
-    <height>57</height>
+    <width>1598</width>
+    <height>629</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -35,10 +35,10 @@
    <widget class="QWidget" name="verticalLayoutWidget">
     <property name="geometry">
      <rect>
-      <x>1260</x>
-      <y>0</y>
-      <width>91</width>
-      <height>61</height>
+      <x>0</x>
+      <y>230</y>
+      <width>1601</width>
+      <height>531</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="graph_Layout"/>
@@ -72,13 +72,13 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>0</x>
       <y>0</y>
       <width>981</width>
-      <height>193</height>
+      <height>230</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="GlobalMenu">
@@ -171,6 +171,19 @@ p, li { white-space: pre-wrap; }
       </widget>
      </item>
      <item>
+      <widget class="QPushButton" name="ButSaveExl">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>Сохранить в Exel</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <layout class="QVBoxLayout" name="MenuChangeGas">
        <item>
         <layout class="QVBoxLayout" name="verticalLayout">
@@ -245,7 +258,7 @@ p, li { white-space: pre-wrap; }
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>94</width>
+     <width>1598</width>
      <height>21</height>
     </rect>
    </property>

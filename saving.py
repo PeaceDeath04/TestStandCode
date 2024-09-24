@@ -15,9 +15,9 @@ class JsonHandler:
             "TractionGraph": {"x": "Time", "y": "Traction"}
         }
         self.log_function = log_function
-        #дата с ардуино которую надо будет прообработать
-        self.arduData = {}
+
         self.Tar = 0
+        self.create_json("keys_graphs.json",self.key_to_Graphs)
 
     def _log(self, message):
         if self.log_function:
@@ -77,6 +77,6 @@ class JsonHandler:
             list.append(self.localData.get(key))
         return list
 
-    def create_json(self):
-        with open(self.save_file, "w", encoding="utf-8") as file:
-            json.dump(self.localData, file)
+    def create_json(self,name_save_file,data):
+        with open(name_save_file, "w", encoding="utf-8") as file:
+            json.dump(data, file)

@@ -5,6 +5,7 @@ import traceback
 from ProjectProcessing import processing
 from Tables import Graph
 import threading
+from exl import DataRecorder
 
 
 class Controller:
@@ -17,6 +18,8 @@ class Controller:
         self.save = JsonHandler()
         self.graphs = {}
         self.graphs["TractionGraph"] = Graph()
+        self.recorder = DataRecorder()
+        self.lock = threading.Lock()
 
 
 
@@ -59,8 +62,9 @@ class Controller:
                             try:
                                 self.pia(data)
                                 self.addThreadGraphs()
+                                self.addThreadExl()
                             except AttributeError:
-                                self.save.create_json()
+                                self.save.create_json(self.save.save_file,self.save.localData)
                 self.buffer = packets[-1]
         except Exception as e:
             traceback.print_exc(f"что то пошло не так с вводом данных {self.buffer} \n {e}")
@@ -89,8 +93,14 @@ class Controller:
         piaData.update(mainWeight= weight,Traction = traction)
         self.save.export_local_data(piaData)
 
+    def addThreadExl(self):
+        exl_thread = threading.Thread(target=self.add_exl_info)
+        exl_thread.start()
 
-
+    def add_exl_info(self):
+        with self.lock:
+            data = self.save.localData.copy()
+            self.recorder.save_to_csv(data=data)
 
     def addThreadGraphs(self):
         # Запускаем апдейт графиков в отдельном потоке
