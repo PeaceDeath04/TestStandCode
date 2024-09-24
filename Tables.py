@@ -5,8 +5,8 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
 
 
-class Table():
-    def __init__(self, parent=None, max_points=100):
+class Graph:
+    def __init__(self, parent=None, max_points=25):
         self.fig = Figure()  # Создаем объект Figure для графика
         self.canvas = FigureCanvas(self.fig)  # Холст для графика
         self.ax = self.fig.add_subplot(111)  # Добавляем ось
@@ -16,15 +16,17 @@ class Table():
         self.max_points = max_points  # Максимальное количество точек на графике
 
         # Настройка осей графика
-        self.ax.set_xlabel('X Axis')
-        self.ax.set_ylabel('Y Axis')
-        self.line, = self.ax.plot([], [], label='Data', marker='o', linestyle='-')  # Линия на графике с маркерами
+        self.ax.set_xlabel('Время')
+        self.ax.set_ylabel('Значения')
+        self.line, = self.ax.plot([], [], label="название", marker='o', linestyle='-')  # Линия на графике с маркерами
         self.ax.legend()
 
-    def add_data(self, x, y):
+    def add_data(self, x, y,name):
         """Добавляем данные в график и обновляем его"""
         self.x_data.append(x)
         self.y_data.append(y)
+        self.line.set_label(name)
+        self.ax.legend(loc='upper right')
 
         # Ограничиваем количество точек до max_points (например, 100)
         if len(self.x_data) > self.max_points:
@@ -41,7 +43,7 @@ class Table():
         self.canvas.draw()  # Перерисовываем график
 
 # Класс с таймером для обновления оси X (время)
-class TableWithTimer(Table):
+class GraphWithTimer(Graph):
     def __init__(self, interval=1, parent=None, max_points=50):
         super().__init__(parent, max_points)
         self.start_time = dt.datetime.now()  # Начальное время

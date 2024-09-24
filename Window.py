@@ -5,7 +5,7 @@ from controller import Controller
 class Ui_MainWindow(QtWidgets.QMainWindow):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1161, 561)
+        MainWindow.resize(1679, 673)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -16,9 +16,10 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.verticalLayoutWidget = QtWidgets.QWidget(self.centralwidget)
-        self.verticalLayoutWidget.setGeometry(QtCore.QRect(1260, 0, 91, 61))
+        self.verticalLayoutWidget.setGeometry(QtCore.QRect(1030, 0, 1181, 511))
         self.verticalLayoutWidget.setObjectName("verticalLayoutWidget")
         self.graph_Layout = QtWidgets.QVBoxLayout(self.verticalLayoutWidget)
+        self.graph_Layout.setSizeConstraint(QtWidgets.QLayout.SetFixedSize)
         self.graph_Layout.setContentsMargins(0, 0, 0, 0)
         self.graph_Layout.setObjectName("graph_Layout")
         self.debugWindow = QtWidgets.QTextBrowser(self.centralwidget)
@@ -138,7 +139,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.GlobalMenu.addLayout(self.MenuChangeGas)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 1161, 21))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 1679, 21))
         self.menubar.setObjectName("menubar")
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
@@ -177,6 +178,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.butRefresh.clicked.connect(self.update_ports)
         self.SlidePower.valueChanged.connect(self.get_gas_value)
         self.ButTarWeight.clicked.connect(self.controller.butCalibTract)
+        self.graph_Layout.addWidget(self.controller.graphs["TractionGraph"].canvas)
         self.onStartUp()
 
     def open_port(self):

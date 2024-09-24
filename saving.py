@@ -11,6 +11,9 @@ class JsonHandler:
         }
         self.keys_to_update_ard = ["T_flach_E", "T_flash_O", "Voltage", "ShuntVoltage", "Temp", "Traction", "Weight_1",
                           "Weight_2", "Time"]
+        self.key_to_Graphs = {
+            "TractionGraph": {"x": "Time", "y": "Traction"}
+        }
         self.log_function = log_function
         #дата с ардуино которую надо будет прообработать
         self.arduData = {}

@@ -3,6 +3,8 @@ from PyQt5.QtCore import QIODevice
 from saving import JsonHandler
 import traceback
 from ProjectProcessing import processing
+from Tables import Graph
+import threading
 
 
 class Controller:
@@ -13,6 +15,10 @@ class Controller:
         self.log_function = log_function
         self.processing = processing(self.serial)
         self.save = JsonHandler()
+        self.graphs = {}
+        self.graphs["TractionGraph"] = Graph()
+
+
 
     def open_port(self, port_name):
         # Закрываем текущий порт, если он открыт
@@ -24,7 +30,7 @@ class Controller:
         # Устанавливаем и открываем новый порт
         self.serial.setPortName(port_name)
         if self.serial.open(QIODevice.ReadWrite):
-            return f"Порт {port_name} открыт"
+            print(f"Порт {port_name} открыт")
         else:
             return f"Не удалось открыть порт {port_name} , т.к он уже используется"
 
@@ -52,6 +58,7 @@ class Controller:
                         if all(item != '' for item in data):
                             try:
                                 self.pia(data)
+                                self.addThreadGraphs()
                             except AttributeError:
                                 self.save.create_json()
                 self.buffer = packets[-1]
@@ -81,6 +88,34 @@ class Controller:
             del piaData[key]
         piaData.update(mainWeight= weight,Traction = traction)
         self.save.export_local_data(piaData)
+
+
+
+
+    def addThreadGraphs(self):
+        # Запускаем апдейт графиков в отдельном потоке
+        """Этот метод получает Название Графика и сам обьект \n
+         -------  \n
+         После получает словарь Графиков где есть названия графиков и их параметры \n
+         -------- \n
+         Метод их сравнивает и при совпадении создает отдельный поток который их обновляет
+        """
+        for key,graph in self.graphs.items():
+            for nameGraph,argGraph in self.save.key_to_Graphs.items():
+                if key == nameGraph:
+                    graph_thread = threading.Thread(target=self.updateGraph, args=(graph,argGraph.get("x"),argGraph.get("y")))
+                    graph_thread.start()
+
+    def updateGraph(self,graph,xlabel,ylabel):
+            """Метод принимает обьект класса Graph (график matplotlib) и 2 стринговых параматра на основании которых ищет в локал дате значения """
+            x, y = self.save.import_local_data(xlabel, ylabel)
+            if xlabel == "Time":
+                x = x/ 1000
+            graph.ax.set_xlabel(xlabel)
+            graph.ax.set_ylabel(ylabel)
+            graph.line.set_label(ylabel)
+            graph.add_data(x=x, y=y,name=f"{ylabel} = {y}")
+
 
     def get_gas_percentage(self):
         try:
