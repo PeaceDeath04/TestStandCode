@@ -1,5 +1,4 @@
 {
-    "Time": 0,
     "T_flach_E": 0,
     "T_flash_O": 0,
     "Voltage": 0.0,
@@ -7,7 +6,8 @@
     "Temp": 0.0,
     "Traction": 0.0,
     "mainWeight": 0.0,
-    "gas": 25,
-    "gas_min": 0,
-    "gas_max": 50
+    "Time": 0,
+    "gas": 2975,
+    "gas_min": 800,
+    "gas_max": 3200
 }

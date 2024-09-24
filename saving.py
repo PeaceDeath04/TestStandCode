@@ -63,9 +63,10 @@ class JsonHandler:
                     list.append(data.get(key))
                 return list
         except FileNotFoundError:
-            with open(self.save_file, mode="w", encoding="Latin-1") as save_file:
-                json.dump(self.localData, save_file, ensure_ascii=False, indent=4)
-            return self.localData[key]
+            self.create_json(self.save_file,self.localData)
+            for key in keys:
+                list.append(self.localData[key])
+            return list
         except json.JSONDecodeError:
             print(f"Ошибка декодирования JSON в файле {self.save_file}.")
             return None
