@@ -10,6 +10,7 @@ from exl import DataRecorder
 
 class Controller:
     def __init__(self, log_function=None):
+        self.Graph = Graph
         self.serial = QSerialPort()
         self.serial.setBaudRate(9600)
         self.buffer = ""
@@ -17,7 +18,8 @@ class Controller:
         self.processing = processing(self.serial)
         self.save = JsonHandler()
         self.graphs = {}
-        self.graphs["TractionGraph"] = Graph()
+        self.objects_graphs = []
+        self.add_graphs()
         self.recorder = DataRecorder()
         self.lock = threading.Lock()
 
@@ -64,13 +66,13 @@ class Controller:
                                 self.addThreadGraphs()
                                 self.addThreadExl()
                             except AttributeError:
-                                self.save.create_json(self.save.save_file,self.save.localData)
+                                self.save.create_json(self.save.save_file, self.save.paramData)
                 self.buffer = packets[-1]
         except Exception as e:
             traceback.print_exc(f"что то пошло не так с вводом данных {self.buffer} \n {e}")
 
     def butCalibTract(self):
-        self.save.Tar = self.save.localData.get("Traction")
+        self.save.Tar = self.save.paramData.get("Traction")
 
     def pia(self,data):
         """ Processing Information from Arduino / обработка информации c arduino"""
@@ -99,7 +101,7 @@ class Controller:
 
     def add_exl_info(self):
         with self.lock:
-            data = self.save.localData.copy()
+            data = self.save.paramData.copy()
             self.recorder.save_to_csv(data=data)
 
     def addThreadGraphs(self):
@@ -110,30 +112,37 @@ class Controller:
          -------- \n
          Метод их сравнивает и при совпадении создает отдельный поток который их обновляет
         """
-        for key,graph in self.graphs.items():
-            for nameGraph,argGraph in self.save.key_to_Graphs.items():
-                if key == nameGraph:
-                    graph_thread = threading.Thread(target=self.updateGraph, args=(graph,argGraph.get("x"),argGraph.get("y")))
-                    graph_thread.start()
+        for nameGraph, params in self.graphs.items():
+            graph_thread = threading.Thread(target=self.updateGraph, args=(params.get("ObjectClass"), params.get("x"), params.get("y")))
+            graph_thread.start()
 
     def updateGraph(self,graph,xlabel,ylabel):
-            """Метод принимает обьект класса Graph (график matplotlib) и 2 стринговых параматра на основании которых ищет в локал дате значения """
-            x, y = self.save.import_local_data(xlabel, ylabel)
-            if xlabel == "Time":
-                x = x/ 1000
-            graph.ax.set_xlabel(xlabel)
-            graph.ax.set_ylabel(ylabel)
-            graph.line.set_label(ylabel)
-            graph.add_data(x=x, y=y,name=f"{ylabel} = {y}")
+        """Метод принимает обьект класса Graph (график matplotlib) и 2 стринговых параматра на основании которых ищет в локал дате значения """
+        x, y = self.save.paramData.get(xlabel),self.save.paramData.get(ylabel)
+        if xlabel == "Time":
+            x = x/ 1000
+        graph.add_data(x=x, y=y,name=f"{ylabel} = {y}")
+
 
 
     def get_gas_percentage(self):
         try:
-            a , b , c = self.save.import_from_json("gas_min","gas_max","gas")
+            a , b , c = self.save.import_data("gas_min","gas_max","gas",name_save_file="save_file.json")
             per = ((c - a) / (b - a)) * 100
             return (round(per))
         except:
             return "Ошибка при вычилсении процента"
 
+    def add_graphs(self):
+        dict_js = self.save.import_js("keys_graphs.json")
+        self.graphs = dict_js.copy()
+
+        for nameGraph in self.graphs:
+            self.graphs[nameGraph]["ObjectClass"] = Graph()
+        for nameGraph,params in self.graphs.items():
+            graph = self.graphs[nameGraph].get("ObjectClass")
+            graph.ax.set_xlabel(self.graphs[nameGraph].get("x"))
+            graph.ax.set_ylabel(self.graphs[nameGraph].get("y"))
+            graph.line.set_label(self.graphs[nameGraph].get("y"))
 
 

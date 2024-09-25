@@ -1,1 +1,10 @@
-{"TractionGraph": {"x": "Time", "y": "Traction"}}
+{
+    "TractionGraph": {
+        "x": "Time",
+        "y": "Traction"
+    },
+    "WeightGraph": {
+        "x": "Time",
+        "y": "mainWeight"
+    }
+}

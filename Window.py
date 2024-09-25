@@ -186,8 +186,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.butRefresh.clicked.connect(self.update_ports)
         self.SlidePower.valueChanged.connect(self.get_gas_value)
         self.ButTarWeight.clicked.connect(self.controller.butCalibTract)
-        self.graph_Layout.addWidget(self.controller.graphs["TractionGraph"].canvas)
         self.ButSaveExl.clicked.connect(self.controller.recorder.convert_csv_to_xlsx)
+        self.add_to_lay()
         self.onStartUp()
 
     def open_port(self):
@@ -224,7 +224,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.valueGas.setText(str(gas_percentage))
 
     def onStartUp(self):
-        gas_min ,gas_max ,gas = self.controller.save.import_from_json("gas_min","gas_max","gas")
+        gas_min ,gas_max ,gas = self.controller.save.import_data("gas_min","gas_max","gas",name_save_file="save_file.json")
         self.spinBoxMin.setMaximum(999999)
         self.spinBoxMin.setValue(0)
         self.spinBoxMax.setMaximum(999999)
@@ -239,3 +239,5 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
     def sendDb(self, text):
         self.debugWindow.append(text)
+
+
