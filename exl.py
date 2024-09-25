@@ -31,21 +31,11 @@ class DataRecorder:
             writer = csv.writer(file)
             writer.writerow(data_row)
 
-    def getCsv(self):
-        with open('data.csv', mode='r', encoding='utf-8') as file:
-            # Читаем данные из CSV с помощью DictReader
-            reader = csv.DictReader(file)
-
-            # Преобразуем в список словарей
-            data = [row for row in reader]
-            #дата это список
-
     def convert_csv_to_xlsx(self):
         """Конвертирует CSV файл в XLSX"""
         if os.path.isfile(self.csv_file):
             df = pd.read_csv(self.csv_file)
             df.to_excel(self.xlsx_file, index=False)
-            self.clear_csv()
         else:
             print(f"Файл {self.csv_file} не найден. Нечего конвертировать.")
 

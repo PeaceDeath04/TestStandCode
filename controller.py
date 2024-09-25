@@ -10,7 +10,6 @@ from exl import DataRecorder
 
 class Controller:
     def __init__(self, log_function=None):
-        self.Graph = Graph
         self.serial = QSerialPort()
         self.serial.setBaudRate(9600)
         self.buffer = ""
@@ -18,10 +17,10 @@ class Controller:
         self.processing = processing(self.serial)
         self.save = JsonHandler()
         self.graphs = {}
-        self.objects_graphs = []
-        self.add_graphs()
+        self.graph = Graph
         self.recorder = DataRecorder()
         self.lock = threading.Lock()
+        self.add_graphs()
 
 
 
@@ -66,13 +65,13 @@ class Controller:
                                 self.addThreadGraphs()
                                 self.addThreadExl()
                             except AttributeError:
-                                self.save.create_json(self.save.save_file, self.save.paramData)
+                                self.save.create_json(self.save.save_file,self.save.localData)
                 self.buffer = packets[-1]
         except Exception as e:
             traceback.print_exc(f"что то пошло не так с вводом данных {self.buffer} \n {e}")
 
     def butCalibTract(self):
-        self.save.Tar = self.save.paramData.get("Traction")
+        self.save.Tar = self.save.localData.get("Traction")
 
     def pia(self,data):
         """ Processing Information from Arduino / обработка информации c arduino"""
@@ -101,7 +100,7 @@ class Controller:
 
     def add_exl_info(self):
         with self.lock:
-            data = self.save.paramData.copy()
+            data = self.save.localData.copy()
             self.recorder.save_to_csv(data=data)
 
     def addThreadGraphs(self):
@@ -117,17 +116,19 @@ class Controller:
             graph_thread.start()
 
     def updateGraph(self,graph,xlabel,ylabel):
-        """Метод принимает обьект класса Graph (график matplotlib) и 2 стринговых параматра на основании которых ищет в локал дате значения """
-        x, y = self.save.paramData.get(xlabel),self.save.paramData.get(ylabel)
-        if xlabel == "Time":
-            x = x/ 1000
-        graph.add_data(x=x, y=y,name=f"{ylabel} = {y}")
-
+            """Метод принимает обьект класса Graph (график matplotlib) и 2 стринговых параматра на основании которых ищет в локал дате значения """
+            x, y = self.save.import_local_data(xlabel, ylabel)
+            if xlabel == "Time":
+                x = x/ 1000
+            graph.ax.set_xlabel(xlabel)
+            graph.ax.set_ylabel(ylabel)
+            graph.line.set_label(ylabel)
+            graph.add_data(x=x, y=y,name=f"{ylabel} = {y}")
 
 
     def get_gas_percentage(self):
         try:
-            a , b , c = self.save.import_data("gas_min","gas_max","gas",name_save_file="save_file.json")
+            a , b , c = self.save.import_from_json("gas_min","gas_max","gas")
             per = ((c - a) / (b - a)) * 100
             return (round(per))
         except:
@@ -139,10 +140,12 @@ class Controller:
 
         for nameGraph in self.graphs:
             self.graphs[nameGraph]["ObjectClass"] = Graph()
-        for nameGraph,params in self.graphs.items():
+        for nameGraph, params in self.graphs.items():
             graph = self.graphs[nameGraph].get("ObjectClass")
             graph.ax.set_xlabel(self.graphs[nameGraph].get("x"))
             graph.ax.set_ylabel(self.graphs[nameGraph].get("y"))
             graph.line.set_label(self.graphs[nameGraph].get("y"))
+        print(self.graphs)
+
 
 
