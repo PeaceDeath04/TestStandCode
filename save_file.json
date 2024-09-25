@@ -1,13 +1,6 @@
 {
-    "T_flach_E": 0,
-    "T_flash_O": 0,
-    "Voltage": 0.0,
-    "ShuntVoltage": 0,
-    "Temp": 0.0,
-    "Traction": 0.0,
-    "mainWeight": 0.0,
-    "Time": 0,
-    "gas": 2208,
-    "gas_min": 800,
-    "gas_max": 3200
+    "TractionGraph": {
+        "x": "Time",
+        "y": "Traction"
+    }
 }
