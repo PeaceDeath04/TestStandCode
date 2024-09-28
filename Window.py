@@ -185,7 +185,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.ButClosePort.clicked.connect(self.close_port)
         self.butRefresh.clicked.connect(self.update_ports)
         self.SlidePower.valueChanged.connect(self.get_gas_value)
-        self.ButTarWeight.clicked.connect(self.controller.butCalibTract)
+        self.ButTarWeight.clicked.connect(self.controller.but_calib_tract)
         self.add_to_lay()
         self.ButSaveExl.clicked.connect(self.controller.recorder.convert_csv_to_xlsx)
         self.onStartUp()
@@ -210,7 +210,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.SlidePower.setMaximum(gas_max)
         self.SlidePower.setValue(gas_min)
         self.controller.processing.TxToARDU(i=gas_min,a=gas_max)
-        self.controller.save.export_to_json(gas_max=gas_max,gas_min=gas_min)
+        self.controller.data.export_to_json(gas_max=gas_max, gas_min=gas_min)
 
     def update_ports(self):
         ports = self.controller.update_port_list()
@@ -220,11 +220,11 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
     def get_gas_value(self):
         gas_percentage = self.controller.get_gas_percentage()
-        self.controller.save.export_to_json(gas=self.SlidePower.value())
+        self.controller.data.export_to_json(gas=self.SlidePower.value())
         self.valueGas.setText(str(gas_percentage))
 
     def onStartUp(self):
-        gas_min ,gas_max ,gas = self.controller.save.import_from_json("gas_min","gas_max","gas")
+        gas_min ,gas_max ,gas = self.controller.data.import_from_json("gas_min", "gas_max", "gas")
         self.spinBoxMin.setMaximum(999999)
         self.spinBoxMin.setValue(0)
         self.spinBoxMax.setMaximum(999999)
