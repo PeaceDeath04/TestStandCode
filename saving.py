@@ -7,7 +7,7 @@ class JsonHandler:
         #локал дата будет хранить в себе уже прооперированые параметры
         self.localData = {
             "T_flach_E": 0, "T_flash_O": 0, "Voltage": 0.00, "ShuntVoltage": 0,
-            "Temp": 0.0, "Traction": 0.0, "Weight": 0.0,"Time": 0,
+            "Temp": 0.0, "Traction": 0.0, "mainWeight": 0.0,"Time": 0,
             "gas": 25, "gas_min": 0, "gas_max": 50
         }
         self.keys_to_update_ard = ["T_flach_E", "T_flash_O", "Voltage", "ShuntVoltage", "Temp", "Traction", "Weight_1",
@@ -46,6 +46,7 @@ class JsonHandler:
         except Exception as e:
             self._log(f"Произошла непредвиденная ошибка: {e}")
 
+
     def import_from_json(self, *keys):
         """Получает ключи для извлечения значений  по ключу из json файла , возвращает список значений"""
         list = []
@@ -70,7 +71,7 @@ class JsonHandler:
                 json.dump(data, save_file, ensure_ascii=False, indent=4)
 
     def import_js(self,name_save_file):
-        """Передаем в качестве параметра имя искомого файла и возвращаем dict/None в зависимости от результата"""
+        """Передаем в качестве параметра имя искомого файла и передаем dict/None в зависимости от результата"""
         try:
             with open(name_save_file, mode="r", encoding="Latin-1") as save_file:
                 data = json.load(save_file)

@@ -1,13 +1,11 @@
 from PyQt5.QtSerialPort import QSerialPort, QSerialPortInfo
 from PyQt5.QtCore import QIODevice
-from Data import JsonHandler
+from saving import JsonHandler
 import traceback
 from ProjectProcessing import processing
 from Tables import Graph
 import threading
 from exl import DataRecorder
-#from line_profiler import profile
-import asyncio
 
 
 class Controller:
@@ -17,11 +15,15 @@ class Controller:
         self.buffer = ""
         self.log_function = log_function
         self.processing = processing(self.serial)
-        self.data = JsonHandler()
+        self.save = JsonHandler()
         self.graphs = {}
         self.graph = Graph
         self.recorder = DataRecorder()
+        self.lock = threading.Lock()
         self.add_graphs()
+
+
+
     def open_port(self, port_name):
         # Закрываем текущий порт, если он открыт
         if self.serial.isOpen():
@@ -40,8 +42,7 @@ class Controller:
         if self.serial.isOpen():
             self.serial.close()
             return "Порт закрыт"
-        else:
-            return "Порт уже закрыт"
+        return "Порт уже закрыт"
 
     def update_port_list(self):
         ports = QSerialPortInfo.availablePorts()
@@ -59,46 +60,63 @@ class Controller:
                     if packet:
                         data = packet.strip().split(",")
                         if all(item != '' for item in data):
-                            if data == 9:
-                                try:
-                                    self.pia(data)
-                                except AttributeError:
-                                    self.data.create_json(self.data.save_file, self.data.localData)
+                            try:
+                                self.pia(data)
+                                self.addThreadGraphs()
+                                self.addThreadExl()
+                            except AttributeError:
+                                self.save.create_json(self.save.save_file,self.save.localData)
                 self.buffer = packets[-1]
         except Exception as e:
             traceback.print_exc(f"что то пошло не так с вводом данных {self.buffer} \n {e}")
 
-    def but_calib_tract(self):
-        self.data.Tar = self.data.localData.get("Traction")
+    def butCalibTract(self):
+        self.save.Tar = self.save.localData.get("Traction")
 
     def pia(self,data):
         """ Processing Information from Arduino / обработка информации c arduino"""
         piaData = {}
         #сохранили внутри метода пакет данных из сериал порта
         if len(data) == 9:
-            for key, value in zip(self.data.keys_to_update_ard, data):
+            for key, value in zip(self.save.keys_to_update_ard, data):
                 piaData[key] = float(value)
 
         w1 = piaData["Weight_1"]
         w2 = piaData["Weight_2"]
-        tArdu = piaData.get("Traction")
-
         weight = (w1 - w2) /2
-        traction = tArdu - self.data.Tar
+
+        tArdu = piaData.get("Traction")
+        traction = tArdu - self.save.Tar
 
         for key in ["Weight_1", "Weight_2", "Traction"]:
             del piaData[key]
-        piaData.update(Weight= weight,Traction = traction)
-        self.data.localData = piaData
+        piaData.update(mainWeight= weight,Traction = traction)
+        self.save.localData = piaData.copy()
+
+    def addThreadExl(self):
+        exl_thread = threading.Thread(target=self.add_exl_info)
+        exl_thread.start()
 
     def add_exl_info(self):
         with self.lock:
-            data = self.data.localData.copy()
+            data = self.save.localData.copy()
             self.recorder.save_to_csv(data=data)
 
-    def update_graph(self,graph,xlabel,ylabel):
+    def addThreadGraphs(self):
+        # Запускаем апдейт графиков в отдельном потоке
+        """Этот метод получает Название Графика и сам обьект \n
+         -------  \n
+         После получает словарь Графиков где есть названия графиков и их параметры \n
+         -------- \n
+         Метод их сравнивает и при совпадении создает отдельный поток который их обновляет
+        """
+        for nameGraph, params in self.graphs.items():
+            graph_thread = threading.Thread(target=self.updateGraph, args=(params.get("ObjectClass"), params.get("x"), params.get("y")))
+            graph_thread.start()
+
+    def updateGraph(self,graph,xlabel,ylabel):
             """Метод принимает обьект класса Graph (график matplotlib) и 2 стринговых параматра на основании которых ищет в локал дате значения """
-            x , y = self.data.localData.get(xlabel) , self.data.localData.get(ylabel)
+            x, y = self.save.localData.get(xlabel) , self.save.localData.get(ylabel)
             if xlabel == "Time":
                 x = x/ 1000
             graph.ax.set_xlabel(xlabel)
@@ -106,16 +124,18 @@ class Controller:
             graph.line.set_label(ylabel)
             graph.add_data(x=x, y=y,name=f"{ylabel} = {y}")
 
+
     def get_gas_percentage(self):
         try:
-            a , b , c = self.data.import_from_json("gas_min", "gas_max", "gas")
+            a , b , c = self.save.import_from_json("gas_min","gas_max","gas")
             per = ((c - a) / (b - a)) * 100
             return (round(per))
         except:
             return "Ошибка при вычилсении процента"
 
     def add_graphs(self):
-        self.graphs = self.data.import_js("keys_graphs.json").copy()
+        dict_js = self.save.import_js("keys_graphs.json")
+        self.graphs = dict_js.copy()
 
         for nameGraph in self.graphs:
             self.graphs[nameGraph]["ObjectClass"] = Graph()
@@ -124,8 +144,7 @@ class Controller:
             graph.ax.set_xlabel(self.graphs[nameGraph].get("x"))
             graph.ax.set_ylabel(self.graphs[nameGraph].get("y"))
             graph.line.set_label(self.graphs[nameGraph].get("y"))
-        #print(self.graphs)
-
+        print(self.graphs)
 
 
 

@@ -3,7 +3,7 @@
         "x": "Time",
         "y": "Traction"
     },
-        "WeightGraph": {
+        "WeightGraph":{
         "x": "Time",
         "y": "mainWeight"
     }
