@@ -26,7 +26,7 @@ class Graph:
         self.ax.legend()
 
         # Добавляем анимацию
-        self.ani = FuncAnimation(self.fig, self.animate_my_plot, init_func=self.init_plot, frames=1, interval=0.2)
+        self.ani = FuncAnimation(self.fig, self.animate_my_plot, init_func=self.init_plot, frames=1, interval=125)
 
     def init_plot(self):
         """Начальная установка графика"""

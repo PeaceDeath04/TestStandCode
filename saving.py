@@ -1,16 +1,13 @@
 import json
 import os
 
-from matplotlib.pyplot import xlabel
-
-
 class JsonHandler:
     def __init__(self, save_file="save_file.json", log_function=None):
         self.save_file = save_file
         #локал дата будет хранить в себе уже прооперированые параметры
         self.localData = {
             "T_flach_E": 0, "T_flash_O": 0, "Voltage": 0.00, "ShuntVoltage": 0,
-            "Temp": 0.0, "Traction": 0.0, "mainWeight": 0.0,"Time": 0,
+            "Temp": 0.0, "Traction": 0.0, "Weight": 0.0,"Time": 0,
             "gas": 25, "gas_min": 0, "gas_max": 50
         }
         self.keys_to_update_ard = ["T_flach_E", "T_flash_O", "Voltage", "ShuntVoltage", "Temp", "Traction", "Weight_1",

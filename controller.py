@@ -1,3 +1,5 @@
+from time import sleep
+
 from PyQt5.QtSerialPort import QSerialPort, QSerialPortInfo
 from PyQt5.QtCore import QIODevice
 
@@ -8,6 +10,7 @@ from Tables import Graph
 import threading
 from exl import DataRecorder
 from multiprocessing import Process
+import asyncio
 
 
 class Controller:
@@ -21,8 +24,9 @@ class Controller:
         self.graphs = {}
         self.graph = Graph
         self.recorder = DataRecorder()
-        self.lock = threading.Lock()
         self.add_graphs()
+        self.asyncio = asyncio
+        self.read_ready = False
         self.p1 = Process(target=self.addThreadGraphs, daemon=True)
 
 
@@ -66,7 +70,7 @@ class Controller:
                            if len(data) == 9:
                                try:
                                    self.pia(data)
-                                   self.addThreadExl()
+                                   self.asyncio.run(self.add_exl_info(self.read_ready))
                                except AttributeError:
                                    self.save.create_json(self.save.save_file, self.save.localData)
                 self.buffer = packets[-1]
@@ -92,27 +96,17 @@ class Controller:
 
         for key in ["Weight_1", "Weight_2", "Traction"]:
             del piaData[key]
-        piaData.update(mainWeight= weight,Traction = traction)
-        self.save.localData = piaData.copy()
+        piaData.update(Weight= weight,Traction = traction)
+        self.save.localData.update(piaData)
         self.p1.run()
 
-    def addThreadExl(self):
-        exl_thread = threading.Thread(target=self.add_exl_info)
-        exl_thread.start()
 
-    def add_exl_info(self):
-        with self.lock:
+    async def add_exl_info(self,read):
+        if read:
             data = self.save.localData.copy()
             self.recorder.save_to_csv(data=data)
 
     def addThreadGraphs(self):
-        # Запускаем апдейт графиков в отдельном потоке
-        """Этот метод получает Название Графика и сам обьект \n
-         -------  \n
-         После получает словарь Графиков где есть названия графиков и их параметры \n
-         -------- \n
-         Метод их сравнивает и при совпадении создает отдельный поток который их обновляет
-        """
         for nameGraph, params in self.graphs.items():
             self.updateGraph(params.get("ObjectClass"), params.get("x"), params.get("y"))
 

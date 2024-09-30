@@ -5,9 +5,9 @@
     "ShuntVoltage": 0,
     "Temp": 0.0,
     "Traction": 0.0,
-    "mainWeight": 0.0,
+    "Weight": 0.0,
     "Time": 0,
-    "gas": 25,
+    "gas": 2660,
     "gas_min": 0,
-    "gas_max": 50
+    "gas_max": 3800
 }

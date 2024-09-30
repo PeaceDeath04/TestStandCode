@@ -170,7 +170,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.butRefresh.setText(_translate("MainWindow", "Обновить список портов"))
         self.ButCalibration.setText(_translate("MainWindow", "Калибровка"))
         self.ButTarWeight.setText(_translate("MainWindow", "Тарирование веса"))
-        self.ButSaveExl.setText(_translate("MainWindow", "Сохранить в Exel"))
+        self.ButSaveExl.setText(_translate("MainWindow", "начать запись в data.csv"))
         self.valueGas.setText(_translate("MainWindow", "TextLabel"))
 
     def __init__(self):
@@ -189,10 +189,23 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.SlidePower.valueChanged.connect(self.get_gas_value)
         self.ButTarWeight.clicked.connect(self.controller.butCalibTract)
         self.add_to_lay()
-        self.ButSaveExl.clicked.connect(self.controller.recorder.convert_csv_to_xlsx)
+
+        self.ButSaveExl.setCheckable(True)
+        self.ButSaveExl.clicked.connect(self.toggle_read)
+        self.read = False
+
         self.onStartUp()
 
-
+    def toggle_read(self):
+        #Изменяем состояние read при каждом нажатии кнопки
+        self.read = not self.read
+        self.controller.read_ready = self.read
+        if self.read:
+            self.controller.recorder.start_new_recording()
+            self.ButSaveExl.setText("Остановить запись")
+        else:
+            self.ButSaveExl.setText("начать запись в data.csv")
+            self.controller.recorder.convert_csv_to_xlsx()
     def GetRangeGas(self):
         """Обновление диапазона слайдера при изменении Min и Max значений."""
         gas_min = self.spinBoxMin.value()
@@ -209,7 +222,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.step_size = (gas_max - gas_min) // 10  # 10 делений по умолчанию
         if self.step_size == 0:
             self.step_size = 1  # Защита от деления на 0
-
+        self.controller.save.localData["gas_min"],self.controller.save.localData["gas_max"] = gas_min,gas_max
         self.controller.processing.TxToARDU(i=gas_min, a=gas_max)
         self.controller.save.export_to_json(gas_max=gas_max, gas_min=gas_min)
 
@@ -218,6 +231,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         current_value = self.SlidePower.value()
         # Округление до ближайшего кратного значения шага
         corrected_value = round(current_value / self.step_size) * self.step_size
+        self.controller.save.localData["gas"] = corrected_value
 
         self.SlidePower.blockSignals(True)  # Отключаем сигналы, чтобы избежать рекурсии
         self.SlidePower.setValue(corrected_value)  # Устанавливаем скорректированное значение

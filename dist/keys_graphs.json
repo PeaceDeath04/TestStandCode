@@ -2,13 +2,5 @@
     "TractionGraph": {
         "x": "Time",
         "y": "Traction"
-    },
-        "WeightGraph": {
-        "x": "Time",
-        "y": "mainWeight"
-    },
-        "ShuntVoltage": {
-        "x": "Time",
-        "y": "ShuntVoltage"
     }
 }

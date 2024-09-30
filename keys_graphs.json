@@ -1,6 +1,6 @@
 {
-    "T_flach_E": {
+    "TractionGraph": {
         "x": "Time",
-        "y": "T_flach_E"
+        "y": "Traction"
     }
 }
