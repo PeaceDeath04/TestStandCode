@@ -1,6 +1,9 @@
 import json
 import os
 
+from matplotlib.pyplot import xlabel
+
+
 class JsonHandler:
     def __init__(self, save_file="save_file.json", log_function=None):
         self.save_file = save_file
@@ -16,7 +19,6 @@ class JsonHandler:
             "TractionGraph": {"x": "Time", "y": "Traction"}
         }
         self.log_function = log_function
-
         self.Tar = 0
         self.create_json("keys_graphs.json",self.key_to_Graphs)
 
@@ -45,7 +47,6 @@ class JsonHandler:
             self._log(f"Ошибка при работе с файлом {self.save_file}: {e}")
         except Exception as e:
             self._log(f"Произошла непредвиденная ошибка: {e}")
-
 
     def import_from_json(self, *keys):
         """Получает ключи для извлечения значений  по ключу из json файла , возвращает список значений"""
@@ -79,3 +80,17 @@ class JsonHandler:
         except FileNotFoundError:
             self.create_json(name_save_file, None)
             return None
+
+
+"""
+    def xz(self):
+        self.key_to_Graphs.clear()
+        for key in self.localData.keys():
+            self.key_to_Graphs[key] = {"x":"Time","y":f"{key}"}
+            #self.key_to_Graphs[key]["y"] = key
+        with open("keys_graphs.json", mode="w", encoding="Latin-1") as save_file:
+            json.dump(self.key_to_Graphs, save_file, ensure_ascii=False, indent=4)
+        print(self.key_to_Graphs)
+
+
+"""

@@ -1,10 +1,6 @@
 {
-    "TractionGraph": {
+    "T_flach_E": {
         "x": "Time",
-        "y": "Traction"
-    },
-        "WeightGraph":{
-        "x": "Time",
-        "y": "mainWeight"
+        "y": "T_flach_E"
     }
 }

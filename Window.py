@@ -175,12 +175,14 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
     def __init__(self):
         super().__init__()  # Вызов конструктора родителя
+        # Добавим шаговую переменную
+        self.step_size = 10  # По умолчанию шаг 10, но будет пересчитываться динамически
         self.setupUi(self)
         self.controller = Controller(self.sendDb)
         self.controller.serial.readyRead.connect(self.controller.read_data)
         self.spinBoxMin.valueChanged.connect(self.GetRangeGas)
         self.spinBoxMax.valueChanged.connect(self.GetRangeGas)
-        self.ButCalibration.clicked.connect(lambda : self.controller.processing.TxToARDU(k=0))
+        self.ButCalibration.clicked.connect(lambda: self.controller.processing.TxToARDU(k=0))
         self.ButOpenPort.clicked.connect(self.open_port)
         self.ButClosePort.clicked.connect(self.close_port)
         self.butRefresh.clicked.connect(self.update_ports)
@@ -190,41 +192,45 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.ButSaveExl.clicked.connect(self.controller.recorder.convert_csv_to_xlsx)
         self.onStartUp()
 
-    def open_port(self):
-        port_name = self.ListPorts.currentText()
-        result = self.controller.open_port(port_name)
-        self.sendDb(result)
-
-    def close_port(self):
-        result = self.controller.close_port()
-        self.sendDb(result)
 
     def GetRangeGas(self):
+        """Обновление диапазона слайдера при изменении Min и Max значений."""
         gas_min = self.spinBoxMin.value()
-        gas_max= self.spinBoxMax.value()
-        if gas_min>= gas_max:
-            gas_min = 0
+        gas_max = self.spinBoxMax.value()
 
+        if gas_min >= gas_max:
+            gas_min = 0
 
         self.SlidePower.setMinimum(gas_min)
         self.SlidePower.setMaximum(gas_max)
         self.SlidePower.setValue(gas_min)
-        self.controller.processing.TxToARDU(i=gas_min,a=gas_max)
-        self.controller.save.export_to_json(gas_max=gas_max,gas_min=gas_min)
 
-    def update_ports(self):
-        ports = self.controller.update_port_list()
-        self.ListPorts.clear()
-        self.ListPorts.addItems(ports)
-        self.sendDb("Список портов обновлен")
+        # Вычисление шага на основе текущих минимального и максимального значений
+        self.step_size = (gas_max - gas_min) // 10  # 10 делений по умолчанию
+        if self.step_size == 0:
+            self.step_size = 1  # Защита от деления на 0
+
+        self.controller.processing.TxToARDU(i=gas_min, a=gas_max)
+        self.controller.save.export_to_json(gas_max=gas_max, gas_min=gas_min)
 
     def get_gas_value(self):
+        """Корректировка значения слайдера по ближайшему шагу."""
+        current_value = self.SlidePower.value()
+        # Округление до ближайшего кратного значения шага
+        corrected_value = round(current_value / self.step_size) * self.step_size
+
+        self.SlidePower.blockSignals(True)  # Отключаем сигналы, чтобы избежать рекурсии
+        self.SlidePower.setValue(corrected_value)  # Устанавливаем скорректированное значение
+        self.SlidePower.blockSignals(False)  # Включаем сигналы обратно
+
+        # Отправляем скорректированное значение контроллеру и обновляем интерфейс
+        self.controller.save.export_to_json(gas=corrected_value)
         gas_percentage = self.controller.get_gas_percentage()
-        self.controller.save.export_to_json(gas=self.SlidePower.value())
         self.valueGas.setText(str(gas_percentage))
 
     def onStartUp(self):
-        gas_min ,gas_max ,gas = self.controller.save.import_from_json("gas_min","gas_max","gas")
+        """Инициализация начальных параметров при запуске приложения."""
+        gas_min, gas_max, gas = self.controller.save.import_from_json("gas_min", "gas_max", "gas")
         self.spinBoxMin.setMaximum(999999)
         self.spinBoxMin.setValue(0)
         self.spinBoxMax.setMaximum(999999)
@@ -235,7 +241,28 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.SlidePower.setMaximum(gas_max)
         self.SlidePower.setValue(gas)
         self.SlidePower.setProperty("value", gas)
+
+        # Пересчитываем шаг и корректируем начальное значение
+        self.GetRangeGas()
         self.get_gas_value()
+
+    def open_port(self):
+        port_name = self.ListPorts.currentText()
+        result = self.controller.open_port(port_name)
+        self.sendDb(result)
+
+    def close_port(self):
+        result = self.controller.close_port()
+        self.sendDb(result)
+
+
+    def update_ports(self):
+        ports = self.controller.update_port_list()
+        self.ListPorts.clear()
+        self.ListPorts.addItems(ports)
+        self.sendDb("Список портов обновлен")
+
+
 
     def sendDb(self, text):
         self.debugWindow.append(text)

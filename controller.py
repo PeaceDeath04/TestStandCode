@@ -1,11 +1,13 @@
 from PyQt5.QtSerialPort import QSerialPort, QSerialPortInfo
 from PyQt5.QtCore import QIODevice
+
 from saving import JsonHandler
 import traceback
 from ProjectProcessing import processing
 from Tables import Graph
 import threading
 from exl import DataRecorder
+from multiprocessing import Process
 
 
 class Controller:
@@ -21,6 +23,7 @@ class Controller:
         self.recorder = DataRecorder()
         self.lock = threading.Lock()
         self.add_graphs()
+        self.p1 = Process(target=self.addThreadGraphs, daemon=True)
 
 
 
@@ -60,12 +63,12 @@ class Controller:
                     if packet:
                         data = packet.strip().split(",")
                         if all(item != '' for item in data):
-                            try:
-                                self.pia(data)
-                                self.addThreadGraphs()
-                                self.addThreadExl()
-                            except AttributeError:
-                                self.save.create_json(self.save.save_file,self.save.localData)
+                           if len(data) == 9:
+                               try:
+                                   self.pia(data)
+                                   self.addThreadExl()
+                               except AttributeError:
+                                   self.save.create_json(self.save.save_file, self.save.localData)
                 self.buffer = packets[-1]
         except Exception as e:
             traceback.print_exc(f"что то пошло не так с вводом данных {self.buffer} \n {e}")
@@ -77,9 +80,8 @@ class Controller:
         """ Processing Information from Arduino / обработка информации c arduino"""
         piaData = {}
         #сохранили внутри метода пакет данных из сериал порта
-        if len(data) == 9:
-            for key, value in zip(self.save.keys_to_update_ard, data):
-                piaData[key] = float(value)
+        for key, value in zip(self.save.keys_to_update_ard, data):
+            piaData[key] = float(value)
 
         w1 = piaData["Weight_1"]
         w2 = piaData["Weight_2"]
@@ -92,6 +94,7 @@ class Controller:
             del piaData[key]
         piaData.update(mainWeight= weight,Traction = traction)
         self.save.localData = piaData.copy()
+        self.p1.run()
 
     def addThreadExl(self):
         exl_thread = threading.Thread(target=self.add_exl_info)
@@ -111,8 +114,7 @@ class Controller:
          Метод их сравнивает и при совпадении создает отдельный поток который их обновляет
         """
         for nameGraph, params in self.graphs.items():
-            graph_thread = threading.Thread(target=self.updateGraph, args=(params.get("ObjectClass"), params.get("x"), params.get("y")))
-            graph_thread.start()
+            self.updateGraph(params.get("ObjectClass"), params.get("x"), params.get("y"))
 
     def updateGraph(self,graph,xlabel,ylabel):
             """Метод принимает обьект класса Graph (график matplotlib) и 2 стринговых параматра на основании которых ищет в локал дате значения """
@@ -134,8 +136,11 @@ class Controller:
             return "Ошибка при вычилсении процента"
 
     def add_graphs(self):
-        dict_js = self.save.import_js("keys_graphs.json")
-        self.graphs = dict_js.copy()
+        try:
+            dict_js = self.save.import_js("keys_graphs.json")
+            self.graphs = dict_js.copy()
+        except :
+            print("пусто")
 
         for nameGraph in self.graphs:
             self.graphs[nameGraph]["ObjectClass"] = Graph()
@@ -144,7 +149,6 @@ class Controller:
             graph.ax.set_xlabel(self.graphs[nameGraph].get("x"))
             graph.ax.set_ylabel(self.graphs[nameGraph].get("y"))
             graph.line.set_label(self.graphs[nameGraph].get("y"))
-        print(self.graphs)
-
+        #print(self.graphs)
 
 

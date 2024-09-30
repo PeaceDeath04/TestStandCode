@@ -3,7 +3,7 @@ from matplotlib.figure import Figure
 from matplotlib.animation import FuncAnimation
 import matplotlib.pyplot as plt
 
-print(plt.style.available)
+#print(plt.style.available)
 plt.style.use('seaborn-v0_8-dark')
 
 
@@ -21,19 +21,19 @@ class Graph:
         self.max_points = max_points  # Максимальное количество точек на графике
 
         # Настройка осей графика
-        self.ax.set_ylim(-30,30 )  # Устанавливаем диапазон по оси Y от 0 до 100
-        self.line, = self.ax.plot([], [], label="название", marker='o', linestyle='-')  # Линия на графике с маркерами
+        #self.ax.set_ylim(-30,30 )  # Устанавливаем диапазон по оси Y от 0 до 100
+        self.line, = self.ax.plot([], [], label="название", marker='*', linestyle='-')  # Линия на графике с маркерами
         self.ax.legend()
 
         # Добавляем анимацию
-        self.ani = FuncAnimation(self.fig, self.animate_my_plot, init_func=self.init_plot, frames=100, interval=1)
+        self.ani = FuncAnimation(self.fig, self.animate_my_plot, init_func=self.init_plot, frames=1, interval=0.2)
 
     def init_plot(self):
         """Начальная установка графика"""
         self.line.set_data([], [])
         return self.line,
 
-    def animate_my_plot(self, i):
+    def animate_my_plot(self,i):
         """Анимация графика"""
         self.update_graph()  # Обновляем график данными, которые уже были добавлены
         return self.line,
@@ -49,8 +49,6 @@ class Graph:
         if len(self.x_data) > self.max_points:
             self.x_data = self.x_data[-self.max_points:]
             self.y_data = self.y_data[-self.max_points:]
-
-
 
     def update_graph(self):
         """Обновляем график"""
