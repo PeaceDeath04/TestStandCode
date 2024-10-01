@@ -5,7 +5,7 @@ from controller import Controller
 class Ui_MainWindow(QtWidgets.QMainWindow):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1598, 629)
+        MainWindow.resize(1598, 966)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -16,7 +16,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.verticalLayoutWidget = QtWidgets.QWidget(self.centralwidget)
-        self.verticalLayoutWidget.setGeometry(QtCore.QRect(0, 230, 1601, 531))
+        self.verticalLayoutWidget.setGeometry(QtCore.QRect(0, 280, 1601, 531))
         self.verticalLayoutWidget.setObjectName("verticalLayoutWidget")
         self.graph_Layout = QtWidgets.QVBoxLayout(self.verticalLayoutWidget)
         self.graph_Layout.setContentsMargins(0, 0, 0, 0)
@@ -32,7 +32,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.debugWindow.setAutoFormatting(QtWidgets.QTextEdit.AutoNone)
         self.debugWindow.setObjectName("debugWindow")
         self.layoutWidget = QtWidgets.QWidget(self.centralwidget)
-        self.layoutWidget.setGeometry(QtCore.QRect(0, 0, 981, 230))
+        self.layoutWidget.setGeometry(QtCore.QRect(0, 0, 981, 280))
         self.layoutWidget.setObjectName("layoutWidget")
         self.GlobalMenu = QtWidgets.QVBoxLayout(self.layoutWidget)
         self.GlobalMenu.setContentsMargins(0, 0, 0, 0)
@@ -78,14 +78,16 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.butRefresh.setSizePolicy(sizePolicy)
         self.butRefresh.setObjectName("butRefresh")
         self.GlobalMenu.addWidget(self.butRefresh)
-        self.ButCalibration = QtWidgets.QPushButton(self.layoutWidget)
+        self.horizontalLayout = QtWidgets.QHBoxLayout()
+        self.horizontalLayout.setObjectName("horizontalLayout")
+        self.ButTarTraction = QtWidgets.QPushButton(self.layoutWidget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.ButCalibration.sizePolicy().hasHeightForWidth())
-        self.ButCalibration.setSizePolicy(sizePolicy)
-        self.ButCalibration.setObjectName("ButCalibration")
-        self.GlobalMenu.addWidget(self.ButCalibration)
+        sizePolicy.setHeightForWidth(self.ButTarTraction.sizePolicy().hasHeightForWidth())
+        self.ButTarTraction.setSizePolicy(sizePolicy)
+        self.ButTarTraction.setObjectName("ButTarTraction")
+        self.horizontalLayout.addWidget(self.ButTarTraction)
         self.ButTarWeight = QtWidgets.QPushButton(self.layoutWidget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -93,7 +95,35 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         sizePolicy.setHeightForWidth(self.ButTarWeight.sizePolicy().hasHeightForWidth())
         self.ButTarWeight.setSizePolicy(sizePolicy)
         self.ButTarWeight.setObjectName("ButTarWeight")
-        self.GlobalMenu.addWidget(self.ButTarWeight)
+        self.horizontalLayout.addWidget(self.ButTarWeight)
+        self.GlobalMenu.addLayout(self.horizontalLayout)
+        self.horizontalLayout_3 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_3.setObjectName("horizontalLayout_3")
+        self.ButCalibTraction = QtWidgets.QPushButton(self.layoutWidget)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.ButCalibTraction.sizePolicy().hasHeightForWidth())
+        self.ButCalibTraction.setSizePolicy(sizePolicy)
+        self.ButCalibTraction.setObjectName("ButCalibTraction")
+        self.horizontalLayout_3.addWidget(self.ButCalibTraction)
+        self.ButCalibWeight = QtWidgets.QPushButton(self.layoutWidget)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.ButCalibWeight.sizePolicy().hasHeightForWidth())
+        self.ButCalibWeight.setSizePolicy(sizePolicy)
+        self.ButCalibWeight.setObjectName("ButCalibWeight")
+        self.horizontalLayout_3.addWidget(self.ButCalibWeight)
+        self.GlobalMenu.addLayout(self.horizontalLayout_3)
+        self.ButCalib = QtWidgets.QPushButton(self.layoutWidget)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.ButCalib.sizePolicy().hasHeightForWidth())
+        self.ButCalib.setSizePolicy(sizePolicy)
+        self.ButCalib.setObjectName("ButCalib")
+        self.GlobalMenu.addWidget(self.ButCalib)
         self.ButSaveExl = QtWidgets.QPushButton(self.layoutWidget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -168,31 +198,42 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.ButOpenPort.setText(_translate("MainWindow", "открыть порт"))
         self.ButClosePort.setText(_translate("MainWindow", "закрыть порт"))
         self.butRefresh.setText(_translate("MainWindow", "Обновить список портов"))
-        self.ButCalibration.setText(_translate("MainWindow", "Калибровка"))
+        self.ButTarTraction.setText(_translate("MainWindow", "Тарирование тяги"))
         self.ButTarWeight.setText(_translate("MainWindow", "Тарирование веса"))
-        self.ButSaveExl.setText(_translate("MainWindow", "начать запись в data.csv"))
+        self.ButCalibTraction.setText(_translate("MainWindow", "Калибровка тяги"))
+        self.ButCalibWeight.setText(_translate("MainWindow", "Калибровка веса"))
+        self.ButCalib.setText(_translate("MainWindow", " Калибровка мотора"))
+        self.ButSaveExl.setText(_translate("MainWindow", "Начать запись параметров"))
         self.valueGas.setText(_translate("MainWindow", "TextLabel"))
 
     def __init__(self):
-        super().__init__()  # Вызов конструктора родителя
-        # Добавим шаговую переменную
-        self.step_size = 10  # По умолчанию шаг 10, но будет пересчитываться динамически
+        super().__init__()
         self.setupUi(self)
         self.controller = Controller(self.sendDb)
+
         self.controller.serial.readyRead.connect(self.controller.read_data)
+        self.ButSaveExl.clicked.connect(self.toggle_read)
         self.spinBoxMin.valueChanged.connect(self.GetRangeGas)
         self.spinBoxMax.valueChanged.connect(self.GetRangeGas)
-        self.ButCalibration.clicked.connect(lambda: self.controller.processing.TxToARDU(k=0))
         self.ButOpenPort.clicked.connect(self.open_port)
         self.ButClosePort.clicked.connect(self.close_port)
         self.butRefresh.clicked.connect(self.update_ports)
         self.SlidePower.valueChanged.connect(self.get_gas_value)
-        self.ButTarWeight.clicked.connect(self.controller.butCalibTract)
-        self.add_to_lay()
+        self.ButSaveExl.clicked.connect(self.toggle_read)
+
+        self.ButTarTraction.clicked.connect(lambda: self.controller.butCalibration("Traction"))
+        self.ButTarWeight.clicked.connect(lambda: self.controller.butCalibration("Weight"))
+
+        self.ButCalib.clicked.connect(lambda: self.controller.processing.TxToARDU(ButCalibMotor=0))
+        self.ButCalibTraction.clicked.connect(lambda:self.controller.calib_value("Traction"))
+        self.ButCalibWeight.clicked.connect(lambda:self.controller.calib_value("Weight"))
 
         self.ButSaveExl.setCheckable(True)
-        self.ButSaveExl.clicked.connect(self.toggle_read)
+
+        self.add_to_lay()
+
         self.read = False
+        self.step_size = 10  # По умолчанию шаг 10, но будет пересчитываться динамически
 
         self.onStartUp()
 
@@ -219,11 +260,11 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.SlidePower.setValue(gas_min)
 
         # Вычисление шага на основе текущих минимального и максимального значений
-        self.step_size = (gas_max - gas_min) // 10  # 10 делений по умолчанию
+        self.step_size = (gas_max - gas_min) // 10  # шаг изменения ползунка в процентах
         if self.step_size == 0:
             self.step_size = 1  # Защита от деления на 0
         self.controller.save.localData["gas_min"],self.controller.save.localData["gas_max"] = gas_min,gas_max
-        self.controller.processing.TxToARDU(i=gas_min, a=gas_max)
+        self.controller.processing.TxToARDU(gas_min=gas_min, gas_max=gas_max)
         self.controller.save.export_to_json(gas_max=gas_max, gas_min=gas_min)
 
     def get_gas_value(self):
@@ -232,6 +273,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         # Округление до ближайшего кратного значения шага
         corrected_value = round(current_value / self.step_size) * self.step_size
         self.controller.save.localData["gas"] = corrected_value
+        self.controller.processing.TxToARDU(gas=corrected_value)
 
         self.SlidePower.blockSignals(True)  # Отключаем сигналы, чтобы избежать рекурсии
         self.SlidePower.setValue(corrected_value)  # Устанавливаем скорректированное значение
@@ -275,8 +317,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.ListPorts.clear()
         self.ListPorts.addItems(ports)
         self.sendDb("Список портов обновлен")
-
-
 
     def sendDb(self, text):
         self.debugWindow.append(text)

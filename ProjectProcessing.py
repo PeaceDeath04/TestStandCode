@@ -1,17 +1,19 @@
 class processing():
     def __init__(self,serial):
+        self.keysArduino = {"gas": "g", "gas_min": "m", "gas_max": "x", "ButCalibMotor": "k", "ResetTime": "t",
+                            "Traction": "r", "Weight_1": "o", "Weight_2": "w"}
         self.serial =serial
-    def calibration_Tract(self,w1,w2):
-        return (w1 - w2)
 
     def GetValueCurrent(self,ShuntVoltage):
         return ((ShuntVoltage * 0.075) / 75)
 
     # посылаем на ардуинку
     def TxToARDU(self,**packet_data):
-        for string,value in packet_data.items():
-            string += str(value)
-            self.serial.write(string.encode())
+        for key_packet,value in packet_data.items():
+            for name_key,key_ard in self.keysArduino.items():
+                if name_key == key_packet:
+                    result = key_ard + str(value)
+                    self.serial.write(result.encode())
 
     # получаем Rpm Rotate per min / оборотов в минуту
     def TakeRpmE(self,t_flach):

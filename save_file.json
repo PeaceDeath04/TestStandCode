@@ -9,5 +9,5 @@
     "Time": 0,
     "gas": 0,
     "gas_min": 0,
-    "gas_max": 50
+    "gas_max": 1000
 }

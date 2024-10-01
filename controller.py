@@ -2,6 +2,7 @@ from time import sleep
 
 from PyQt5.QtSerialPort import QSerialPort, QSerialPortInfo
 from PyQt5.QtCore import QIODevice
+from fontTools.varLib.avarPlanner import WEIGHTS
 
 from saving import JsonHandler
 import traceback
@@ -28,6 +29,8 @@ class Controller:
         self.asyncio = asyncio
         self.read_ready = False
         self.p1 = Process(target=self.addThreadGraphs, daemon=True)
+
+        self.dict_tar = {}
 
 
 
@@ -77,29 +80,47 @@ class Controller:
         except Exception as e:
             traceback.print_exc(f"что то пошло не так с вводом данных {self.buffer} \n {e}")
 
-    def butCalibTract(self):
-        self.save.Tar = self.save.localData.get("Traction")
+    def butCalibration(self,param):
+        """Принимает параметр в строковом виде , который извлекает из LocalДаты и добавляет в словарь для тарирования"""
+        self.dict_tar[param] = self.save.localData.get(param)
+        print(f"веса для тарирования (ими вычитаем) {self.dict_tar}")
 
     def pia(self,data):
         """ Processing Information from Arduino / обработка информации c arduino"""
         piaData = {}
-        #сохранили внутри метода пакет данных из сериал порта
+        # сохранили внутри метода пакет данных из сериал порта
         for key, value in zip(self.save.keys_to_update_ard, data):
             piaData[key] = float(value)
 
-        w1 = piaData["Weight_1"]
-        w2 = piaData["Weight_2"]
-        weight = (w1 - w2) /2
+        # словарь параметров в унциях
+        dict_units = {"Weight_1": piaData["Weight_1"],
+                      "Weight_2": piaData["Weight_2"],
+                      "Traction": piaData.get("Traction")}
 
-        tArdu = piaData.get("Traction")
-        traction = tArdu - self.save.Tar
+        for key_unc, value_unc in dict_units.items():
+            dict_units[key_unc] = value_unc * 28.3495
 
-        for key in ["Weight_1", "Weight_2", "Traction"]:
-            del piaData[key]
-        piaData.update(Weight= weight,Traction = traction)
+        dict_units["Weight"] = (dict_units["Weight_1"] - dict_units["Weight_2"]) / 2
+        if self.dict_tar is not None:
+            for key_unit, value_unit in dict_units.items():
+                for key_tar, value_tar in self.dict_tar.items():
+                    if key_tar == key_unit:
+                        dict_units[key_unit] -= value_tar
+
+        piaData.update(dict_units)
         self.save.localData.update(piaData)
         self.p1.run()
 
+    def calib_value(self,key_value):
+        """Получаем ключ в виде строки"""
+        if key_value == "Traction":
+            value = (self.save.localData.get(key_value) / 200)
+            self.processing.TxToARDU(Traction=value)
+
+        if key_value == "Weight":
+            w1 = (self.save.localData.get("Weight_1") / 200)
+            w2 = (self.save.localData.get("Weight_2") / 200)
+            self.processing.TxToARDU(Weight_1=w1,Weight_2 = w2)
 
     async def add_exl_info(self,read):
         if read:
@@ -119,7 +140,6 @@ class Controller:
             graph.ax.set_ylabel(ylabel)
             graph.line.set_label(ylabel)
             graph.add_data(x=x, y=y,name=f"{ylabel} = {y}")
-
 
     def get_gas_percentage(self):
         try:
