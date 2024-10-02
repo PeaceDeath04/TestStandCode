@@ -76,6 +76,9 @@ class Controller:
                                    self.asyncio.run(self.add_exl_info(self.read_ready))
                                except AttributeError:
                                    self.save.create_json(self.save.save_file, self.save.localData)
+                               except Exception as e:
+                                   print(e)
+                                   print(f"Пакет данных: {data}")
                 self.buffer = packets[-1]
         except Exception as e:
             traceback.print_exc(f"что то пошло не так с вводом данных {self.buffer} \n {e}")
@@ -83,7 +86,6 @@ class Controller:
     def butCalibration(self,param):
         """Принимает параметр в строковом виде , который извлекает из LocalДаты и добавляет в словарь для тарирования"""
         self.dict_tar[param] = self.save.localData.get(param)
-        print(f"веса для тарирования (ими вычитаем) {self.dict_tar}")
 
     def pia(self,data):
         """ Processing Information from Arduino / обработка информации c arduino"""
@@ -92,22 +94,14 @@ class Controller:
         for key, value in zip(self.save.keys_to_update_ard, data):
             piaData[key] = float(value)
 
-        # словарь параметров в унциях
-        dict_units = {"Weight_1": piaData["Weight_1"],
-                      "Weight_2": piaData["Weight_2"],
-                      "Traction": piaData.get("Traction")}
+        piaData["Weight"] = (piaData["Weight_1"] - piaData["Weight_2"]) / 2
 
-        for key_unc, value_unc in dict_units.items():
-            dict_units[key_unc] = value_unc * 28.3495
-
-        dict_units["Weight"] = (dict_units["Weight_1"] - dict_units["Weight_2"]) / 2
         if self.dict_tar is not None:
-            for key_unit, value_unit in dict_units.items():
+            for key_pia, value_pia in piaData.items():
                 for key_tar, value_tar in self.dict_tar.items():
-                    if key_tar == key_unit:
-                        dict_units[key_unit] -= value_tar
+                    if key_tar == key_pia:
+                        piaData[key_pia] -= value_tar
 
-        piaData.update(dict_units)
         self.save.localData.update(piaData)
         self.p1.run()
 

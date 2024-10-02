@@ -247,6 +247,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         else:
             self.ButSaveExl.setText("начать запись в data.csv")
             self.controller.recorder.convert_csv_to_xlsx()
+            
     def GetRangeGas(self):
         """Обновление диапазона слайдера при изменении Min и Max значений."""
         gas_min = self.spinBoxMin.value()

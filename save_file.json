@@ -7,7 +7,7 @@
     "Traction": 0.0,
     "Weight": 0.0,
     "Time": 0,
-    "gas": 0,
-    "gas_min": 0,
-    "gas_max": 1000
+    "gas": 1800,
+    "gas_min": 1800,
+    "gas_max": 3800
 }
