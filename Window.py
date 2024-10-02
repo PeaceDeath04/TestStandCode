@@ -221,12 +221,12 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.SlidePower.valueChanged.connect(self.get_gas_value)
         self.ButSaveExl.clicked.connect(self.toggle_read)
 
-        self.ButTarTraction.clicked.connect(lambda: self.controller.butCalibration("Traction"))
-        self.ButTarWeight.clicked.connect(lambda: self.controller.butCalibration("Weight"))
+        self.ButTarTraction.clicked.connect(lambda: self.controller.but_taring("Traction"))
+        self.ButTarWeight.clicked.connect(lambda: self.controller.but_taring("Weight"))
 
         self.ButCalib.clicked.connect(lambda: self.controller.processing.TxToARDU(ButCalibMotor=0))
-        self.ButCalibTraction.clicked.connect(lambda:self.controller.calib_value("Traction"))
-        self.ButCalibWeight.clicked.connect(lambda:self.controller.calib_value("Weight"))
+        self.ButCalibTraction.clicked.connect(lambda:self.controller.get_kef_tenz("Traction"))
+        self.ButCalibWeight.clicked.connect(lambda:self.controller.get_kef_tenz("Weight"))
 
         self.ButSaveExl.setCheckable(True)
 
@@ -311,7 +311,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
     def close_port(self):
         result = self.controller.close_port()
         self.sendDb(result)
-
 
     def update_ports(self):
         ports = self.controller.update_port_list()

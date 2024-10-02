@@ -77,17 +77,3 @@ class JsonHandler:
         except FileNotFoundError:
             self.create_json(name_save_file, None)
             return None
-
-
-"""
-    def xz(self):
-        self.key_to_Graphs.clear()
-        for key in self.localData.keys():
-            self.key_to_Graphs[key] = {"x":"Time","y":f"{key}"}
-            #self.key_to_Graphs[key]["y"] = key
-        with open("keys_graphs.json", mode="w", encoding="Latin-1") as save_file:
-            json.dump(self.key_to_Graphs, save_file, ensure_ascii=False, indent=4)
-        print(self.key_to_Graphs)
-
-
-"""

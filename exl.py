@@ -87,4 +87,3 @@ class DataRecorder:
             writer.writerow(self.headers)
 
         print(f"Файл {self.csv_file} был очищен.")
-

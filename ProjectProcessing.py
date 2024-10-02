@@ -25,4 +25,3 @@ class processing():
     def TakeRpm0(self,t_flach):
         t_flach *= 2
         return (self.TakeRpmE(t_flach))
-
