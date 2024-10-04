@@ -1,8 +1,13 @@
 from saving import *
+from exl import DataRecorder
 params_tenz_kef = {}
 calib_weight = 62.5
 dict_tar = {}
-
+recorder = DataRecorder()
+def add_exl_info(read):
+    if read:
+        data = localData.copy()
+        recorder.save_to_csv(data=data)
 
 def but_taring(param):
     """Кнопка тарирования \n Принимает параметр в строковом виде , который извлекает из LocalДаты и добавляет в словарь для тарирования"""

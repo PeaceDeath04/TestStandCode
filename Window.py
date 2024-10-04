@@ -1,5 +1,6 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from controller import Controller
+from saving import *
 
 
 class Ui_MainWindow(QtWidgets.QMainWindow):
@@ -236,6 +237,14 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.step_size = 10  # По умолчанию шаг 10, но будет пересчитываться динамически
 
         self.onStartUp()
+
+    def get_gas_percentage(self):
+        try:
+            a, b, c = localData.get("gas_min"), localData.get("gas_max"), localData.get("gas")
+            per = ((c - a) / (b - a)) * 100
+            return (round(per))
+        except:
+            return "Ошибка при вычилсении процента"
 
     def toggle_read(self):
         #Изменяем состояние read при каждом нажатии кнопки

@@ -23,7 +23,7 @@ def add_thread_graphs():
         update_graph(params.get("ObjectClass"), params.get("x"), params.get("y"))
 def update_graph(graph, xlabel, ylabel):
     """Метод принимает обьект класса Graph (график matplotlib) и 2 стринговых параматра на основании которых ищет в локал дате значения """
-    x, y = save.localData.get(xlabel), save.localData.get(ylabel)
+    x, y = localData.get(xlabel), localData.get(ylabel)
     if xlabel == "Time":
         x = x / 1000
     graph.ax.set_xlabel(xlabel)

@@ -1,6 +1,6 @@
 from PyQt5.QtSerialPort import QSerialPort, QSerialPortInfo
 from PyQt5.QtCore import QIODevice
-from saving import JsonHandler
+from saving import *
 import traceback
 # from ProjectProcessing import processing
 from Tables import Graph
@@ -11,7 +11,6 @@ import asyncio
 serial = QSerialPort()
 serial.setBaudRate(9600)
 buffer = ""
-save = JsonHandler()
 graphs = {}
 graph = Graph
 recorder = DataRecorder()
@@ -21,49 +20,6 @@ params_tenz_kef = {}
 calib_weight = 62.5
 dict_tar = {}
 
-
-def get_gas_percentage():
-    try:
-        a, b, c = save.import_from_json("gas_min", "gas_max", "gas")
-        per = ((c - a) / (b - a)) * 100
-        return (round(per))
-    except:
-        return "Ошибка при вычилсении процента"
-
-
-def add_graphs():
-    try:
-        dict_js = save.import_js("keys_graphs.json")
-        graphs = dict_js.copy()
-    except:
-        print("пусто")
-
-    for nameGraph in graphs:
-        graphs[nameGraph]["ObjectClass"] = Graph()
-    for nameGraph, params in graphs.items():
-        graph = graphs[nameGraph].get("ObjectClass")
-        graph.ax.set_xlabel(graphs[nameGraph].get("x"))
-        graph.ax.set_ylabel(graphs[nameGraph].get("y"))
-        graph.line.set_label(graphs[nameGraph].get("y"))
-    # print(self.graphs)
-def add_thread_graphs():
-    for nameGraph, params in graphs.items():
-        update_graph(params.get("ObjectClass"), params.get("x"), params.get("y"))
-def update_graph(graph, xlabel, ylabel):
-    """Метод принимает обьект класса Graph (график matplotlib) и 2 стринговых параматра на основании которых ищет в локал дате значения """
-    x, y = save.localData.get(xlabel), save.localData.get(ylabel)
-    if xlabel == "Time":
-        x = x / 1000
-    graph.ax.set_xlabel(xlabel)
-    graph.ax.set_ylabel(ylabel)
-    graph.line.set_label(ylabel)
-    graph.add_data(x=x, y=y, name=f"{ylabel} = {y}")
-
-
-def add_exl_info(read):
-    if read:
-        data = save.localData.copy()
-        recorder.save_to_csv(data=data)
 
 
 
