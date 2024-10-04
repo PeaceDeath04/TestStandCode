@@ -1,39 +1,11 @@
-from PyQt5.QtSerialPort import QSerialPort, QSerialPortInfo
-from PyQt5.QtCore import QIODevice
-from saving import JsonHandler
-import traceback
-# from ProjectProcessing import processing
+from saving import *
 from Tables import Graph
-from exl import DataRecorder
-from multiprocessing import Process
-import asyncio
-
-serial = QSerialPort()
-serial.setBaudRate(9600)
-buffer = ""
-save = JsonHandler()
 graphs = {}
-graph = Graph
-recorder = DataRecorder()
-asyncio = asyncio
-read_ready = False
-params_tenz_kef = {}
-calib_weight = 62.5
-dict_tar = {}
-
-
-def get_gas_percentage():
-    try:
-        a, b, c = save.import_from_json("gas_min", "gas_max", "gas")
-        per = ((c - a) / (b - a)) * 100
-        return (round(per))
-    except:
-        return "Ошибка при вычилсении процента"
 
 
 def add_graphs():
     try:
-        dict_js = save.import_js("keys_graphs.json")
+        dict_js = import_js("keys_graphs.json")
         graphs = dict_js.copy()
     except:
         print("пусто")
@@ -58,12 +30,3 @@ def update_graph(graph, xlabel, ylabel):
     graph.ax.set_ylabel(ylabel)
     graph.line.set_label(ylabel)
     graph.add_data(x=x, y=y, name=f"{ylabel} = {y}")
-
-
-def add_exl_info(read):
-    if read:
-        data = save.localData.copy()
-        recorder.save_to_csv(data=data)
-
-
-
