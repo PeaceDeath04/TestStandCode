@@ -1,9 +1,13 @@
+"""   packet_processing занимается обработкой пакета с arduino                                      """
+
+
 from saving import *
 from exl import DataRecorder
 params_tenz_kef = {}
 calib_weight = 62.5
 dict_tar = {}
 recorder = DataRecorder()
+
 def add_exl_info(read):
     if read:
         data = localData.copy()
@@ -61,3 +65,5 @@ def pia(data):
         print("отрисовка графика в отдельном процессе")
     except Exception as e:
         print(e)
+
+print(localData)
