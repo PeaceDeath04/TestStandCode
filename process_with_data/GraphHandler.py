@@ -1,4 +1,4 @@
-from Data import *
+from Data import import_js,localData
 from Tables import Graph
 graphs = {}
 

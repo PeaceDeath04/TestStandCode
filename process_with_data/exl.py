@@ -3,7 +3,6 @@ import csv
 import os
 from datetime import datetime
 
-
 class DataRecorder:
     def __init__(self, base_filename='data'):
         self.base_filename = base_filename  # Базовое имя файла
