@@ -9,15 +9,16 @@ localData = {
         "Temp": 0.0, "Traction": 0.0, "Weight": 0.0, "Weight_1": 0.0, "Weight_2": 0.0, "Time": 0,
         "gas": 25, "gas_min": 0, "gas_max": 50
     }
+
 keys_to_update_ard = ["T_flach_E", "T_flash_O", "Voltage", "ShuntVoltage", "Temp", "Traction", "Weight_1",
                                "Weight_2", "Time"]
+
 key_to_Graphs = {
         "TractionGraph": {"x": "Time", "y": "Traction"}
     }
 
-
-
-
+keysArduino = {"gas": "g", "gas_min": "m", "gas_max": "x", "ButCalibMotor": "k", "ResetTime": "t",
+                            "Traction": "r", "Weight_1": "o", "Weight_2": "w"}
 
 def export_to_json(name_file,**keys):
     """Получает ключ значение и сохраняет в json файл"""
@@ -35,6 +36,7 @@ def export_to_json(name_file,**keys):
 
     except Exception as e:
         print(f"Произошла непредвиденная ошибка: {e}")
+
 def import_from_json(name_file,*keys):
     """Получает ключи для извлечения значений  по ключу из json файла , возвращает список значений"""
     list = []
@@ -52,10 +54,13 @@ def import_from_json(name_file,*keys):
     except json.JSONDecodeError:
         print(f"Ошибка декодирования JSON в файле {save_file}.")
         return None
+
+
 def create_json(name_file, data):
     if not os.path.isfile(name_file):
         with open(name_file, mode="w", encoding="Latin-1") as save_file:
             json.dump(data, save_file, ensure_ascii=False, indent=4)
+
 def import_js(name_file):
     """Передаем в качестве параметра имя искомого файла и передаем dict/None в зависимости от результата"""
     try:

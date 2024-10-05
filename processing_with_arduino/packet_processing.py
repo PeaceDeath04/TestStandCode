@@ -1,8 +1,9 @@
 """   packet_processing занимается обработкой пакета с arduino                                      """
 
 
-from Data import *
-from exl import DataRecorder
+from process_with_data.Data import localData,keys_to_update_ard
+from process_with_data.exl import DataRecorder
+
 params_tenz_kef = {}
 calib_weight = 62.5
 dict_tar = {}

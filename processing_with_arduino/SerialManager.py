@@ -4,8 +4,11 @@ import traceback
 
 
 buffer = ""
+serial_speed = 9600
+serial = QSerialPort()
+serial.setBaudRate(serial_speed)
 
-def open_port(port_name, serial):
+def open_port(port_name):
     # Закрываем текущий порт, если он открыт
     if serial.isOpen():
         if serial.portName() != port_name:
@@ -18,7 +21,7 @@ def open_port(port_name, serial):
         print(f"Порт {port_name} открыт")
     else:
         return f"Не удалось открыть порт {port_name} , т.к он уже используется"
-def close_port(serial):
+def close_port():
     if serial.isOpen():
         serial.close()
         return "Порт закрыт"
@@ -46,7 +49,7 @@ def validate_data_packet(packet):
     # 3. Пакет успешно прошел проверку
     print("Пакет данных валиден.")
     return True
-def read_data(serial):
+def read_data():
     global buffer
     try:
         rx = serial.readLine()
