@@ -1,4 +1,4 @@
-from saving import *
+from Data import *
 from Tables import Graph
 graphs = {}
 

@@ -1,7 +1,7 @@
 """   packet_processing занимается обработкой пакета с arduino                                      """
 
 
-from saving import *
+from Data import *
 from exl import DataRecorder
 params_tenz_kef = {}
 calib_weight = 62.5
@@ -66,4 +66,3 @@ def pia(data):
     except Exception as e:
         print(e)
 
-print(localData)

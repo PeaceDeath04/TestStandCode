@@ -1,6 +1,6 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from controller import Controller
-from saving import *
+from Data import *
 
 
 class Ui_MainWindow(QtWidgets.QMainWindow):
