@@ -65,4 +65,3 @@ def pia(data):
     localData.update(pia_data)  # сохраняем в локал дату обработанный пакет данных
 
     add_thread_graphs()
-    add_exl_info(read_ready)
