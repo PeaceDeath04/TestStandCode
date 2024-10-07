@@ -7,6 +7,7 @@ buffer = ""
 serial_speed = 9600
 serial = QSerialPort()
 serial.setBaudRate(serial_speed)
+read_ready = False
 
 def open_port(port_name):
     # Закрываем текущий порт, если он открыт

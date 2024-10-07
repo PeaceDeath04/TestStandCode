@@ -1,6 +1,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from controller import Controller
-from Data import *
+from process_with_data.Data import localData
+from processing_with_arduino.packet_processing import recorder
+from processing_with_arduino.SerialManager import *
 
 
 class Ui_MainWindow(QtWidgets.QMainWindow):
@@ -210,7 +211,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
-        self.controller = Controller(self.sendDb)
 
         self.controller.serial.readyRead.connect(self.controller.read_data)
         self.ButSaveExl.clicked.connect(self.toggle_read)
