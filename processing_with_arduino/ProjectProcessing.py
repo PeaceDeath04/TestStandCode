@@ -1,5 +1,5 @@
 from process_with_data.Data import keysArduino
-from SerialManager import serial
+from .SerialManager import serial
 
 
 def GetValueCurrent(ShuntVoltage):

@@ -1,7 +1,9 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from process_with_data.Data import localData
+from process_with_data.Data import localData, export_to_json, import_from_json, create_json
 from processing_with_arduino.packet_processing import recorder
 from processing_with_arduino.SerialManager import *
+from processing_with_arduino.ProjectProcessing import TxToARDU
+from process_with_data.GraphHandler import graphs
 
 
 class Ui_MainWindow(QtWidgets.QMainWindow):
@@ -212,7 +214,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         super().__init__()
         self.setupUi(self)
 
-        self.controller.serial.readyRead.connect(self.controller.read_data)
+        serial.readyRead.connect(read_data)
         self.ButSaveExl.clicked.connect(self.toggle_read)
         self.spinBoxMin.valueChanged.connect(self.GetRangeGas)
         self.spinBoxMax.valueChanged.connect(self.GetRangeGas)
@@ -236,6 +238,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.read = False
         self.step_size = 10  # По умолчанию шаг 10, но будет пересчитываться динамически
 
+        create_json("save_file.json",localData)
+
         self.onStartUp()
 
     def get_gas_percentage(self):
@@ -248,14 +252,15 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
     def toggle_read(self):
         #Изменяем состояние read при каждом нажатии кнопки
+        global read_ready
         self.read = not self.read
-        self.controller.read_ready = self.read
+        read_ready = self.read
         if self.read:
-            self.controller.recorder.start_new_recording()
+            recorder.start_new_recording()
             self.ButSaveExl.setText("Остановить запись")
         else:
             self.ButSaveExl.setText("начать запись в data.csv")
-            self.controller.recorder.convert_csv_to_xlsx()
+            recorder.convert_csv_to_xlsx()
             
     def GetRangeGas(self):
         """Обновление диапазона слайдера при изменении Min и Max значений."""
@@ -273,30 +278,30 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.step_size = (gas_max - gas_min) // 10  # шаг изменения ползунка в процентах
         if self.step_size == 0:
             self.step_size = 1  # Защита от деления на 0
-        self.controller.save.localData["gas_min"],self.controller.save.localData["gas_max"] = gas_min,gas_max
-        self.controller.processing.TxToARDU(gas_min=gas_min, gas_max=gas_max)
-        self.controller.save.export_to_json(gas_max=gas_max, gas_min=gas_min)
+        localData["gas_min"],localData["gas_max"] = gas_min,gas_max
+        TxToARDU(gas_min=gas_min, gas_max=gas_max)
+        export_to_json(name_file="save_file.json",gas_max=gas_max,gas_min= gas_min)
 
     def get_gas_value(self):
         """Корректировка значения слайдера по ближайшему шагу."""
         current_value = self.SlidePower.value()
         # Округление до ближайшего кратного значения шага
         corrected_value = round(current_value / self.step_size) * self.step_size
-        self.controller.save.localData["gas"] = corrected_value
-        self.controller.processing.TxToARDU(gas=corrected_value)
+        localData["gas"] = corrected_value
+        TxToARDU(gas=corrected_value)
 
         self.SlidePower.blockSignals(True)  # Отключаем сигналы, чтобы избежать рекурсии
         self.SlidePower.setValue(corrected_value)  # Устанавливаем скорректированное значение
         self.SlidePower.blockSignals(False)  # Включаем сигналы обратно
 
         # Отправляем скорректированное значение контроллеру и обновляем интерфейс
-        self.controller.save.export_to_json(gas=corrected_value)
-        gas_percentage = self.controller.get_gas_percentage()
+        export_to_json(gas=corrected_value,name_file="save_file.json")
+        gas_percentage = self.get_gas_percentage()
         self.valueGas.setText(str(gas_percentage))
 
     def onStartUp(self):
         """Инициализация начальных параметров при запуске приложения."""
-        gas_min, gas_max, gas = self.controller.save.import_from_json("gas_min", "gas_max", "gas")
+        gas_min, gas_max, gas = import_from_json("save_file.json", "gas_min", "gas_max", "gas")
         self.spinBoxMin.setMaximum(999999)
         self.spinBoxMin.setValue(0)
         self.spinBoxMax.setMaximum(999999)
@@ -314,15 +319,15 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
     def open_port(self):
         port_name = self.ListPorts.currentText()
-        result = self.controller.open_port(port_name)
+        result = open_port(port_name)
         self.sendDb(result)
 
     def close_port(self):
-        result = self.controller.close_port()
+        result = close_port()
         self.sendDb(result)
 
     def update_ports(self):
-        ports = self.controller.update_port_list()
+        ports = update_port_list()
         self.ListPorts.clear()
         self.ListPorts.addItems(ports)
         self.sendDb("Список портов обновлен")
@@ -331,7 +336,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.debugWindow.append(text)
 
     def add_to_lay(self):
-        for nameGraph,params in self.controller.graphs.items():
+        for nameGraph,params in graphs.items():
             for obj in params.values():
                 if isinstance(obj,self.controller.graph):
                     self.graph_Layout.addWidget(obj.canvas)
