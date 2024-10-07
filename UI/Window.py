@@ -1,9 +1,11 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from process_with_data.Data import localData, export_to_json, import_from_json, create_json,key_to_Graphs
-from processing_with_arduino.packet_processing import recorder
-from processing_with_arduino.SerialManager import *
-from processing_with_arduino.ProjectProcessing import TxToARDU
-from process_with_data.GraphHandler import *
+from data_processing.Data import localData, export_to_json, import_from_json, create_json,key_to_Graphs
+from arduino_processing.packet_processing import *
+from arduino_processing.SerialManager import read_data,open_port,close_port,update_port_list,serial
+from arduino_processing.ProjectProcessing import TxToARDU
+from data_processing.GraphHandler import *
+import globals
+from globals import read_ready
 
 
 class Ui_MainWindow(QtWidgets.QMainWindow):
@@ -223,12 +225,12 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.SlidePower.valueChanged.connect(self.get_gas_value)
         self.ButSaveExl.clicked.connect(self.toggle_read)
 
-        self.ButTarTraction.clicked.connect(lambda: self.controller.but_taring("Traction"))
-        self.ButTarWeight.clicked.connect(lambda: self.controller.but_taring("Weight"))
+        self.ButTarTraction.clicked.connect(lambda: but_taring("Traction"))
+        self.ButTarWeight.clicked.connect(lambda: but_taring("Weight"))
 
-        self.ButCalib.clicked.connect(lambda: self.controller.processing.TxToARDU(ButCalibMotor=0))
-        self.ButCalibTraction.clicked.connect(lambda:self.controller.get_kef_tenz("Traction"))
-        self.ButCalibWeight.clicked.connect(lambda:self.controller.get_kef_tenz("Weight"))
+        self.ButCalib.clicked.connect(lambda: TxToARDU(ButCalibMotor=0))
+        self.ButCalibTraction.clicked.connect(lambda:get_kef_tenz("Traction"))
+        self.ButCalibWeight.clicked.connect(lambda:get_kef_tenz("Weight"))
 
         self.ButSaveExl.setCheckable(True)
 
@@ -252,10 +254,9 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             return "Ошибка при вычилсении процента"
 
     def toggle_read(self):
-        print(self.read)
         #Изменяем состояние read при каждом нажатии кнопки
         self.read = not self.read
-        print(self.read)
+        globals.read_ready = self.read
         if self.read:
             recorder.start_new_recording()
             self.ButSaveExl.setText("Остановить запись")

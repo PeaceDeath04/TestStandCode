@@ -1,18 +1,16 @@
 """   packet_processing занимается обработкой пакета с arduino                                      """
-
-
-from process_with_data.Data import localData,keys_to_update_ard
-from process_with_data.GraphHandler import add_thread_graphs
-from process_with_data.exl import DataRecorder
-from processing_with_arduino.SerialManager import read_ready
+from data_processing.Data import localData,keys_to_update_ard
+from data_processing.GraphHandler import add_thread_graphs
+from data_processing.exl import DataRecorder
+import globals
 
 params_tenz_kef = {}
 calib_weight = 62.5
 dict_tar = {}
 recorder = DataRecorder()
 
-def add_exl_info(read):
-    if read:
+def add_exl_info():
+    if globals.read_ready:
         data = localData.copy()
         recorder.save_to_csv(data=data)
 

@@ -1,4 +1,4 @@
-from process_with_data.Data import keysArduino
+from data_processing.Data import keysArduino
 from .SerialManager import serial
 
 

@@ -1,14 +1,14 @@
 from PyQt5.QtSerialPort import QSerialPort, QSerialPortInfo
 from PyQt5.QtCore import QIODevice
 import traceback
-from .packet_processing import pia
-
+from arduino_processing.packet_processing import pia, add_exl_info
+import globals
 
 buffer = ""
 serial_speed = 9600
 serial = QSerialPort()
 serial.setBaudRate(serial_speed)
-read_ready = False
+
 
 def open_port(port_name):
     # Закрываем текущий порт, если он открыт
@@ -65,8 +65,8 @@ def read_data():
                     if all(item != '' for item in data):
                         if validate_data_packet(data):
                             try:
+                                add_exl_info()
                                 pia(data)
-                                # self.asyncio.run(self.add_exl_info(self.read_ready))
                             except Exception as e:
                                 print(e)
                                 print(f"Пакет данных из сериал порта при неуспешной попытке обработке: {data}")
