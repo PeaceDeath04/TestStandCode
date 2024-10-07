@@ -1,6 +1,7 @@
 from PyQt5.QtSerialPort import QSerialPort, QSerialPortInfo
 from PyQt5.QtCore import QIODevice
 import traceback
+from .packet_processing import pia
 
 
 buffer = ""
@@ -48,7 +49,6 @@ def validate_data_packet(packet):
             return False
 
     # 3. Пакет успешно прошел проверку
-    print("Пакет данных валиден.")
     return True
 def read_data():
     global buffer
@@ -65,8 +65,7 @@ def read_data():
                     if all(item != '' for item in data):
                         if validate_data_packet(data):
                             try:
-                                print(f"передаем пакет данных в обработку {data}")
-                                #pia(data)
+                                pia(data)
                                 # self.asyncio.run(self.add_exl_info(self.read_ready))
                             except Exception as e:
                                 print(e)

@@ -1,9 +1,9 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from process_with_data.Data import localData, export_to_json, import_from_json, create_json
+from process_with_data.Data import localData, export_to_json, import_from_json, create_json,key_to_Graphs
 from processing_with_arduino.packet_processing import recorder
 from processing_with_arduino.SerialManager import *
 from processing_with_arduino.ProjectProcessing import TxToARDU
-from process_with_data.GraphHandler import graphs
+from process_with_data.GraphHandler import *
 
 
 class Ui_MainWindow(QtWidgets.QMainWindow):
@@ -215,7 +215,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.setupUi(self)
 
         serial.readyRead.connect(read_data)
-        self.ButSaveExl.clicked.connect(self.toggle_read)
         self.spinBoxMin.valueChanged.connect(self.GetRangeGas)
         self.spinBoxMax.valueChanged.connect(self.GetRangeGas)
         self.ButOpenPort.clicked.connect(self.open_port)
@@ -233,12 +232,14 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         self.ButSaveExl.setCheckable(True)
 
-        self.add_to_lay()
 
         self.read = False
         self.step_size = 10  # По умолчанию шаг 10, но будет пересчитываться динамически
 
         create_json("save_file.json",localData)
+        create_json("keys_graphs.json",key_to_Graphs)
+        graphs.update(add_graphs())
+        self.add_to_lay()
 
         self.onStartUp()
 
@@ -251,10 +252,10 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             return "Ошибка при вычилсении процента"
 
     def toggle_read(self):
+        print(self.read)
         #Изменяем состояние read при каждом нажатии кнопки
-        global read_ready
         self.read = not self.read
-        read_ready = self.read
+        print(self.read)
         if self.read:
             recorder.start_new_recording()
             self.ButSaveExl.setText("Остановить запись")
@@ -338,5 +339,5 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
     def add_to_lay(self):
         for nameGraph,params in graphs.items():
             for obj in params.values():
-                if isinstance(obj,self.controller.graph):
+                if isinstance(obj,Graph):
                     self.graph_Layout.addWidget(obj.canvas)

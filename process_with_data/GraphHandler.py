@@ -17,7 +17,7 @@ def add_graphs():
         graph.ax.set_xlabel(graphs[nameGraph].get("x"))
         graph.ax.set_ylabel(graphs[nameGraph].get("y"))
         graph.line.set_label(graphs[nameGraph].get("y"))
-    # print(self.graphs)
+    return graphs
 def add_thread_graphs():
     for nameGraph, params in graphs.items():
         update_graph(params.get("ObjectClass"), params.get("x"), params.get("y"))

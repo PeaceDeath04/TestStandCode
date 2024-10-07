@@ -2,6 +2,7 @@
 
 
 from process_with_data.Data import localData,keys_to_update_ard
+from process_with_data.GraphHandler import add_thread_graphs
 from process_with_data.exl import DataRecorder
 
 params_tenz_kef = {}
@@ -63,7 +64,7 @@ def pia(data):
     localData.update(pia_data)  # сохраняем в локал дату обработанный пакет данных
 
     try:
-        print("отрисовка графика в отдельном процессе")
+        add_thread_graphs()
     except Exception as e:
         print(e)
 
