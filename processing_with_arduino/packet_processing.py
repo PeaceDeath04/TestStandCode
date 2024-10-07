@@ -4,6 +4,7 @@
 from process_with_data.Data import localData,keys_to_update_ard
 from process_with_data.GraphHandler import add_thread_graphs
 from process_with_data.exl import DataRecorder
+from processing_with_arduino.SerialManager import read_ready
 
 params_tenz_kef = {}
 calib_weight = 62.5
@@ -63,8 +64,5 @@ def pia(data):
 
     localData.update(pia_data)  # сохраняем в локал дату обработанный пакет данных
 
-    try:
-        add_thread_graphs()
-    except Exception as e:
-        print(e)
-
+    add_thread_graphs()
+    add_exl_info(read_ready)
