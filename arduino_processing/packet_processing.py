@@ -1,11 +1,13 @@
 """   packet_processing занимается обработкой пакета с arduino                                      """
+from tkinter.constants import ROUND
+
 from data_processing.Data import localData,keys_to_update_ard
 from data_processing.GraphHandler import add_thread_graphs
 from data_processing.exl import DataRecorder
 import globals
+from globals import calib_weight
 
 params_tenz_kef = {}
-calib_weight = 62.5
 dict_tar = {}
 recorder = DataRecorder()
 
@@ -31,6 +33,7 @@ def taring_values(packet_data):
     return packet_data
 
 def get_kef_tenz(key_value):
+    calib_weight = globals.calib_weight
     """Получаем ключ в виде строки"""
     if key_value == "Traction":
         params_tenz_kef["Traction"] = localData.get("Traction") / calib_weight
@@ -47,6 +50,12 @@ def get_result_value(pia_data):
             pia_data[key] = current_value  # обновляем значение по ключу в словаре для return
     return pia_data
 
+def rounding_params(data):
+    for key,value in data.items():
+        data[key] = round(value,2)
+    return data
+
+
 def pia(data):
     """ Processing Information from Arduino / обработка информации c arduino"""
     pia_data = {}
@@ -59,6 +68,8 @@ def pia(data):
     pia_data.update(get_result_value(pia_data))  # производим деление параметров на коэф
 
     pia_data["Weight"] = (pia_data["Weight_1"] - pia_data["Weight_2"]) / 2  # получаем общий вес
+
+    pia_data.update(rounding_params(pia_data)) # округляем значения до сотых
 
     localData.update(pia_data)  # сохраняем в локал дату обработанный пакет данных
 

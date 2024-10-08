@@ -335,7 +335,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         serial.readyRead.connect(read_data)
         self.spinBoxMin.valueChanged.connect(self.GetRangeGas)
         self.spinBoxMax.valueChanged.connect(self.GetRangeGas)
-        self.ButOpenPort.clicked.connect(self.open_port)
+        self.ButOpenPort.clicked.connect(self.toggle_port)
         self.butRefresh.clicked.connect(self.update_ports)
         self.SlidePower.valueChanged.connect(self.get_gas_value)
         self.ButSaveExl.clicked.connect(self.toggle_read)
@@ -347,10 +347,13 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.ButCalibTraction.clicked.connect(lambda:get_kef_tenz("Traction"))
         self.ButCalibWeight.clicked.connect(lambda:get_kef_tenz("Weight"))
 
+        self.slider_change_step_5.valueChanged.connect(self.change_weight)
+
         self.ButSaveExl.setCheckable(True)
 
 
         self.read = False
+        self.port_open = False
         self.step_size = 10  # По умолчанию шаг 10, но будет пересчитываться динамически
 
         create_json("save_file.json",localData)
@@ -367,6 +370,18 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             return (round(per))
         except:
             return "Ошибка при вычилсении процента"
+
+    def toggle_port(self):
+        self.port_open = not self.port_open
+        if self.port_open:
+            self.open_port()
+            self.ButOpenPort.setText("Закрыть порт")
+        else:
+            close_port()
+            self.ButOpenPort.setText("открыть порт")
+
+    def change_weight(self):
+        globals.calib_weight = self.slider_change_step_5.value()
 
     def toggle_read(self):
         #Изменяем состояние read при каждом нажатии кнопки
@@ -414,7 +429,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         # Отправляем скорректированное значение контроллеру и обновляем интерфейс
         export_to_json(gas=corrected_value,name_file="save_file.json")
         gas_percentage = self.get_gas_percentage()
-        self.valueGas.setText(str(gas_percentage))
+        self.valueGas.setText(f"Значение газа в процентах: {str(gas_percentage)}    Численное значние: {corrected_value}")
 
     def onStartUp(self):
         """Инициализация начальных параметров при запуске приложения."""
@@ -423,6 +438,10 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.spinBoxMin.setValue(0)
         self.spinBoxMax.setMaximum(999999)
         self.spinBoxMax.setValue(0)
+
+        self.slider_change_step_5.setMaximum(999999)
+        self.slider_change_step_5.setValue(200)
+
         self.spinBoxMin.setValue(gas_min)
         self.spinBoxMax.setValue(gas_max)
         self.SlidePower.setMinimum(gas_min)

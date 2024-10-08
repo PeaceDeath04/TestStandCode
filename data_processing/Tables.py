@@ -2,6 +2,7 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
 from matplotlib.animation import FuncAnimation
 import matplotlib.pyplot as plt
+from matplotlib import rcParams
 
 #print(plt.style.available)
 plt.style.use('seaborn-v0_8-dark')
@@ -15,6 +16,21 @@ class Graph:
         self.fig.subplots_adjust(left=0, right=1, top=1, bottom=0)  # Настройка полей
         self.fig.patch.set_alpha(0)  # Убираем фон самой фигуры (белое вокруг графика)
         self.ax.set_facecolor('none')  # Убираем фон графика (области внутри осей)
+
+
+
+        # Настройка стиля для темной темы
+        rcParams['figure.facecolor'] = '#2c3e50'  # Цвет фона фигуры
+        rcParams['axes.facecolor'] = '#34495e'  # Цвет фона осей
+        rcParams['axes.edgecolor'] = '#ecf0f1'  # Цвет рамки осей
+        rcParams['axes.labelcolor'] = '#ecf0f1'  # Цвет подписей к осям
+        rcParams['xtick.color'] = '#ecf0f1'  # Цвет делений по оси X
+        rcParams['ytick.color'] = '#ecf0f1'  # Цвет делений по оси Y
+        rcParams['text.color'] = '#ecf0f1'  # Цвет текста
+        rcParams['legend.facecolor'] = '#34495e'  # Цвет фона легенды
+        rcParams['legend.edgecolor'] = '#ecf0f1'  # Цвет рамки легенды
+        rcParams['legend.fontsize'] = 10  # Размер шрифта легенды
+        rcParams['legend.framealpha'] = 0.8  # Прозрачность фона легенды
 
         self.x_data = []  # Данные по оси X
         self.y_data = []  # Данные по оси Y
