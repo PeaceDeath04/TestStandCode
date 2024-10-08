@@ -17,9 +17,7 @@ class Graph:
         self.fig.patch.set_alpha(0)  # Убираем фон самой фигуры (белое вокруг графика)
         self.ax.set_facecolor('none')  # Убираем фон графика (области внутри осей)
 
-
-
-        # Настройка стиля для темной темы
+        # Настройки стиля для темной темы и жирного текста легенды
         rcParams['figure.facecolor'] = '#2c3e50'  # Цвет фона фигуры
         rcParams['axes.facecolor'] = '#34495e'  # Цвет фона осей
         rcParams['axes.edgecolor'] = '#ecf0f1'  # Цвет рамки осей
@@ -31,6 +29,7 @@ class Graph:
         rcParams['legend.edgecolor'] = '#ecf0f1'  # Цвет рамки легенды
         rcParams['legend.fontsize'] = 10  # Размер шрифта легенды
         rcParams['legend.framealpha'] = 0.8  # Прозрачность фона легенды
+        rcParams['font.weight'] = 'bold'  # Глобальный параметр для веса шрифта
 
         self.x_data = []  # Данные по оси X
         self.y_data = []  # Данные по оси Y
