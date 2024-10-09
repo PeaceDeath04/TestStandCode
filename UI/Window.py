@@ -60,6 +60,14 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
                                  "        padding: 2px;\n"
                                  "        color: #d3d3d3;\n"
                                  "    }\n"
+                                 "    QDoubleSpinBox{\n"
+                                 "        background-color: #2d2d2d;\n"
+                                 "        border: 1px solid #1e1e1e;\n"
+                                 "        border-radius: 5px;\n"
+                                 "        padding: 2px;\n"
+                                 "        color: #d3d3d3;\n"
+                                 "}\n"
+                                 "\n"
                                  "    QSlider {\n"
                                  "        background-color: #2d2d2d;\n"
                                  "        border-radius: 5px;\n"
@@ -74,7 +82,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.graph_Layout.setObjectName("graph_Layout")
         self.debugWindow = QtWidgets.QTextBrowser(self.centralwidget)
         self.debugWindow.setEnabled(True)
-        self.debugWindow.setGeometry(QtCore.QRect(1500, 0, 391, 141))
+        self.debugWindow.setGeometry(QtCore.QRect(1490, 0, 421, 161))
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -82,10 +90,10 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.debugWindow.setSizePolicy(sizePolicy)
         self.debugWindow.setAutoFormatting(QtWidgets.QTextEdit.AutoNone)
         self.debugWindow.setObjectName("debugWindow")
-        self.widget = QtWidgets.QWidget(self.centralwidget)
-        self.widget.setGeometry(QtCore.QRect(0, 0, 1491, 156))
-        self.widget.setObjectName("widget")
-        self.horizontalLayout_4 = QtWidgets.QHBoxLayout(self.widget)
+        self.layoutWidget = QtWidgets.QWidget(self.centralwidget)
+        self.layoutWidget.setGeometry(QtCore.QRect(0, 0, 1491, 156))
+        self.layoutWidget.setObjectName("layoutWidget")
+        self.horizontalLayout_4 = QtWidgets.QHBoxLayout(self.layoutWidget)
         self.horizontalLayout_4.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout_4.setObjectName("horizontalLayout_4")
         self.GlobalMenu = QtWidgets.QVBoxLayout()
@@ -98,7 +106,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.MenuPorts.setContentsMargins(-1, 0, 0, 0)
         self.MenuPorts.setSpacing(6)
         self.MenuPorts.setObjectName("MenuPorts")
-        self.ListPorts = QtWidgets.QComboBox(self.widget)
+        self.ListPorts = QtWidgets.QComboBox(self.layoutWidget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.MinimumExpanding, QtWidgets.QSizePolicy.Ignored)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -107,7 +115,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.ListPorts.setLayoutDirection(QtCore.Qt.LeftToRight)
         self.ListPorts.setObjectName("ListPorts")
         self.MenuPorts.addWidget(self.ListPorts)
-        self.ButOpenPort = QtWidgets.QPushButton(self.widget)
+        self.ButOpenPort = QtWidgets.QPushButton(self.layoutWidget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.MinimumExpanding, QtWidgets.QSizePolicy.Ignored)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -120,7 +128,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.ButOpenPort.setObjectName("ButOpenPort")
         self.MenuPorts.addWidget(self.ButOpenPort)
         self.GlobalMenu.addLayout(self.MenuPorts)
-        self.butRefresh = QtWidgets.QPushButton(self.widget)
+        self.butRefresh = QtWidgets.QPushButton(self.layoutWidget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -128,7 +136,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.butRefresh.setSizePolicy(sizePolicy)
         self.butRefresh.setObjectName("butRefresh")
         self.GlobalMenu.addWidget(self.butRefresh)
-        self.ButSaveExl = QtWidgets.QPushButton(self.widget)
+        self.ButSaveExl = QtWidgets.QPushButton(self.layoutWidget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -142,7 +150,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.settings_lay.setObjectName("settings_lay")
         self.lay_params = QtWidgets.QVBoxLayout()
         self.lay_params.setObjectName("lay_params")
-        self.calib_label = QtWidgets.QLabel(self.widget)
+        self.calib_label = QtWidgets.QLabel(self.layoutWidget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -153,18 +161,13 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.calib_label.setAlignment(QtCore.Qt.AlignCenter)
         self.calib_label.setObjectName("calib_label")
         self.lay_params.addWidget(self.calib_label)
+        self.calib_weight_spinbox = QtWidgets.QDoubleSpinBox(self.layoutWidget)
+        self.calib_weight_spinbox.setObjectName("calib_weight_spinbox")
+        self.lay_params.addWidget(self.calib_weight_spinbox)
         self.settings_lay.addLayout(self.lay_params)
-        self.calib_weight_but = QtWidgets.QSpinBox(self.widget)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.calib_weight_but.sizePolicy().hasHeightForWidth())
-        self.calib_weight_but.setSizePolicy(sizePolicy)
-        self.calib_weight_but.setObjectName("calib_weight_but")
-        self.settings_lay.addWidget(self.calib_weight_but)
         self.horizontalLayout = QtWidgets.QHBoxLayout()
         self.horizontalLayout.setObjectName("horizontalLayout")
-        self.ButTarTraction = QtWidgets.QPushButton(self.widget)
+        self.ButTarTraction = QtWidgets.QPushButton(self.layoutWidget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -172,7 +175,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.ButTarTraction.setSizePolicy(sizePolicy)
         self.ButTarTraction.setObjectName("ButTarTraction")
         self.horizontalLayout.addWidget(self.ButTarTraction)
-        self.ButTarWeight = QtWidgets.QPushButton(self.widget)
+        self.ButTarWeight = QtWidgets.QPushButton(self.layoutWidget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -189,7 +192,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.settings_lay.addLayout(self.horizontalLayout)
         self.horizontalLayout_3 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_3.setObjectName("horizontalLayout_3")
-        self.ButCalibTraction = QtWidgets.QPushButton(self.widget)
+        self.ButCalibTraction = QtWidgets.QPushButton(self.layoutWidget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -197,7 +200,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.ButCalibTraction.setSizePolicy(sizePolicy)
         self.ButCalibTraction.setObjectName("ButCalibTraction")
         self.horizontalLayout_3.addWidget(self.ButCalibTraction)
-        self.ButCalibWeight = QtWidgets.QPushButton(self.widget)
+        self.ButCalibWeight = QtWidgets.QPushButton(self.layoutWidget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -206,7 +209,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.ButCalibWeight.setObjectName("ButCalibWeight")
         self.horizontalLayout_3.addWidget(self.ButCalibWeight)
         self.settings_lay.addLayout(self.horizontalLayout_3)
-        self.ButCalib = QtWidgets.QPushButton(self.widget)
+        self.ButCalib = QtWidgets.QPushButton(self.layoutWidget)
         self.ButCalib.setEnabled(True)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
@@ -233,13 +236,13 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.MenuChangeGas.setObjectName("MenuChangeGas")
         self.verticalLayout = QtWidgets.QVBoxLayout()
         self.verticalLayout.setObjectName("verticalLayout")
-        self.label = QtWidgets.QLabel(self.widget)
+        self.label = QtWidgets.QLabel(self.layoutWidget)
         self.label.setAlignment(QtCore.Qt.AlignCenter)
         self.label.setObjectName("label")
         self.verticalLayout.addWidget(self.label)
         self.horizontalLayout_2 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
-        self.spinBoxMin = QtWidgets.QSpinBox(self.widget)
+        self.spinBoxMin = QtWidgets.QSpinBox(self.layoutWidget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -247,7 +250,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.spinBoxMin.setSizePolicy(sizePolicy)
         self.spinBoxMin.setObjectName("spinBoxMin")
         self.horizontalLayout_2.addWidget(self.spinBoxMin)
-        self.spinBoxMax = QtWidgets.QSpinBox(self.widget)
+        self.spinBoxMax = QtWidgets.QSpinBox(self.layoutWidget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -256,7 +259,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.spinBoxMax.setObjectName("spinBoxMax")
         self.horizontalLayout_2.addWidget(self.spinBoxMax)
         self.verticalLayout.addLayout(self.horizontalLayout_2)
-        self.valueGas = QtWidgets.QLabel(self.widget)
+        self.valueGas = QtWidgets.QLabel(self.layoutWidget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -267,7 +270,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.valueGas.setAlignment(QtCore.Qt.AlignCenter)
         self.valueGas.setObjectName("valueGas")
         self.verticalLayout.addWidget(self.valueGas)
-        self.SlidePower = QtWidgets.QSlider(self.widget)
+        self.SlidePower = QtWidgets.QSlider(self.layoutWidget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -282,13 +285,13 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.verticalLayout.addWidget(self.SlidePower)
         self.lay_change_step_5 = QtWidgets.QVBoxLayout()
         self.lay_change_step_5.setObjectName("lay_change_step_5")
-        self.text_change_step_5 = QtWidgets.QLabel(self.widget)
+        self.text_change_step_5 = QtWidgets.QLabel(self.layoutWidget)
         self.text_change_step_5.setAlignment(QtCore.Qt.AlignCenter)
         self.text_change_step_5.setObjectName("text_change_step_5")
         self.lay_change_step_5.addWidget(self.text_change_step_5)
-        self.slider_change_step_5 = QtWidgets.QSpinBox(self.widget)
-        self.slider_change_step_5.setObjectName("slider_change_step_5")
-        self.lay_change_step_5.addWidget(self.slider_change_step_5)
+        self.spinbox_change_step = QtWidgets.QSpinBox(self.layoutWidget)
+        self.spinbox_change_step.setObjectName("spinbox_change_step")
+        self.lay_change_step_5.addWidget(self.spinbox_change_step)
         self.verticalLayout.addLayout(self.lay_change_step_5)
         self.MenuChangeGas.addLayout(self.verticalLayout)
         self.horizontalLayout_4.addLayout(self.MenuChangeGas)
@@ -328,6 +331,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.label.setText(_translate("MainWindow", "Установка оффсета мощности"))
         self.valueGas.setText(_translate("MainWindow", "Значение газа"))
         self.text_change_step_5.setText(_translate("MainWindow", "Изменить шаг подачи газа"))
+
     def __init__(self):
         super().__init__()
         self.setupUi(self)
@@ -347,7 +351,9 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.ButCalibTraction.clicked.connect(lambda:get_kef_tenz("Traction"))
         self.ButCalibWeight.clicked.connect(lambda:get_kef_tenz("Weight"))
 
-        self.slider_change_step_5.valueChanged.connect(self.change_weight)
+        self.calib_weight_spinbox.valueChanged.connect(self.change_weight)
+
+        self.spinbox_change_step.valueChanged.connect(self.change_step)
 
         self.ButSaveExl.setCheckable(True)
 
@@ -381,7 +387,17 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             self.ButOpenPort.setText("открыть порт")
 
     def change_weight(self):
-        globals.calib_weight = self.slider_change_step_5.value()
+        globals.calib_weight = self.calib_weight_spinbox.value()
+
+    def change_step(self):
+        globals.step_size = self.spinbox_change_step.value()
+        self.refresh_step()
+
+    def refresh_step(self):
+        gas_min = self.spinBoxMin.value()
+        gas_max = self.spinBoxMax.value()
+        self.step_size = (gas_max - gas_min) // globals.step_size  # шаг изменения ползунка в процентах
+
 
     def toggle_read(self):
         #Изменяем состояние read при каждом нажатии кнопки
@@ -407,7 +423,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.SlidePower.setValue(gas_min)
 
         # Вычисление шага на основе текущих минимального и максимального значений
-        self.step_size = (gas_max - gas_min) // 10  # шаг изменения ползунка в процентах
+        self.step_size = (gas_max - gas_min) // globals.step_size  # шаг изменения ползунка в процентах
         if self.step_size == 0:
             self.step_size = 1  # Защита от деления на 0
         localData["gas_min"],localData["gas_max"] = gas_min,gas_max
@@ -439,8 +455,11 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.spinBoxMax.setMaximum(999999)
         self.spinBoxMax.setValue(0)
 
-        self.slider_change_step_5.setMaximum(999999)
-        self.slider_change_step_5.setValue(200)
+        self.calib_weight_spinbox.setMaximum(999999)
+        self.calib_weight_spinbox.setValue(globals.calib_weight)
+
+        self.spinbox_change_step.setMaximum(999999)
+
 
         self.spinBoxMin.setValue(gas_min)
         self.spinBoxMax.setValue(gas_max)

@@ -73,6 +73,14 @@
         padding: 2px;
         color: #d3d3d3;
     }
+    QDoubleSpinBox{
+        background-color: #2d2d2d;
+        border: 1px solid #1e1e1e;
+        border-radius: 5px;
+        padding: 2px;
+        color: #d3d3d3;
+}
+
     QSlider {
         background-color: #2d2d2d;
         border-radius: 5px;
@@ -96,10 +104,10 @@
     </property>
     <property name="geometry">
      <rect>
-      <x>1500</x>
+      <x>1490</x>
       <y>0</y>
-      <width>391</width>
-      <height>141</height>
+      <width>421</width>
+      <height>161</height>
      </rect>
     </property>
     <property name="sizePolicy">
@@ -119,7 +127,7 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-size:8.25pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>0</x>
@@ -257,17 +265,10 @@ p, li { white-space: pre-wrap; }
            </property>
           </widget>
          </item>
+         <item>
+          <widget class="QDoubleSpinBox" name="calib_weight_spinbox"/>
+         </item>
         </layout>
-       </item>
-       <item>
-        <widget class="QSpinBox" name="calib_weight_but">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-        </widget>
        </item>
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout">
@@ -488,7 +489,7 @@ p, li { white-space: pre-wrap; }
             </widget>
            </item>
            <item>
-            <widget class="QSpinBox" name="slider_change_step_5"/>
+            <widget class="QSpinBox" name="spinbox_change_step"/>
            </item>
           </layout>
          </item>
