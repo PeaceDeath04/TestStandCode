@@ -6,30 +6,33 @@ from matplotlib import rcParams
 
 #print(plt.style.available)
 plt.style.use('seaborn-v0_8-dark')
-
+# Настройка параметров
+plt.rcParams.update({
+    'axes.facecolor': '#1e1e1e',           # Цвет фона осей
+    'axes.edgecolor': '#2d2d2d',           # Цвет границ осей
+    'axes.labelcolor': '#d3d3d3',          # Цвет меток осей
+    'xtick.color': '#d3d3d3',              # Цвет меток по оси X
+    'ytick.color': '#d3d3d3',              # Цвет меток по оси Y
+    'text.color': '#d3d3d3',               # Цвет текста
+    'figure.facecolor': '#1e1e1e',         # Цвет фона графика
+    'figure.edgecolor': '#1e1e1e',         # Цвет границ графика
+    'grid.color': '#2d2d2d',                # Цвет сетки
+    'font.family': 'Arial',                 # Шрифт
+    'font.size': 12,                        # Размер шрифта
+    'lines.color': '#00b894',               # Цвет линий (светло-зеленый для визуализации)
+    'legend.facecolor': '#2d2d2d',          # Цвет фона легенды
+    'legend.edgecolor': '#1e1e1e',          # Цвет границ легенды
+    'legend.fontsize': 10,                  # Размер шрифта легенды
+})
 
 class Graph:
     def __init__(self, parent=None, max_points=25):
         self.fig = Figure()  # Создаем объект Figure для графика
         self.canvas = FigureCanvas(self.fig)  # Холст для графика
         self.ax = self.fig.add_subplot(111)  # Добавляем ось
-        self.fig.subplots_adjust(left=0, right=1, top=1, bottom=0)  # Настройка полей
-        self.fig.patch.set_alpha(0)  # Убираем фон самой фигуры (белое вокруг графика)
-        self.ax.set_facecolor('none')  # Убираем фон графика (области внутри осей)
+        self.fig.tight_layout()
+        self.fig.subplots_adjust(0.04, 0.055, 1, 1)  # left,bottom,right,top
 
-        # Настройки стиля для темной темы и жирного текста легенды
-        rcParams['figure.facecolor'] = '#2c3e50'  # Цвет фона фигуры
-        rcParams['axes.facecolor'] = '#34495e'  # Цвет фона осей
-        rcParams['axes.edgecolor'] = '#ecf0f1'  # Цвет рамки осей
-        rcParams['axes.labelcolor'] = '#ecf0f1'  # Цвет подписей к осям
-        rcParams['xtick.color'] = '#ecf0f1'  # Цвет делений по оси X
-        rcParams['ytick.color'] = '#ecf0f1'  # Цвет делений по оси Y
-        rcParams['text.color'] = '#ecf0f1'  # Цвет текста
-        rcParams['legend.facecolor'] = '#34495e'  # Цвет фона легенды
-        rcParams['legend.edgecolor'] = '#ecf0f1'  # Цвет рамки легенды
-        rcParams['legend.fontsize'] = 10  # Размер шрифта легенды
-        rcParams['legend.framealpha'] = 0.8  # Прозрачность фона легенды
-        rcParams['font.weight'] = 'bold'  # Глобальный параметр для веса шрифта
 
         self.x_data = []  # Данные по оси X
         self.y_data = []  # Данные по оси Y
@@ -41,7 +44,7 @@ class Graph:
         self.ax.legend()
 
         # Добавляем анимацию
-        self.ani = FuncAnimation(self.fig, self.animate_my_plot, init_func=self.init_plot, frames=1, interval=125)
+        self.ani = FuncAnimation(self.fig, self.animate_my_plot, init_func=self.init_plot, frames=1, interval=0.8)
 
     def init_plot(self):
         """Начальная установка графика"""
