@@ -2,5 +2,9 @@
     "TractionGraph": {
         "x": "Time",
         "y": "Traction"
+    },
+    "WeightGraph": {
+        "x": "Time",
+        "y": "Weight"
     }
 }

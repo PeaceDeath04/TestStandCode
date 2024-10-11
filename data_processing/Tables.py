@@ -2,7 +2,7 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
 from matplotlib.animation import FuncAnimation
 import matplotlib.pyplot as plt
-from matplotlib import rcParams
+import globals
 
 #print(plt.style.available)
 plt.style.use('seaborn-v0_8-dark')
@@ -25,13 +25,17 @@ plt.rcParams.update({
     'legend.fontsize': 10,                  # Размер шрифта легенды
 })
 
+
+
 class Graph:
     def __init__(self, parent=None, max_points=25):
         self.fig = Figure()  # Создаем объект Figure для графика
         self.canvas = FigureCanvas(self.fig)  # Холст для графика
         self.ax = self.fig.add_subplot(111)  # Добавляем ось
         self.fig.tight_layout()
-        self.fig.subplots_adjust(0.04, 0.055, 0.99, 0.99,)  # left,bottom,right,top
+        self.fig.subplots_adjust(0.04, 0, 0.99, 0.99,)  # left,bottom,right,top
+        self.color = globals.colors[0]
+        globals.colors.pop(0)
 
 
         self.x_data = []  # Данные по оси X
@@ -40,7 +44,7 @@ class Graph:
 
         # Настройка осей графика
         #self.ax.set_ylim(-30,30 )  # Устанавливаем диапазон по оси Y от 0 до 100
-        self.line, = self.ax.plot([], [], label="название", marker='*', linestyle='-')  # Линия на графике с маркерами
+        self.line, = self.ax.plot([], [], label="название", marker='*', linestyle='-',color=self.color)  # Линия на графике с маркерами
         self.ax.legend()
 
         # Добавляем анимацию
