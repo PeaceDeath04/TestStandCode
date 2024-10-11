@@ -31,7 +31,7 @@ class Graph:
         self.canvas = FigureCanvas(self.fig)  # Холст для графика
         self.ax = self.fig.add_subplot(111)  # Добавляем ось
         self.fig.tight_layout()
-        self.fig.subplots_adjust(0.04, 0.055, 1, 1)  # left,bottom,right,top
+        self.fig.subplots_adjust(0.04, 0.055, 0.99, 0.99,)  # left,bottom,right,top
 
 
         self.x_data = []  # Данные по оси X
