@@ -36,6 +36,7 @@ class Graph:
         self.fig.subplots_adjust(0.04, 0, 0.99, 0.99,)  # left,bottom,right,top
         self.color = globals.colors[0]
         globals.colors.pop(0)
+        self.ax.grid(color='#303030', linestyle='-.', linewidth=1)
 
 
         self.x_data = []  # Данные по оси X
@@ -48,7 +49,7 @@ class Graph:
         self.ax.legend()
 
         # Добавляем анимацию
-        self.ani = FuncAnimation(self.fig, self.animate_my_plot, init_func=self.init_plot, frames=1, interval=0.8)
+        self.ani = FuncAnimation(self.fig, self.animate_my_plot, init_func=self.init_plot, frames=1, interval=125)
 
     def init_plot(self):
         """Начальная установка графика"""
