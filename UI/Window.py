@@ -5,6 +5,7 @@ from arduino_processing.SerialManager import read_data,open_port,close_port,upda
 from arduino_processing.ProjectProcessing import TxToARDU
 from data_processing.GraphHandler import *
 import globals
+from data_processing.Tables import FigureCanvas
 from globals import read_ready
 
 
@@ -362,6 +363,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.port_open = False
         self.step_size = 10  # По умолчанию шаг 10, но будет пересчитываться динамически
 
+        self.selected_graph = None # сохраняем нажатый график
+
         create_json("save_file.json",localData)
         create_json("keys_graphs.json",key_to_Graphs)
         graphs.update(add_graphs())
@@ -490,8 +493,43 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
     def sendDb(self, text):
         self.debugWindow.append(text)
 
+    def eventFilter(self, source, event):
+        """Обрабатывает клики и прокрутку колесика для изменения масштаба графика"""
+
+        # Обрабатываем клик мыши для выбора графика
+        if event.type() == QtCore.QEvent.MouseButtonPress:
+            if event.button() == QtCore.Qt.LeftButton:
+                if isinstance(source, FigureCanvas):
+                    # Проходим по всем графикам
+                    for name_graph, params in graphs.items():
+                        obj = params.get("ObjectClass")
+                        if obj and source == obj.canvas:
+                            print(f"Выбран график: {name_graph}")
+                            # Сохраняем выбранный график
+                            self.selected_graph = obj
+                            break
+                return True  # Событие обработано
+
+        # Обрабатываем прокрутку колесика для масштабирования
+        if event.type() == QtCore.QEvent.Wheel:
+            if isinstance(source, FigureCanvas):
+                # Проверяем, что график был выбран ранее
+                if self.selected_graph and source == self.selected_graph.canvas:
+                    # Определяем направление прокрутки
+                    delta = event.angleDelta().y()
+                    if delta > 0:
+                        # Прокрутка вверх — увеличиваем масштаб на 0.1
+                        self.selected_graph.scale_graph(-0.1)  # Увеличиваем масштаб
+                    else:
+                        # Прокрутка вниз — уменьшаем масштаб на 0.1
+                        self.selected_graph.scale_graph(0.1)  # Уменьшаем масштаб
+
+                    return True  # Событие обработано
+        return super().eventFilter(source, event)
+
     def add_to_lay(self):
-        for nameGraph,params in graphs.items():
+        for nameGraph, params in graphs.items():
             for obj in params.values():
-                if isinstance(obj,Graph):
-                    self.graph_Layout.addWidget(obj.canvas)
+                if isinstance(obj, Graph):
+                    self.graph_Layout.addWidget(obj.canvas)  # Добавляем график в layout
+                    obj.canvas.installEventFilter(self)

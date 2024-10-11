@@ -43,13 +43,16 @@ class Graph:
         self.y_data = []  # Данные по оси Y
         self.max_points = max_points  # Максимальное количество точек на графике
 
+        # Начальное значение масштаба
+        self.scale_factor = 1.0
+
         # Настройка осей графика
         #self.ax.set_ylim(-30,30 )  # Устанавливаем диапазон по оси Y от 0 до 100
         self.line, = self.ax.plot([], [], label="название", marker='*', linestyle='-',color=self.color)  # Линия на графике с маркерами
         self.ax.legend()
 
         # Добавляем анимацию
-        self.ani = FuncAnimation(self.fig, self.animate_my_plot, init_func=self.init_plot, frames=1, interval=125)
+        self.ani = FuncAnimation(self.fig, self.animate_my_plot, init_func=self.init_plot, frames=50, interval=250)
 
     def init_plot(self):
         """Начальная установка графика"""
@@ -78,4 +81,21 @@ class Graph:
         self.line.set_data(self.x_data, self.y_data)
         self.ax.relim()  # Обновляем лимиты осей
         self.ax.autoscale_view()  # Масштабируем график
+
+        # Метод для изменения масштаба
+
+    def scale_graph(self, increment):
+        """Изменяет масштаб осей графика на фиксированное значение"""
+        # Получаем текущие лимиты осей
+        y_min, y_max = self.ax.get_ylim()
+
+        # Увеличиваем или уменьшаем диапазоны осей на фиксированное значение
+        y_range = (y_max - y_min) * increment  # Применяем фиксированное значение
+
+        # Устанавливаем новые лимиты с учетом масштаба
+        self.ax.set_ylim(y_min - 0.5 * y_range, y_max + 0.5 * y_range)
+
+        # Обновляем график
+        self.canvas.draw()
+
 
