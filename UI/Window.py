@@ -337,6 +337,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         super().__init__()
         self.setupUi(self)
 
+
         serial.readyRead.connect(read_data)
         self.spinBoxMin.valueChanged.connect(self.GetRangeGas)
         self.spinBoxMax.valueChanged.connect(self.GetRangeGas)
@@ -401,7 +402,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         gas_max = self.spinBoxMax.value()
         self.step_size = (gas_max - gas_min) // globals.step_size  # шаг изменения ползунка в процентах
 
-
     def toggle_read(self):
         #Изменяем состояние read при каждом нажатии кнопки
         self.read = not self.read
@@ -436,19 +436,11 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
     def get_gas_value(self):
         """Корректировка значения слайдера по ближайшему шагу."""
         current_value = self.SlidePower.value()
-        # Округление до ближайшего кратного значения шага
-        corrected_value = round(current_value / self.step_size) * self.step_size
-        localData["gas"] = corrected_value
-        TxToARDU(gas=corrected_value)
-
-        self.SlidePower.blockSignals(True)  # Отключаем сигналы, чтобы избежать рекурсии
-        self.SlidePower.setValue(corrected_value)  # Устанавливаем скорректированное значение
-        self.SlidePower.blockSignals(False)  # Включаем сигналы обратно
-
-        # Отправляем скорректированное значение контроллеру и обновляем интерфейс
-        export_to_json(gas=corrected_value,name_file="save_file.json")
+        localData["gas"] = current_value
         gas_percentage = self.get_gas_percentage()
-        self.valueGas.setText(f"Значение газа в процентах: {str(gas_percentage)}    Численное значние: {corrected_value}")
+        self.valueGas.setText(f"Значение газа в процентах: {str(gas_percentage)} Численное значние: {current_value}")
+        TxToARDU(gas=current_value)
+        export_to_json(gas=current_value,name_file="save_file.json")
 
     def onStartUp(self):
         """Инициализация начальных параметров при запуске приложения."""

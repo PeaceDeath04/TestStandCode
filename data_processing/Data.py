@@ -55,7 +55,6 @@ def import_from_json(name_file,*keys):
         print(f"Ошибка декодирования JSON в файле {save_file}.")
         return None
 
-
 def create_json(name_file, data):
     if not os.path.isfile(name_file):
         with open(name_file, mode="w", encoding="Latin-1") as save_file:
@@ -70,3 +69,4 @@ def import_js(name_file):
     except FileNotFoundError:
         create_json(name_file, None)
         return None
+

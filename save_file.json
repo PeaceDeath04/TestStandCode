@@ -9,7 +9,7 @@
     "Weight_1": 0.0,
     "Weight_2": 0.0,
     "Time": 0,
-    "gas": 800,
-    "gas_min": 800,
+    "gas": 2400,
+    "gas_min": 0,
     "gas_max": 2400
 }

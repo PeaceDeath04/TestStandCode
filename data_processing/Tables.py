@@ -28,7 +28,7 @@ plt.rcParams.update({
 
 
 class Graph:
-    def __init__(self, parent=None, max_points=25):
+    def __init__(self, parent=None, max_points=50):
         self.fig = Figure()  # Создаем объект Figure для графика
         self.canvas = FigureCanvas(self.fig)  # Холст для графика
         self.ax = self.fig.add_subplot(111)  # Добавляем ось
@@ -52,7 +52,7 @@ class Graph:
         self.ax.legend()
 
         # Добавляем анимацию
-        self.ani = FuncAnimation(self.fig, self.animate_my_plot, init_func=self.init_plot, frames=50, interval=250)
+        self.ani = FuncAnimation(self.fig, self.animate_my_plot, init_func=self.init_plot, frames=1, interval=200)
 
     def init_plot(self):
         """Начальная установка графика"""

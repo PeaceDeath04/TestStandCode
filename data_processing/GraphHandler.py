@@ -1,4 +1,4 @@
-from .Data import import_js,localData
+from .Data import import_js, localData, create_json
 from .Tables import Graph
 graphs = {}
 
@@ -30,3 +30,14 @@ def update_graph(graph, xlabel, ylabel):
     graph.ax.set_ylabel(ylabel)
     graph.line.set_label(ylabel)
     graph.add_data(x=x, y=y, name=f"{ylabel} = {y}")
+
+def TestingGraphs(name_file):
+    data = {}
+
+    for key in localData.keys():
+        data[f"{key}Graph"] = {"x": "Time" , "y":key}
+
+    create_json(name_file,data)
+
+
+
