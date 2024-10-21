@@ -364,6 +364,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.port_open = False
         self.step_size = 10  # По умолчанию шаг 10, но будет пересчитываться динамически
 
+        self.last_value = 0;
+
         self.selected_graph = None # сохраняем нажатый график
 
         create_json("save_file.json",localData)
@@ -436,6 +438,11 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
     def get_gas_value(self):
         """Корректировка значения слайдера по ближайшему шагу."""
         current_value = self.SlidePower.value()
+        if self.last_value != current_value:
+            for value in range(self.last_value, current_value +1):
+                TxToARDU(gas= value)
+                print(f"отправили на arduino значение {value}")
+        self.last_value = current_value
         localData["gas"] = current_value
         gas_percentage = self.get_gas_percentage()
         self.valueGas.setText(f"Значение газа в процентах: {str(gas_percentage)} Численное значние: {current_value}")
