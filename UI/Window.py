@@ -359,12 +359,12 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         self.ButSaveExl.setCheckable(True)
 
+        self.last_value = 0
+        self.corrected_value = 0
 
         self.read = False
         self.port_open = False
         self.step_size = 10  # По умолчанию шаг 10, но будет пересчитываться динамически
-
-        self.last_value = 0;
 
         self.selected_graph = None # сохраняем нажатый график
 
@@ -414,7 +414,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         else:
             self.ButSaveExl.setText("начать запись в data.csv")
             recorder.convert_csv_to_xlsx()
-            
+
     def GetRangeGas(self):
         """Обновление диапазона слайдера при изменении Min и Max значений."""
         gas_min = self.spinBoxMin.value()
@@ -438,16 +438,24 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
     def get_gas_value(self):
         """Корректировка значения слайдера по ближайшему шагу."""
         current_value = self.SlidePower.value()
-        if self.last_value != current_value:
-            for value in range(self.last_value, current_value +1):
-                TxToARDU(gas= value)
-                print(f"отправили на arduino значение {value}")
-        self.last_value = current_value
-        localData["gas"] = current_value
-        gas_percentage = self.get_gas_percentage()
-        self.valueGas.setText(f"Значение газа в процентах: {str(gas_percentage)} Численное значние: {current_value}")
-        TxToARDU(gas=current_value)
-        export_to_json(gas=current_value,name_file="save_file.json")
+
+        # Округление до ближайшего кратного значения шага
+        self.corrected_value = round(current_value / self.step_size) * self.step_size
+        self.SlidePower.blockSignals(True)  # Отключаем сигналы, чтобы избежать рекурсии
+        self.SlidePower.setValue(self.corrected_value)  # Устанавливаем скорректированное значение
+        self.SlidePower.blockSignals(False)  # Включаем сигналы обратно
+
+        if self.last_value != self.corrected_value:
+            # Отправляем скорректированное значение контроллеру и обновляем интерфейс
+            localData["gas"] = self.corrected_value
+            TxToARDU(gas=self.corrected_value)
+            export_to_json(gas=self.corrected_value, name_file="save_file.json")
+            gas_percentage = self.get_gas_percentage()
+            self.valueGas.setText(
+                f"Значение газа в процентах: {str(gas_percentage)}    Численное значние: {self.corrected_value}")
+            self.last_value = self.corrected_value
+            print(self.corrected_value)
+
 
     def onStartUp(self):
         """Инициализация начальных параметров при запуске приложения."""
