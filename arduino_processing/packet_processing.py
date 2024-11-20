@@ -20,10 +20,10 @@ def but_taring(param):
     """Кнопка тарирования \n Принимает параметр в строковом виде , который извлекает из LocalДаты и добавляет в словарь для тарирования"""
     if param == "Traction":
         dict_tar["Traction"] = localData.get("Traction")
-        print(f"получили значение для тарирования{dict_tar['Traction']}")
     if param == "Weight":
         dict_tar["Weight_1"] = localData.get("Weight_1")
         dict_tar["Weight_2"] = localData.get("Weight_2")
+
 def taring_values(packet_data):
     if dict_tar is not None:
         for key_packet, value_packet in packet_data.items():
@@ -41,6 +41,7 @@ def get_kef_tenz(key_value):
     if key_value == "Weight":
         params_tenz_kef["Weight_1"] = localData.get("Weight_1") / calib_weight
         params_tenz_kef["Weight_2"] = localData.get("Weight_2") / calib_weight
+
 def get_result_value(pia_data):
     """производим деление параметров на их коэффициенты если таковы имеются"""
     if params_tenz_kef:  # проверка на наличие коэффицентов в словаре

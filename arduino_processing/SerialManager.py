@@ -53,6 +53,7 @@ def validate_data_packet(packet):
 def read_data():
     global buffer
     try:
+
         rx = serial.readLine()
         rxs = str(rx, 'utf-8', errors='ignore')
         buffer += rxs
@@ -74,6 +75,3 @@ def read_data():
             buffer = packets[-1]
     except Exception as e:
         traceback.print_exc(f"что то пошло не так с вводом данных {buffer} \n {e}")
-
-
-
