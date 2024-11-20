@@ -1,4 +1,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtTest import QTest
+from openpyxl.styles.builtins import percent
+
 from data_processing.Data import localData, export_to_json, import_from_json, create_json,key_to_Graphs
 from arduino_processing.packet_processing import *
 from arduino_processing.SerialManager import read_data,open_port,close_port,update_port_list,serial
@@ -349,7 +352,10 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.ButTarTraction.clicked.connect(lambda: but_taring("Traction"))
         self.ButTarWeight.clicked.connect(lambda: but_taring("Weight"))
 
-        self.ButCalib.clicked.connect(lambda: TxToARDU(ButCalibMotor=0))
+        #self.ButCalib.clicked.connect(lambda: TxToARDU(ButCalibMotor=0))
+
+
+
         self.ButCalibTraction.clicked.connect(lambda:get_kef_tenz("Traction"))
         self.ButCalibWeight.clicked.connect(lambda:get_kef_tenz("Weight"))
 
@@ -364,7 +370,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.port_open = False
         self.step_size = 10  # По умолчанию шаг 10, но будет пересчитываться динамически
 
-        self.last_value = 0;
+        self.last_value = 0
+        self.corrected_value = 0
 
         self.selected_graph = None # сохраняем нажатый график
 
@@ -372,6 +379,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         create_json("keys_graphs.json",key_to_Graphs)
         graphs.update(add_graphs())
         self.add_to_lay()
+        self.ButCalib.clicked.connect(self.auto_test)
 
         self.onStartUp()
 
@@ -382,6 +390,39 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             return (round(per))
         except:
             return "Ошибка при вычилсении процента"
+
+    def calculate_value_from_percentage(self,percentage):
+        """
+        Вычисляет число в заданном диапазоне для определенного процента.
+
+        :param percentage: Процент (int или float, 0-100)
+        :return: Число, соответствующее percentage% от диапазона
+        """
+        try:
+            if not (0 <= percentage <= 100):
+                return "Ошибка: процент должен быть в диапазоне от 0 до 100"
+
+            return int(self.spinBoxMin.value() + (percentage / 100) * (self.spinBoxMax.value() - self.spinBoxMin.value()))
+        except TypeError:
+            return "Ошибка: переданы некорректные значения"
+
+
+    def auto_test(self):
+        step = 10                                                           # шаг по сколько процентов будем добавлять
+        per = 20                                                            # процент передаваемый в метод который будет находить значение
+        recorder.base_filename = "AutoTest"                                 # меняем название файла
+        self.toggle_read()                                                  # начинаем запись
+        while per <=100:                                                    # цикл от начального значения процента до 100
+            value_from_per = self.calculate_value_from_percentage(per)
+            print(value_from_per)# получаем значение от процента
+            self.SlidePower.setValue(value_from_per)                        # устанавливаем значение на слайдер P.s при изменении он должен отправлять на arduino
+            per +=step                                                      # добавляем к проценту шаг т.е 20 +10 +10 где 10 шаг
+            QTest.qWait(4000)                                            # задержка 4 секунды
+        self.toggle_read()                                                  # заканчиваем запись
+
+
+
+
 
     def toggle_port(self):
         self.port_open = not self.port_open
@@ -438,16 +479,23 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
     def get_gas_value(self):
         """Корректировка значения слайдера по ближайшему шагу."""
         current_value = self.SlidePower.value()
-        if self.last_value != current_value:
-            for value in range(self.last_value, current_value +1):
-                TxToARDU(gas= value)
-                print(f"отправили на arduino значение {value}")
-        self.last_value = current_value
-        localData["gas"] = current_value
-        gas_percentage = self.get_gas_percentage()
-        self.valueGas.setText(f"Значение газа в процентах: {str(gas_percentage)} Численное значние: {current_value}")
-        TxToARDU(gas=current_value)
-        export_to_json(gas=current_value,name_file="save_file.json")
+
+        # Округление до ближайшего кратного значения шага
+        self.corrected_value = round(current_value / self.step_size) * self.step_size
+        self.SlidePower.blockSignals(True)  # Отключаем сигналы, чтобы избежать рекурсии
+        self.SlidePower.setValue(self.corrected_value)  # Устанавливаем скорректированное значение
+        self.SlidePower.blockSignals(False)  # Включаем сигналы обратно
+
+        if self.last_value != self.corrected_value:
+            # Отправляем скорректированное значение контроллеру и обновляем интерфейс
+            localData["gas"] = self.corrected_value
+            TxToARDU(gas=self.corrected_value)
+            export_to_json(gas=self.corrected_value, name_file="save_file.json")
+            gas_percentage = self.get_gas_percentage()
+            self.valueGas.setText(
+                f"Значение газа в процентах: {str(gas_percentage)}    Численное значние: {self.corrected_value}")
+            self.last_value = self.corrected_value
+            print(self.corrected_value)
 
     def onStartUp(self):
         """Инициализация начальных параметров при запуске приложения."""

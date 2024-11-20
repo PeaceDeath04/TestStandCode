@@ -15,6 +15,7 @@ def TxToARDU(**packet_data):
                 serial.write(result.encode())
 
 
+
 # получаем Rpm Rotate per min / оборотов в минуту
 def TakeRpmE(t_flach):
     try:
