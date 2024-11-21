@@ -95,7 +95,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.debugWindow.setAutoFormatting(QtWidgets.QTextEdit.AutoNone)
         self.debugWindow.setObjectName("debugWindow")
         self.layoutWidget = QtWidgets.QWidget(self.centralwidget)
-        self.layoutWidget.setGeometry(QtCore.QRect(0, 0, 1491, 156))
+        self.layoutWidget.setGeometry(QtCore.QRect(0, 0, 1491, 163))
         self.layoutWidget.setObjectName("layoutWidget")
         self.horizontalLayout_4 = QtWidgets.QHBoxLayout(self.layoutWidget)
         self.horizontalLayout_4.setContentsMargins(0, 0, 0, 0)
@@ -235,6 +235,9 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.ButCalib.setFlat(False)
         self.ButCalib.setObjectName("ButCalib")
         self.settings_lay.addWidget(self.ButCalib)
+        self.ButAutoTest = QtWidgets.QPushButton(self.layoutWidget)
+        self.ButAutoTest.setObjectName("ButAutoTest")
+        self.settings_lay.addWidget(self.ButAutoTest)
         self.horizontalLayout_4.addLayout(self.settings_lay)
         self.MenuChangeGas = QtWidgets.QVBoxLayout()
         self.MenuChangeGas.setObjectName("MenuChangeGas")
@@ -332,6 +335,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.ButCalibTraction.setText(_translate("MainWindow", "Калибровка тяги"))
         self.ButCalibWeight.setText(_translate("MainWindow", "Калибровка веса"))
         self.ButCalib.setText(_translate("MainWindow", "Калибровка мотора"))
+        self.ButAutoTest.setText(_translate("MainWindow", "Начать автотест"))
         self.label.setText(_translate("MainWindow", "Установка оффсета мощности"))
         self.valueGas.setText(_translate("MainWindow", "Значение газа"))
         self.text_change_step_5.setText(_translate("MainWindow", "Изменить шаг подачи газа"))
@@ -352,7 +356,9 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.ButTarTraction.clicked.connect(lambda: but_taring("Traction"))
         self.ButTarWeight.clicked.connect(lambda: but_taring("Weight"))
 
-        #self.ButCalib.clicked.connect(lambda: TxToARDU(ButCalibMotor=0))
+        self.ButCalib.clicked.connect(lambda: TxToARDU(ButCalibMotor=0))
+
+        self.ButAutoTest.clicked.connect(self.auto_test)
 
 
 
@@ -379,7 +385,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         create_json("keys_graphs.json",key_to_Graphs)
         graphs.update(add_graphs())
         self.add_to_lay()
-        self.ButCalib.clicked.connect(self.auto_test)
 
         self.onStartUp()
 
@@ -413,8 +418,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         recorder.base_filename = "AutoTest"                                 # меняем название файла
         self.toggle_read()                                                  # начинаем запись
         while per <=100:                                                    # цикл от начального значения процента до 100
-            value_from_per = self.calculate_value_from_percentage(per)
-            print(value_from_per)# получаем значение от процента
+            value_from_per = self.calculate_value_from_percentage(per)      # получаем значение от процента
             self.SlidePower.setValue(value_from_per)                        # устанавливаем значение на слайдер P.s при изменении он должен отправлять на arduino
             per +=step                                                      # добавляем к проценту шаг т.е 20 +10 +10 где 10 шаг
             QTest.qWait(4000)                                            # задержка 4 секунды
@@ -495,7 +499,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             self.valueGas.setText(
                 f"Значение газа в процентах: {str(gas_percentage)}    Численное значние: {self.corrected_value}")
             self.last_value = self.corrected_value
-            print(self.corrected_value)
+
 
     def onStartUp(self):
         """Инициализация начальных параметров при запуске приложения."""
