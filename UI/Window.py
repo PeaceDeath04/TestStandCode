@@ -10,6 +10,10 @@ from data_processing.GraphHandler import *
 import globals
 from data_processing.Tables import FigureCanvas
 from globals import read_ready
+from PyQt5.QtWidgets import (
+    QApplication, QDialog, QVBoxLayout, QLabel, QSpinBox, QPushButton, QHBoxLayout
+)
+
 
 
 class Ui_MainWindow(QtWidgets.QMainWindow):
@@ -343,8 +347,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
-
-
         serial.readyRead.connect(read_data)
         self.spinBoxMin.valueChanged.connect(self.GetRangeGas)
         self.spinBoxMax.valueChanged.connect(self.GetRangeGas)
@@ -352,26 +354,15 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.butRefresh.clicked.connect(self.update_ports)
         self.SlidePower.valueChanged.connect(self.get_gas_value)
         self.ButSaveExl.clicked.connect(self.toggle_read)
-
         self.ButTarTraction.clicked.connect(lambda: but_taring("Traction"))
         self.ButTarWeight.clicked.connect(lambda: but_taring("Weight"))
-
         self.ButCalib.clicked.connect(lambda: TxToARDU(ButCalibMotor=0))
-
         self.ButAutoTest.clicked.connect(self.auto_test)
-
-
-
         self.ButCalibTraction.clicked.connect(lambda:get_kef_tenz("Traction"))
         self.ButCalibWeight.clicked.connect(lambda:get_kef_tenz("Weight"))
-
         self.calib_weight_spinbox.valueChanged.connect(self.change_weight)
-
         self.spinbox_change_step.valueChanged.connect(self.change_step)
-
         self.ButSaveExl.setCheckable(True)
-
-
         self.read = False
         self.port_open = False
         self.step_size = 10  # По умолчанию шаг 10, но будет пересчитываться динамически
@@ -411,23 +402,23 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         except TypeError:
             return "Ошибка: переданы некорректные значения"
 
-
     def auto_test(self):
-        step = 10                                                           # шаг по сколько процентов будем добавлять
-        per = 20                                                            # процент передаваемый в метод который будет находить значение
-        TxToARDU(t=0)                                                       # обнуляем таймер на ардуино
-        recorder.base_filename = "AutoTest"                                 # меняем название файла
-        self.toggle_read()                                                  # начинаем запись
-        while per <=100:                                                    # цикл от начального значения процента до 100
-            value_from_per = self.calculate_value_from_percentage(per)      # получаем значение от процента
-            self.SlidePower.setValue(value_from_per)                        # устанавливаем значение на слайдер P.s при изменении он должен отправлять на arduino
-            per +=step                                                      # добавляем к проценту шаг т.е 20 +10 +10 где 10 шаг
-            QTest.qWait(4000)                                               # задержка 4 секунды
-        self.toggle_read()                                                  # заканчиваем запись
-        self.SlidePower.setValue(self.spinBoxMin.value())                   # ставим минимальное значение газа
+        dialog = IterationDialog()
+        if dialog.exec_():
+            print("Значения газа:", dialog.gas_values)
+            print("Тайминги:", dialog.timings)
 
+        recorder.base_filename = "AutoTest"
+        TxToARDU(ResetTime=0)
+        self.toggle_read()
 
+        for i, (gas, time) in enumerate(zip(dialog.gas_values, dialog.timings)):
+            percent_gas = self.calculate_value_from_percentage(gas)
+            self.SlidePower.setValue(percent_gas)
+            QTest.qWait(time)
 
+        self.toggle_read()
+        self.SlidePower.setValue(self.spinBoxMin.value())
 
     def toggle_port(self):
         self.port_open = not self.port_open
@@ -500,7 +491,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             self.valueGas.setText(
                 f"Значение газа в процентах: {str(gas_percentage)}    Численное значние: {self.corrected_value}")
             self.last_value = self.corrected_value
-
 
     def onStartUp(self):
         """Инициализация начальных параметров при запуске приложения."""
@@ -585,3 +575,133 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
                 if isinstance(obj, Graph):
                     self.graph_Layout.addWidget(obj.canvas)  # Добавляем график в layout
                     obj.canvas.installEventFilter(self)
+
+class IterationDialog(QDialog):
+    def __init__(self):
+        super().__init__()
+        self.setStyleSheet("QWidget {\n"
+                                 "        background-color: #1e1e1e;  /* Очень темный фон */\n"
+                                 "        color: #d3d3d3;  /* Светло-серый цвет текста */\n"
+                                 "        font-family: Arial, sans-serif;\n"
+                                 "        font-size: 12px;\n"
+                                 "    }\n"
+                                 "    QPushButton {\n"
+                                 "        background-color: #2d2d2d;  /* Темный фон для кнопок */\n"
+                                 "        border: 1px solid #1e1e1e;\n"
+                                 "        border-radius: 5px;\n"
+                                 "        padding: 5px;\n"
+                                 "        font-weight: bold;\n"
+                                 "    }\n"
+                                 "    QPushButton:hover {\n"
+                                 "        background-color: #00b894;  /* Светло-зеленый при наведении */\n"
+                                 "        color: #1e1e1e;\n"
+                                 "    }\n"
+                                 "    QComboBox {\n"
+                                 "        border: 1px solid #2d2d2d;\n"
+                                 "        border-radius: 5px;\n"
+                                 "        padding: 2px;\n"
+                                 "        background-color: #2d2d2d;\n"
+                                 "    }\n"
+                                 "    QTextBrowser {\n"
+                                 "        background-color: #2d2d2d;  /* Темный фон для окна вывода */\n"
+                                 "        border: 1px solid #1e1e1e;\n"
+                                 "        border-radius: 5px;\n"
+                                 "        padding: 5px;\n"
+                                 "    }\n"
+                                 "    QLabel {\n"
+                                 "        color: #d3d3d3;  /* Мягкий серый цвет для текста */\n"
+                                 "        font-weight: bold;\n"
+                                 "        font-size: 14px;\n"
+                                 "    }\n"
+                                 "    QSpinBox {\n"
+                                 "        background-color: #2d2d2d;\n"
+                                 "        border: 1px solid #1e1e1e;\n"
+                                 "        border-radius: 5px;\n"
+                                 "        padding: 2px;\n"
+                                 "        color: #d3d3d3;\n"
+                                 "    }\n"
+                                 "    QDoubleSpinBox{\n"
+                                 "        background-color: #2d2d2d;\n"
+                                 "        border: 1px solid #1e1e1e;\n"
+                                 "        border-radius: 5px;\n"
+                                 "        padding: 2px;\n"
+                                 "        color: #d3d3d3;\n"
+                                 "}\n"
+                                 "\n"
+                                 "    QSlider {\n"
+                                 "        background-color: #2d2d2d;\n"
+                                 "        border-radius: 5px;\n"
+                                 "}")
+        self.setWindowTitle("Ввод данных")
+        self.layout = QVBoxLayout(self)
+        self.init_ui()
+
+        self.gas_values = []
+        self.timings = []
+        self.iterations = 0
+        self.current_iteration = 0
+
+    def init_ui(self):
+        # Виджет для ввода количества итераций
+        self.iteration_label = QLabel("Сколько должно быть итераций?")
+        self.iteration_spinbox = QSpinBox()
+        self.iteration_spinbox.setMinimum(1)
+
+        self.start_button = QPushButton("Начать")
+        self.start_button.clicked.connect(self.start_iterations)
+
+        self.layout.addWidget(self.iteration_label)
+        self.layout.addWidget(self.iteration_spinbox)
+        self.layout.addWidget(self.start_button)
+
+    def start_iterations(self):
+        # Устанавливаем количество итераций
+        self.iterations = self.iteration_spinbox.value()
+
+        # Убираем виджеты ввода итераций
+        self.iteration_label.hide()
+        self.iteration_spinbox.hide()
+        self.start_button.hide()
+
+        # Создаем виджеты для ввода значений газа и времени
+        self.gas_label = QLabel()
+        self.gas_spinbox = QSpinBox()
+        self.gas_spinbox.setMinimum(0)
+        self.gas_spinbox.setMaximum(100000)
+
+        self.time_label = QLabel()
+        self.time_spinbox = QSpinBox()
+        self.time_spinbox.setMinimum(1)
+        self.time_spinbox.setMaximum(1000000)
+
+        self.next_button = QPushButton("Далее")
+        self.next_button.clicked.connect(self.next_iteration)
+
+        # Добавляем виджеты на форму
+        self.layout.addWidget(self.gas_label)
+        self.layout.addWidget(self.gas_spinbox)
+        self.layout.addWidget(self.time_label)
+        self.layout.addWidget(self.time_spinbox)
+        self.layout.addWidget(self.next_button)
+
+        # Запускаем первую итерацию
+        self.update_iteration_ui()
+
+    def update_iteration_ui(self):
+        # Обновляем текст для текущей итерации
+        self.gas_label.setText(f"Какое количество газа (в процентах) подавать на {self.current_iteration + 1} итерации?")
+        self.time_label.setText(f"Какое время ожидать (в мс) на {self.current_iteration + 1} итерации?")
+
+    def next_iteration(self):
+        # Сохраняем значения текущей итерации
+        self.gas_values.append(self.gas_spinbox.value())
+        self.timings.append(self.time_spinbox.value())
+
+        self.current_iteration += 1
+
+        if self.current_iteration < self.iterations:
+            # Если итерации не закончились, обновляем UI
+            self.update_iteration_ui()
+        else:
+            # Завершаем диалог
+            self.accept()
