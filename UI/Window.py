@@ -415,15 +415,16 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
     def auto_test(self):
         step = 10                                                           # шаг по сколько процентов будем добавлять
         per = 20                                                            # процент передаваемый в метод который будет находить значение
+        TxToARDU(t=0)                                                       # обнуляем таймер на ардуино
         recorder.base_filename = "AutoTest"                                 # меняем название файла
         self.toggle_read()                                                  # начинаем запись
         while per <=100:                                                    # цикл от начального значения процента до 100
             value_from_per = self.calculate_value_from_percentage(per)      # получаем значение от процента
             self.SlidePower.setValue(value_from_per)                        # устанавливаем значение на слайдер P.s при изменении он должен отправлять на arduino
             per +=step                                                      # добавляем к проценту шаг т.е 20 +10 +10 где 10 шаг
-            QTest.qWait(4000)                                            # задержка 4 секунды
+            QTest.qWait(4000)                                               # задержка 4 секунды
         self.toggle_read()                                                  # заканчиваем запись
-
+        self.SlidePower.setValue(self.spinBoxMin.value())                   # ставим минимальное значение газа
 
 
 
