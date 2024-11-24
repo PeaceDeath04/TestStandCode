@@ -1,7 +1,9 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtTest import QTest
 from openpyxl.styles.builtins import percent
+from wheel.cli.convert import convert
 
+from UI.settings_window import SettingsWindow
 from data_processing.Data import localData, export_to_json, import_from_json, create_json,key_to_Graphs
 from arduino_processing.packet_processing import *
 from arduino_processing.SerialManager import read_data,open_port,close_port,update_port_list,serial
@@ -10,13 +12,14 @@ from data_processing.GraphHandler import *
 import globals
 from data_processing.Tables import FigureCanvas
 from UI.WindowAutoTest import IterationDialog
+from UI.settings_window import SettingsWindow
 from globals import read_ready
 
 
 class Ui_MainWindow(QtWidgets.QMainWindow):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1920, 941)
+        MainWindow.resize(1920, 935)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -85,18 +88,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.graph_Layout = QtWidgets.QVBoxLayout(self.verticalLayoutWidget)
         self.graph_Layout.setContentsMargins(0, 0, 0, 0)
         self.graph_Layout.setObjectName("graph_Layout")
-        self.debugWindow = QtWidgets.QTextBrowser(self.centralwidget)
-        self.debugWindow.setEnabled(True)
-        self.debugWindow.setGeometry(QtCore.QRect(1490, 0, 421, 161))
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.debugWindow.sizePolicy().hasHeightForWidth())
-        self.debugWindow.setSizePolicy(sizePolicy)
-        self.debugWindow.setAutoFormatting(QtWidgets.QTextEdit.AutoNone)
-        self.debugWindow.setObjectName("debugWindow")
         self.layoutWidget = QtWidgets.QWidget(self.centralwidget)
-        self.layoutWidget.setGeometry(QtCore.QRect(0, 0, 1491, 163))
+        self.layoutWidget.setGeometry(QtCore.QRect(0, 0, 1561, 161))
         self.layoutWidget.setObjectName("layoutWidget")
         self.horizontalLayout_4 = QtWidgets.QHBoxLayout(self.layoutWidget)
         self.horizontalLayout_4.setContentsMargins(0, 0, 0, 0)
@@ -141,35 +134,10 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.butRefresh.setSizePolicy(sizePolicy)
         self.butRefresh.setObjectName("butRefresh")
         self.GlobalMenu.addWidget(self.butRefresh)
-        self.ButSaveExl = QtWidgets.QPushButton(self.layoutWidget)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.ButSaveExl.sizePolicy().hasHeightForWidth())
-        self.ButSaveExl.setSizePolicy(sizePolicy)
-        self.ButSaveExl.setObjectName("ButSaveExl")
-        self.GlobalMenu.addWidget(self.ButSaveExl)
         self.horizontalLayout_4.addLayout(self.GlobalMenu)
         self.settings_lay = QtWidgets.QVBoxLayout()
         self.settings_lay.setSpacing(0)
         self.settings_lay.setObjectName("settings_lay")
-        self.lay_params = QtWidgets.QVBoxLayout()
-        self.lay_params.setObjectName("lay_params")
-        self.calib_label = QtWidgets.QLabel(self.layoutWidget)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.calib_label.sizePolicy().hasHeightForWidth())
-        self.calib_label.setSizePolicy(sizePolicy)
-        self.calib_label.setAutoFillBackground(False)
-        self.calib_label.setScaledContents(False)
-        self.calib_label.setAlignment(QtCore.Qt.AlignCenter)
-        self.calib_label.setObjectName("calib_label")
-        self.lay_params.addWidget(self.calib_label)
-        self.calib_weight_spinbox = QtWidgets.QDoubleSpinBox(self.layoutWidget)
-        self.calib_weight_spinbox.setObjectName("calib_weight_spinbox")
-        self.lay_params.addWidget(self.calib_weight_spinbox)
-        self.settings_lay.addLayout(self.lay_params)
         self.horizontalLayout = QtWidgets.QHBoxLayout()
         self.horizontalLayout.setObjectName("horizontalLayout")
         self.ButTarTraction = QtWidgets.QPushButton(self.layoutWidget)
@@ -236,9 +204,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.ButCalib.setFlat(False)
         self.ButCalib.setObjectName("ButCalib")
         self.settings_lay.addWidget(self.ButCalib)
-        self.ButAutoTest = QtWidgets.QPushButton(self.layoutWidget)
-        self.ButAutoTest.setObjectName("ButAutoTest")
-        self.settings_lay.addWidget(self.ButAutoTest)
         self.horizontalLayout_4.addLayout(self.settings_lay)
         self.MenuChangeGas = QtWidgets.QVBoxLayout()
         self.MenuChangeGas.setObjectName("MenuChangeGas")
@@ -291,18 +256,30 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.SlidePower.setOrientation(QtCore.Qt.Horizontal)
         self.SlidePower.setObjectName("SlidePower")
         self.verticalLayout.addWidget(self.SlidePower)
-        self.lay_change_step_5 = QtWidgets.QVBoxLayout()
-        self.lay_change_step_5.setObjectName("lay_change_step_5")
-        self.text_change_step_5 = QtWidgets.QLabel(self.layoutWidget)
-        self.text_change_step_5.setAlignment(QtCore.Qt.AlignCenter)
-        self.text_change_step_5.setObjectName("text_change_step_5")
-        self.lay_change_step_5.addWidget(self.text_change_step_5)
-        self.spinbox_change_step = QtWidgets.QSpinBox(self.layoutWidget)
-        self.spinbox_change_step.setObjectName("spinbox_change_step")
-        self.lay_change_step_5.addWidget(self.spinbox_change_step)
-        self.verticalLayout.addLayout(self.lay_change_step_5)
         self.MenuChangeGas.addLayout(self.verticalLayout)
         self.horizontalLayout_4.addLayout(self.MenuChangeGas)
+        self.LayAutoTest = QtWidgets.QVBoxLayout()
+        self.LayAutoTest.setSizeConstraint(QtWidgets.QLayout.SetDefaultConstraint)
+        self.LayAutoTest.setContentsMargins(-1, 0, -1, 0)
+        self.LayAutoTest.setSpacing(6)
+        self.LayAutoTest.setObjectName("LayAutoTest")
+        self.ButSaveExl = QtWidgets.QPushButton(self.layoutWidget)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.ButSaveExl.sizePolicy().hasHeightForWidth())
+        self.ButSaveExl.setSizePolicy(sizePolicy)
+        self.ButSaveExl.setObjectName("ButSaveExl")
+        self.LayAutoTest.addWidget(self.ButSaveExl)
+        self.ButAutoTest = QtWidgets.QPushButton(self.layoutWidget)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.ButAutoTest.sizePolicy().hasHeightForWidth())
+        self.ButAutoTest.setSizePolicy(sizePolicy)
+        self.ButAutoTest.setObjectName("ButAutoTest")
+        self.LayAutoTest.addWidget(self.ButAutoTest)
+        self.horizontalLayout_4.addLayout(self.LayAutoTest)
         self.horizontalLayout_4.setStretch(0, 1)
         self.horizontalLayout_4.setStretch(1, 2)
         self.horizontalLayout_4.setStretch(2, 4)
@@ -310,10 +287,20 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 1920, 21))
         self.menubar.setObjectName("menubar")
+        self.menu = QtWidgets.QMenu(self.menubar)
+        self.menu.setObjectName("menu")
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
+        self.action = QtWidgets.QAction(MainWindow)
+        self.action.setObjectName("action")
+        self.action_2 = QtWidgets.QAction(MainWindow)
+        self.action_2.setObjectName("action_2")
+        self.ActionSettings = QtWidgets.QAction(MainWindow)
+        self.ActionSettings.setObjectName("ActionSettings")
+        self.menu.addAction(self.ActionSettings)
+        self.menubar.addAction(self.menu.menuAction())
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
@@ -321,28 +308,25 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "Window"))
-        self.debugWindow.setHtml(_translate("MainWindow",
-                                            "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
-                                            "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
-                                            "p, li { white-space: pre-wrap; }\n"
-                                            "</style></head><body style=\" font-family:\'Arial,sans-serif\'; font-size:12px; font-weight:400; font-style:normal;\">\n"
-                                            "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:\'MS Shell Dlg 2\'; font-size:8.25pt;\"><br /></p></body></html>"))
         self.ButOpenPort.setText(_translate("MainWindow", "открыть порт"))
         self.butRefresh.setText(_translate("MainWindow", "Обновить список портов"))
-        self.ButSaveExl.setText(_translate("MainWindow", "Начать запись параметров"))
-        self.calib_label.setText(_translate("MainWindow", "Изменить калибровочный вес"))
         self.ButTarTraction.setText(_translate("MainWindow", "Тарирование тяги"))
         self.ButTarWeight.setText(_translate("MainWindow", "Тарирование веса"))
         self.ButCalibTraction.setText(_translate("MainWindow", "Калибровка тяги"))
         self.ButCalibWeight.setText(_translate("MainWindow", "Калибровка веса"))
         self.ButCalib.setText(_translate("MainWindow", "Калибровка мотора"))
-        self.ButAutoTest.setText(_translate("MainWindow", "Начать автотест"))
         self.label.setText(_translate("MainWindow", "Установка оффсета мощности"))
         self.valueGas.setText(_translate("MainWindow", "Значение газа"))
-        self.text_change_step_5.setText(_translate("MainWindow", "Изменить шаг подачи газа"))
+        self.ButSaveExl.setText(_translate("MainWindow", "Начать запись параметров"))
+        self.ButAutoTest.setText(_translate("MainWindow", "Начать автотест"))
+        self.menu.setTitle(_translate("MainWindow", "Меню"))
+        self.action.setText(_translate("MainWindow", "настройки"))
+        self.action_2.setText(_translate("MainWindow", "настройки параметров"))
+        self.ActionSettings.setText(_translate("MainWindow", "настройки"))
 
     def __init__(self):
         super().__init__()
+        self.window_settings = SettingsWindow()
         self.setupUi(self)
         serial.readyRead.connect(read_data)
         self.spinBoxMin.valueChanged.connect(self.GetRangeGas)
@@ -357,8 +341,11 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.ButAutoTest.clicked.connect(self.auto_test)
         self.ButCalibTraction.clicked.connect(lambda:get_kef_tenz("Traction"))
         self.ButCalibWeight.clicked.connect(lambda:get_kef_tenz("Weight"))
-        self.calib_weight_spinbox.valueChanged.connect(self.change_weight)
-        self.spinbox_change_step.valueChanged.connect(self.change_step)
+        self.ActionSettings.triggered.connect(self.open_settings)
+
+        """     self.calib_weight_spinbox.valueChanged.connect(self.change_weight)
+                self.spinbox_change_step.valueChanged.connect(self.change_step)"""
+
         self.ButSaveExl.setCheckable(True)
         self.read = False
         self.port_open = False
@@ -375,6 +362,9 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.add_to_lay()
 
         self.onStartUp()
+
+    def open_settings(self):
+        self.window_settings.show()
 
     def get_gas_percentage(self):
         try:
@@ -400,20 +390,18 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             return "Ошибка: переданы некорректные значения"
 
     def auto_test(self):
-        dialog = IterationDialog()
-        if dialog.exec_():
-            print("Значения газа:", dialog.gas_values)
-            print("Тайминги:", dialog.timings)
+        points = import_js("timings.json")
 
         recorder.base_filename = "AutoTest"
         TxToARDU(ResetTime=0)
         self.toggle_read()
 
-        for i, (gas, time) in enumerate(zip(dialog.gas_values, dialog.timings)):
-            percent_gas = self.calculate_value_from_percentage(gas)
-            self.SlidePower.setValue(percent_gas)
-            QTest.qWait(time)
-
+        for point in points.values():
+            for gas,time in point.items():
+                gas,time = int(gas), int(time)
+                gas = self.calculate_value_from_percentage(gas)
+                self.SlidePower.setValue(gas)
+                QTest.qWait(time)
         self.toggle_read()
         self.SlidePower.setValue(self.spinBoxMin.value())
 
@@ -428,15 +416,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
     def change_weight(self):
         globals.calib_weight = self.calib_weight_spinbox.value()
-
-    def change_step(self):
-        globals.step_size = self.spinbox_change_step.value()
-        self.refresh_step()
-
-    def refresh_step(self):
-        gas_min = self.spinBoxMin.value()
-        gas_max = self.spinBoxMax.value()
-        self.step_size = (gas_max - gas_min) // globals.step_size  # шаг изменения ползунка в процентах
 
     def toggle_read(self):
         #Изменяем состояние read при каждом нажатии кнопки
@@ -462,7 +441,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.SlidePower.setValue(gas_min)
 
         # Вычисление шага на основе текущих минимального и максимального значений
-        self.step_size = (gas_max - gas_min) // globals.step_size  # шаг изменения ползунка в процентах
+        self.step_size = globals.step_size  # шаг изменения ползунка в процентах
+
         if self.step_size == 0:
             self.step_size = 1  # Защита от деления на 0
         localData["gas_min"],localData["gas_max"] = gas_min,gas_max
@@ -474,7 +454,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         current_value = self.SlidePower.value()
 
         # Округление до ближайшего кратного значения шага
-        self.corrected_value = round(current_value / self.step_size) * self.step_size
+        self.corrected_value = round(current_value / globals.step_size) * globals.step_size
         self.SlidePower.blockSignals(True)  # Отключаем сигналы, чтобы избежать рекурсии
         self.SlidePower.setValue(self.corrected_value)  # Устанавливаем скорректированное значение
         self.SlidePower.blockSignals(False)  # Включаем сигналы обратно
@@ -497,10 +477,10 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.spinBoxMax.setMaximum(999999)
         self.spinBoxMax.setValue(0)
 
-        self.calib_weight_spinbox.setMaximum(999999)
+        """self.calib_weight_spinbox.setMaximum(999999)
         self.calib_weight_spinbox.setValue(globals.calib_weight)
 
-        self.spinbox_change_step.setMaximum(999999)
+        self.spinbox_change_step.setMaximum(999999)"""
 
 
         self.spinBoxMin.setValue(gas_min)
@@ -517,20 +497,14 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
     def open_port(self):
         port_name = self.ListPorts.currentText()
         result = open_port(port_name)
-        self.sendDb(result)
 
     def close_port(self):
         result = close_port()
-        self.sendDb(result)
 
     def update_ports(self):
         ports = update_port_list()
         self.ListPorts.clear()
         self.ListPorts.addItems(ports)
-        self.sendDb("Список портов обновлен")
-
-    def sendDb(self, text):
-        self.debugWindow.append(text)
 
     def eventFilter(self, source, event):
         """Обрабатывает клики и прокрутку колесика для изменения масштаба графика"""

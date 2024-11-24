@@ -1,8 +1,8 @@
+import os.path
+
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QApplication
-from UI.Window import Ui_MainWindow
-from data_processing.Data import export_to_json,create_json
-import sys
+from data_processing.Data import export_to_json, create_json, import_from_json,json_dir
+import globals
 
 
 class SettingsWindow(QtWidgets.QWidget):
@@ -200,13 +200,20 @@ class SettingsWindow(QtWidgets.QWidget):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
+
         self.pushButton.clicked.connect(self.create_time_point)
         self.SaveBut.clicked.connect(self.save_values)
+
+        self.calib_weight_spinbox.valueChanged.connect(self.change_weight)
+        self.spinbox_change_step.valueChanged.connect(self.change_step)
 
         self.values = {} # тут хранятся значения газ,время
         self.points = {} # тут упорядочный словарь по индексу в котором хронятся значения
 
-        create_json(name_file="timings.json",data=self.values)
+        self.name_file = "timings.json"
+        self.full_path = os.path.join(json_dir, self.name_file)
+
+        create_json(name_file=self.name_file,data=self.values)
 
     def create_time_point(self):
         # Создаём новый слой с двумя SpinBox
@@ -241,19 +248,28 @@ class SettingsWindow(QtWidgets.QWidget):
         for index, (gas, time) in enumerate(self.values.items()):
             # Формируем структуру для текущей пары gas и time
             self.points[f"Number operation {index}"] = {
-                "gas on percent": gas.value(),
-                "wait time": time.value()
+                gas.value(): time.value()
             }
 
             # Вывод текущих данных
             print(f"Индекс: {index}, значение газа (x): {gas.value()}, значение времени (y): {time.value()}")
 
-        # Экспортируем итоговый JSON
-        export_to_json("timings.json", **self.points)
+        # Экспортируем итоговый JSON , если таковой имеется то удаляем
+        if os.path.isfile(self.full_path):  # Проверяем, существует ли файл по указанному пути
+            try:
+                os.remove(self.full_path)  # Удаляем файл
+            except Exception as e:
+                print(f"Ошибка при удалении файла: {e}")
+        create_json("timings.json", self.points)
 
 
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    window = SettingsWindow()
-    window.show()
-    sys.exit(app.exec_())
+
+    def change_weight(self):
+        globals.calib_weight = self.calib_weight_spinbox.value()
+
+    def change_step(self):
+        step_size = self.spinbox_change_step.value()
+        gas_min,gas_max = import_from_json("save_file.json","gas_min","gas_max")
+        globals.step_size = (gas_max - gas_min) // step_size
+
+

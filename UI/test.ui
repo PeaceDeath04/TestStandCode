@@ -23,57 +23,88 @@
   </property>
   <property name="styleSheet">
    <string notr="true">QWidget {
-        background-color: #1e1e1e;  /* Очень темный фон */
-        color: #d3d3d3;  /* Светло-серый цвет текста */
-        font-family: Arial, sans-serif;
-        font-size: 12px;
-    }
-    QPushButton {
-        background-color: #2d2d2d;  /* Темный фон для кнопок */
-        border: 1px solid #1e1e1e;
-        border-radius: 5px;
-        padding: 5px;
-        font-weight: bold;
-    }
-    QPushButton:hover {
-        background-color: #00b894;  /* Светло-зеленый при наведении */
-        color: #1e1e1e;
-    }
-    QComboBox {
-        border: 1px solid #2d2d2d;
-        border-radius: 5px;
-        padding: 2px;
-        background-color: #2d2d2d;
-    }
-    QTextBrowser {
-        background-color: #2d2d2d;  /* Темный фон для окна вывода */
-        border: 1px solid #1e1e1e;
-        border-radius: 5px;
-        padding: 5px;
-    }
-    QLabel {
-        color: #d3d3d3;  /* Мягкий серый цвет для текста */
-        font-weight: bold;
-        font-size: 14px;
-    }
-    QSpinBox {
-        background-color: #2d2d2d;
-        border: 1px solid #1e1e1e;
-        border-radius: 5px;
-        padding: 2px;
-        color: #d3d3d3;
-    }
-    QDoubleSpinBox{
-        background-color: #2d2d2d;
-        border: 1px solid #1e1e1e;
-        border-radius: 5px;
-        padding: 2px;
-        color: #d3d3d3;
+    background-color: #1e1e1e;  /* Очень темный фон */
+    color: #d3d3d3;  /* Светло-серый цвет текста */
+    font-family: Arial, sans-serif;
+    font-size: 12px;
 }
 
-    QSlider {
-        background-color: #2d2d2d;
-        border-radius: 5px;
+QPushButton {
+    background-color: #2d2d2d;  /* Темный фон для кнопок */
+    border: 1px solid #1e1e1e;
+    border-radius: 5px;
+    padding: 5px;
+    font-weight: bold;
+}
+
+QPushButton:hover {
+    background-color: #00b894;  /* Светло-зеленый при наведении */
+    color: #1e1e1e;
+}
+
+QComboBox {
+    border: 1px solid #2d2d2d;
+    border-radius: 5px;
+    padding: 2px;
+    background-color: #2d2d2d;
+}
+
+QTextBrowser {
+    background-color: #2d2d2d;  /* Темный фон для окна вывода */
+    border: 1px solid #1e1e1e;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+QLabel {
+    color: #d3d3d3;  /* Мягкий серый цвет для текста */
+    font-weight: bold;
+    font-size: 14px;
+}
+
+QSpinBox {
+    background-color: #2d2d2d;
+    border: 1px solid #1e1e1e;
+    border-radius: 5px;
+    padding: 2px;
+    color: #d3d3d3;
+}
+
+QDoubleSpinBox {
+    background-color: #2d2d2d;
+    border: 1px solid #1e1e1e;
+    border-radius: 5px;
+    padding: 2px;
+    color: #d3d3d3;
+}
+
+QSlider {
+    background-color: #2d2d2d;
+    border-radius: 5px;
+}
+
+QScrollArea {
+    border: none;
+}
+
+QScrollBar:vertical {
+    background: rgb(45, 45, 45);
+}
+
+QScrollBar::handle:vertical {
+    background: rgb(0, 184, 148);
+    min-width: 20px;
+}
+
+QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
+    background: none;
+}
+
+QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical,
+QScrollBar::add-line:horizontal, QScrollBar::sub-line:horizontal {
+    background: transparent;  /* Убирает стрелки вверх и вниз */
+    width: 0px;  /* Убирает размеры кнопок */
+    height: 0px;  /* Убирает размеры кнопок */
 }</string>
   </property>
   <widget class="QWidget" name="layoutWidget">
@@ -144,12 +175,18 @@
      <x>20</x>
      <y>10</y>
      <width>351</width>
-     <height>144</height>
+     <height>461</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="LaySettingsAutoTest">
     <item>
      <widget class="QLabel" name="LabelNumberItteration">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
       <property name="text">
        <string>Настройка автотеста</string>
       </property>
@@ -159,52 +196,24 @@
      </widget>
     </item>
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout">
-      <item>
-       <widget class="QSpinBox" name="spinBox_2">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QSpinBox" name="spinBox">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </item>
-    <item>
-     <layout class="QHBoxLayout" name="horizontalLayout_2">
-      <item>
-       <widget class="QSpinBox" name="spinBox_3">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QSpinBox" name="spinBox_4">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-       </widget>
-      </item>
-     </layout>
+     <widget class="QScrollArea" name="scroll_area">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="widgetResizable">
+       <bool>true</bool>
+      </property>
+      <widget class="QWidget" name="scrollAreaWidgetContents_2">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>349</width>
+         <height>404</height>
+        </rect>
+       </property>
+      </widget>
+     </widget>
     </item>
     <item>
      <widget class="QPushButton" name="pushButton">

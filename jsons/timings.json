@@ -1,10 +1,11 @@
 {
     "Number operation 0": {
-        "gas on percent": 6,
-        "wait time": 7
+        "60": 4000
     },
     "Number operation 1": {
-        "gas on percent": 8,
-        "wait time": 9
+        "10": 4000
+    },
+    "Number operation 2": {
+        "80": 8000
     }
 }
