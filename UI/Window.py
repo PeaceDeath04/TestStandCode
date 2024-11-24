@@ -307,7 +307,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "Window"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "Aidy"))
         self.ButOpenPort.setText(_translate("MainWindow", "открыть порт"))
         self.butRefresh.setText(_translate("MainWindow", "Обновить список портов"))
         self.ButTarTraction.setText(_translate("MainWindow", "Тарирование тяги"))

@@ -202,7 +202,7 @@ class SettingsWindow(QtWidgets.QWidget):
 
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
-        Form.setWindowTitle(_translate("Form", "Form"))
+        Form.setWindowTitle(_translate("Form", "Настройки автотеста"))
         self.text_change_step_5.setText(_translate("Form", "Изменить шаг подачи газа"))
         self.calib_label.setText(_translate("Form", "Изменить калибровочный вес"))
         self.LabelNumberItteration.setText(_translate("Form", "Настройка автотеста"))
