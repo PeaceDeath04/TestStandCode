@@ -1,0 +1,10 @@
+{
+    "Number operation 0": {
+        "gas on percent": 6,
+        "wait time": 7
+    },
+    "Number operation 1": {
+        "gas on percent": 8,
+        "wait time": 9
+    }
+}

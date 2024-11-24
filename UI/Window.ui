@@ -98,45 +98,16 @@
     </property>
     <layout class="QVBoxLayout" name="graph_Layout"/>
    </widget>
-   <widget class="QTextBrowser" name="debugWindow">
-    <property name="enabled">
-     <bool>true</bool>
-    </property>
-    <property name="geometry">
-     <rect>
-      <x>1490</x>
-      <y>0</y>
-      <width>421</width>
-      <height>161</height>
-     </rect>
-    </property>
-    <property name="sizePolicy">
-     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-      <horstretch>0</horstretch>
-      <verstretch>0</verstretch>
-     </sizepolicy>
-    </property>
-    <property name="autoFormatting">
-     <set>QTextEdit::AutoNone</set>
-    </property>
-    <property name="html">
-     <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Arial,sans-serif'; font-size:12px; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-size:8.25pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-    </property>
-   </widget>
    <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>0</x>
       <y>0</y>
-      <width>1491</width>
-      <height>163</height>
+      <width>1561</width>
+      <height>161</height>
      </rect>
     </property>
-    <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="1,2,4">
+    <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="1,2,4,0">
      <item>
       <layout class="QVBoxLayout" name="GlobalMenu">
        <property name="spacing">
@@ -221,19 +192,6 @@ p, li { white-space: pre-wrap; }
          </property>
         </widget>
        </item>
-       <item>
-        <widget class="QPushButton" name="ButSaveExl">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="text">
-          <string>Начать запись параметров</string>
-         </property>
-        </widget>
-       </item>
       </layout>
      </item>
      <item>
@@ -241,35 +199,6 @@ p, li { white-space: pre-wrap; }
        <property name="spacing">
         <number>0</number>
        </property>
-       <item>
-        <layout class="QVBoxLayout" name="lay_params">
-         <item>
-          <widget class="QLabel" name="calib_label">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="autoFillBackground">
-            <bool>false</bool>
-           </property>
-           <property name="text">
-            <string>Изменить калибровочный вес</string>
-           </property>
-           <property name="scaledContents">
-            <bool>false</bool>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignCenter</set>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QDoubleSpinBox" name="calib_weight_spinbox"/>
-         </item>
-        </layout>
-       </item>
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout">
          <item>
@@ -389,13 +318,6 @@ p, li { white-space: pre-wrap; }
          </property>
         </widget>
        </item>
-       <item>
-        <widget class="QPushButton" name="ButAutoTest">
-         <property name="text">
-          <string>Начать автотест</string>
-         </property>
-        </widget>
-       </item>
       </layout>
      </item>
      <item>
@@ -483,24 +405,49 @@ p, li { white-space: pre-wrap; }
            </property>
           </widget>
          </item>
-         <item>
-          <layout class="QVBoxLayout" name="lay_change_step_5">
-           <item>
-            <widget class="QLabel" name="text_change_step_5">
-             <property name="text">
-              <string>Изменить шаг подачи газа</string>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignCenter</set>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QSpinBox" name="spinbox_change_step"/>
-           </item>
-          </layout>
-         </item>
         </layout>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QVBoxLayout" name="LayAutoTest" stretch="0,0">
+       <property name="spacing">
+        <number>6</number>
+       </property>
+       <property name="sizeConstraint">
+        <enum>QLayout::SetDefaultConstraint</enum>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="QPushButton" name="ButSaveExl">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>Начать запись параметров</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="ButAutoTest">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>Начать автотест</string>
+         </property>
+        </widget>
        </item>
       </layout>
      </item>
@@ -516,8 +463,30 @@ p, li { white-space: pre-wrap; }
      <height>21</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menu">
+    <property name="title">
+     <string>Меню</string>
+    </property>
+    <addaction name="ActionSettings"/>
+   </widget>
+   <addaction name="menu"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
+  <action name="action">
+   <property name="text">
+    <string>настройки</string>
+   </property>
+  </action>
+  <action name="action_2">
+   <property name="text">
+    <string>настройки параметров</string>
+   </property>
+  </action>
+  <action name="ActionSettings">
+   <property name="text">
+    <string>настройки</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>

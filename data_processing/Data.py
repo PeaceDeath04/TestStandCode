@@ -20,18 +20,27 @@ key_to_Graphs = {
 keysArduino = {"gas": "g", "gas_min": "m", "gas_max": "x", "ButCalibMotor": "k", "ResetTime": "t",
                             "Traction": "r", "Weight_1": "o", "Weight_2": "w"}
 
+# Указываем путь относительно папки проекта
+project_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # Текущая директория проекта
+
+json_dir = os.path.join(project_dir, "jsons")  # Папка "jsons" внутри проекта
+
+os.makedirs(json_dir,exist_ok=True) # создаем если нет папки
+
+
+
 def export_to_json(name_file,**keys):
     """Получает ключ значение и сохраняет в json файл"""
     try:
         try:
-            with open(name_file, mode="r", encoding="Latin-1") as save_file:
+            with open(os.path.join(json_dir,name_file), mode="r", encoding="Latin-1") as save_file:
                 data = json.load(save_file)
         except FileNotFoundError:
             data = localData.copy()
         for key, value in keys.items():
             data[key] = value
 
-        with open(name_file, mode="w", encoding="Latin-1") as save_file:
+        with open(os.path.join(json_dir,name_file), mode="w", encoding="Latin-1") as save_file:
             json.dump(data, save_file, ensure_ascii=False, indent=4)
 
     except Exception as e:
@@ -41,7 +50,7 @@ def import_from_json(name_file,*keys):
     """Получает ключи для извлечения значений  по ключу из json файла , возвращает список значений"""
     list = []
     try:
-        with open(name_file, mode="r", encoding="Latin-1") as save_file:
+        with open(os.path.join(json_dir,name_file), mode="r", encoding="Latin-1") as save_file:
             data = json.load(save_file)
             for key in keys:
                 list.append(data.get(key))
@@ -55,15 +64,32 @@ def import_from_json(name_file,*keys):
         print(f"Ошибка декодирования JSON в файле {save_file}.")
         return None
 
+
 def create_json(name_file, data):
-    if not os.path.isfile(name_file):
-        with open(name_file, mode="w", encoding="Latin-1") as save_file:
-            json.dump(data, save_file, ensure_ascii=False, indent=4)
+    """
+    Создает JSON файл по указанному пути, если он не существует.
+    """
+    # Указываем путь для файла в директории json_dir
+    full_path = os.path.join(json_dir, name_file)
+
+    # Проверяем, существует ли файл
+    if not os.path.isfile(full_path):
+        try:
+            # Создаем файл с данными
+            with open(full_path, mode="w", encoding="utf-8") as save_file:
+                json.dump(data, save_file, ensure_ascii=False, indent=4)
+            print(f"Файл {full_path} успешно создан.")
+        except Exception as e:
+            print(f"Ошибка при создании файла {full_path}: {e}")
+    else:
+        pass
+        #print(f"Файл {full_path} уже существует.")
+
 
 def import_js(name_file):
     """Передаем в качестве параметра имя искомого файла и передаем dict/None в зависимости от результата"""
     try:
-        with open(name_file, mode="r", encoding="Latin-1") as save_file:
+        with open(os.path.join(json_dir,name_file), mode="r", encoding="Latin-1") as save_file:
             data = json.load(save_file)
             return data
     except FileNotFoundError:
