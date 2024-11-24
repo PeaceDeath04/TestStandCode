@@ -138,6 +138,7 @@ class SettingsWindow(QtWidgets.QWidget):
         self.LaySettingsAutoTest = QtWidgets.QVBoxLayout(self.verticalLayoutWidget)
         self.LaySettingsAutoTest.setContentsMargins(0, 0, 0, 0)
         self.LaySettingsAutoTest.setObjectName("LaySettingsAutoTest")
+
         self.LabelNumberItteration = QtWidgets.QLabel(self.verticalLayoutWidget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -147,6 +148,17 @@ class SettingsWindow(QtWidgets.QWidget):
         self.LabelNumberItteration.setAlignment(QtCore.Qt.AlignCenter)
         self.LabelNumberItteration.setObjectName("LabelNumberItteration")
         self.LaySettingsAutoTest.addWidget(self.LabelNumberItteration)
+
+        self.LabelComment = QtWidgets.QLabel(self.verticalLayoutWidget)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.LabelComment.sizePolicy().hasHeightForWidth())
+        self.LabelComment.setSizePolicy(sizePolicy)
+        self.LabelComment.setAlignment(QtCore.Qt.AlignCenter)
+        self.LabelComment.setObjectName("LabelNumberItteration")
+        self.LaySettingsAutoTest.addWidget(self.LabelComment)
+
         self.scroll_area = QtWidgets.QScrollArea(self.verticalLayoutWidget)
 
         self.scroll_area.setWidgetResizable(True)
@@ -194,6 +206,7 @@ class SettingsWindow(QtWidgets.QWidget):
         self.text_change_step_5.setText(_translate("Form", "Изменить шаг подачи газа"))
         self.calib_label.setText(_translate("Form", "Изменить калибровочный вес"))
         self.LabelNumberItteration.setText(_translate("Form", "Настройка автотеста"))
+        self.LabelComment.setText(_translate("Form","Газ в %                     время в с."))
         self.pushButton.setText(_translate("Form", "+"))
         self.SaveBut.setText(_translate("Form","Сохранить"))
 
@@ -248,7 +261,7 @@ class SettingsWindow(QtWidgets.QWidget):
         for index, (gas, time) in enumerate(self.values.items()):
             # Формируем структуру для текущей пары gas и time
             self.points[f"Number operation {index}"] = {
-                gas.value(): time.value()
+                gas.value(): time.value() * 1000
             }
 
             # Вывод текущих данных
@@ -261,8 +274,6 @@ class SettingsWindow(QtWidgets.QWidget):
             except Exception as e:
                 print(f"Ошибка при удалении файла: {e}")
         create_json("timings.json", self.points)
-
-
 
     def change_weight(self):
         globals.calib_weight = self.calib_weight_spinbox.value()
