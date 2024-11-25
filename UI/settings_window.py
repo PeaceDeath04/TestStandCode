@@ -345,8 +345,6 @@ class SettingsWindow(QtWidgets.QWidget):
         self.name_file_ToRead = "ToRead.json"
         self.full_path_ToRead = os.path.join(json_dir,self.name_file_ToRead)
 
-
-
         create_json(name_file=self.name_file,data=self.values)
 
         # Список для хранения чекбоксов
@@ -443,11 +441,17 @@ class SettingsWindow(QtWidgets.QWidget):
 
     # подгружаем из json файла состояние кнопок на последний момент при запуске программы
     def load_state_check_box(self):
-        data = import_js(self.full_path_ToRead)
-        for name,state in data.items():
-            for box in self.checkboxes:
-                if name == box.text():
-                    if state:
-                        box.setChecked(True)
-                    else:
-                        box.setChecked(False)
+        if os.path.isfile(self.full_path_ToRead):
+            try:
+                data = import_js(self.full_path_ToRead)
+                for name, state in data.items():
+                    for box in self.checkboxes:
+                        if name == box.text():
+                            if state:
+                                box.setChecked(True)
+                            else:
+                                box.setChecked(False)
+            except Exception as e:
+                print(e)
+        else:
+            pass

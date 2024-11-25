@@ -1,6 +1,6 @@
 import json
 import os
-
+from types import NoneType
 
 name_save_file = "save_file.json"
 

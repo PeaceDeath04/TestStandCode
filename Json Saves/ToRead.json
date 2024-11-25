@@ -1,15 +1,15 @@
 {
-    "T_flach_E": false,
-    "T_flash_O": false,
-    "Voltage": false,
-    "ShuntVoltage": false,
-    "Temp": false,
-    "Traction": true,
-    "Weight": false,
-    "Weight_1": false,
-    "Weight_2": false,
-    "Time": false,
+    "T_flach_E": 0,
+    "T_flash_O": 0,
+    "Voltage": 0.0,
+    "ShuntVoltage": 0,
+    "Temp": 0.0,
+    "Traction": 0.0,
+    "Weight": 0.0,
+    "Weight_1": 0.0,
+    "Weight_2": 0.0,
+    "Time": true,
     "gas": true,
-    "gas_min": true,
-    "gas_max": true
+    "gas_min": 0,
+    "gas_max": 50
 }

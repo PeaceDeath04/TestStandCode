@@ -45,7 +45,6 @@ missing module named 'distutils._log' - imported by setuptools._distutils.comman
 missing module named usercustomize - imported by site (delayed, optional)
 missing module named sitecustomize - imported by site (delayed, optional)
 missing module named readline - imported by cmd (delayed, conditional, optional), code (delayed, conditional, optional), pdb (delayed, optional), site (delayed, optional), rlcompleter (optional)
-missing module named importlib_resources.files - imported by setuptools._vendor.importlib_resources (top-level), setuptools._vendor.jaraco.text (optional)
 missing module named typeshed - imported by setuptools._vendor.typeguard._decorators (conditional)
 missing module named jnius - imported by setuptools._vendor.platformdirs.android (delayed, conditional, optional)
 missing module named android - imported by setuptools._vendor.platformdirs.android (delayed, conditional, optional)

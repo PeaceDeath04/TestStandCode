@@ -1,6 +1,4 @@
 """   packet_processing занимается обработкой пакета с arduino                                      """
-from tkinter.constants import ROUND
-
 from data_processing.Data import localData,keys_to_update_ard
 from data_processing.GraphHandler import add_thread_graphs
 from data_processing.exl import DataRecorder

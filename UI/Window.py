@@ -1,9 +1,5 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtTest import QTest
-from openpyxl.styles.builtins import percent
-from wheel.cli.convert import convert
-
-from UI.settings_window import SettingsWindow
 from data_processing.Data import localData, export_to_json, import_from_json, create_json,key_to_Graphs
 from arduino_processing.packet_processing import *
 from arduino_processing.SerialManager import read_data,open_port,close_port,update_port_list,serial
