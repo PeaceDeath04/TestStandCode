@@ -1,9 +1,6 @@
 import os.path
-
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QObject
-
-
 from data_processing.Data import export_to_json, create_json, import_from_json, json_dir, import_js
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QCheckBox
 import globals
@@ -309,7 +306,7 @@ class SettingsWindow(QtWidgets.QWidget):
         self.LabelNumberItteration.setText(_translate("Form", "Настройка автотеста"))
         self.LabelComment.setText(_translate("Form", "                   Газ в %                        время в с."))
         self.pushButton.setText(_translate("Form", "+"))
-        self.SaveBut.setText(_translate("Form", "PushButton"))
+        self.SaveBut.setText(_translate("Form", "сохранить"))
         self.label_to_read.setText(_translate("Form", "Данные для чтения выделите галочкой"))
         self.T_flach_E.setText(_translate("Form", "T_flach_E"))
         self.T_flash_O.setText(_translate("Form", "T_flash_O"))
@@ -326,7 +323,6 @@ class SettingsWindow(QtWidgets.QWidget):
         self.gas_max.setText(_translate("Form", "gas_max"))
 
         self.T_flash_O.isChecked()
-
 
     def __init__(self):
         super().__init__()
@@ -361,7 +357,6 @@ class SettingsWindow(QtWidgets.QWidget):
 
         # устанавливаем состояние чекбоксов
         self.load_state_check_box()
-
 
     def create_time_point(self):
         # Создаём новый слой с двумя SpinBox
@@ -413,6 +408,7 @@ class SettingsWindow(QtWidgets.QWidget):
     def change_weight(self):
         globals.calib_weight = self.calib_weight_spinbox.value()
 
+    # изменение шага в процентах
     def change_step(self):
         step_size = self.spinbox_change_step.value()
         gas_min,gas_max = import_from_json("save_file.json","gas_min","gas_max")
@@ -431,10 +427,12 @@ class SettingsWindow(QtWidgets.QWidget):
                 checkboxes.extend(self.get_all_checkboxes_from_layout(item.layout()))
         return checkboxes
 
+    # подключаем события к чекбоксам
     def connect_checkboxes(self):
         for box in self.checkboxes:
             box.stateChanged.connect(self.save_state_check_box)
 
+    # сохраняем состояние чекбокса
     def save_state_check_box(self, state):
         sender = self.sender()  # Определяем, какой чекбокс отправил сигнал
         if sender:
@@ -443,6 +441,7 @@ class SettingsWindow(QtWidgets.QWidget):
             data[sender.text()] = sender.isChecked()
             export_to_json(self.full_path_ToRead, **data)
 
+    # подгружаем из json файла состояние кнопок на последний момент при запуске программы
     def load_state_check_box(self):
         data = import_js(self.full_path_ToRead)
         for name,state in data.items():
@@ -452,6 +451,3 @@ class SettingsWindow(QtWidgets.QWidget):
                         box.setChecked(True)
                     else:
                         box.setChecked(False)
-
-
-
