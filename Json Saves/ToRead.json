@@ -1,8 +1,8 @@
 {
     "T_flach_E": false,
     "T_flash_O": false,
-    "Voltage": true,
-    "ShuntVoltage": true,
+    "Voltage": false,
+    "ShuntVoltage": false,
     "Temp": false,
     "Traction": true,
     "Weight": false,
@@ -10,6 +10,6 @@
     "Weight_2": false,
     "Time": false,
     "gas": true,
-    "gas_min": false,
-    "gas_max": false
+    "gas_min": true,
+    "gas_max": true
 }

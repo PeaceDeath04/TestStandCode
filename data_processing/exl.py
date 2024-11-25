@@ -46,6 +46,8 @@ class DataRecorder:
 
     def save_to_csv(self, data):
         """Добавляет данные в текущий CSV файл."""
+        headers = self.passed_to_write()
+
         if self.csv_file is None:
             print("Ошибка: начните новую запись, вызвав метод `start_new_recording()`.")
             return
@@ -56,7 +58,7 @@ class DataRecorder:
 
         # Преобразуем данные в строку в зависимости от типа
         if isinstance(data, dict):
-            data_row = [data.get(header, '') for header in self.headers]
+            data_row = [data.get(header, '') for header in headers]
         elif isinstance(data, list):
             data_row = data
         else:
