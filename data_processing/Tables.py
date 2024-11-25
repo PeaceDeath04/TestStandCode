@@ -3,6 +3,7 @@ from matplotlib.figure import Figure
 from matplotlib.animation import FuncAnimation
 import matplotlib.pyplot as plt
 import globals
+import os
 
 #print(plt.style.available)
 plt.style.use('seaborn-v0_8-dark')
@@ -52,7 +53,10 @@ class Graph:
         self.ax.legend()
 
         # Добавляем анимацию
-        self.ani = FuncAnimation(self.fig, self.animate_my_plot, init_func=self.init_plot, frames=1, interval=200)
+        self.ani = FuncAnimation(self.fig, self.animate_my_plot, init_func=self.init_plot, frames=1, interval=200)\
+
+
+
 
     def init_plot(self):
         """Начальная установка графика"""

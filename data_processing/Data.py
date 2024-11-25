@@ -23,7 +23,7 @@ keysArduino = {"gas": "g", "gas_min": "m", "gas_max": "x", "ButCalibMotor": "k",
 # Указываем путь относительно папки проекта
 project_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # Текущая директория проекта
 
-json_dir = os.path.join(project_dir, "jsons")  # Папка "jsons" внутри проекта
+json_dir = os.path.join(project_dir, "Json Saves")  # Папка "jsons" внутри проекта
 
 os.makedirs(json_dir,exist_ok=True) # создаем если нет папки
 

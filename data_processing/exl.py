@@ -13,6 +13,12 @@ class DataRecorder:
             'Temp', 'Traction', 'Weight', 'Time', 'gas', 'gas_min', 'gas_max'
         ]
 
+        # Указываем путь относительно папки проекта
+        self.project_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # Текущая директория проекта
+        self.exel_dir = os.path.join(self.project_dir, "Exel Tables")  # Папка "jsons" внутри проекта
+
+        os.makedirs(self.exel_dir, exist_ok=True)  # создаем если нет папки
+
     def _generate_unique_filename(self, extension):
         """Генерирует уникальное имя файла на основе текущего времени."""
         timestamp = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
@@ -23,8 +29,10 @@ class DataRecorder:
         # Генерируем уникальное имя для нового CSV файла
         self.csv_file = self._generate_unique_filename('csv')
 
+        full_path = os.path.join(self.exel_dir, self.csv_file)
+
         # Создаем новый CSV файл с заголовками
-        with open(self.csv_file, mode='w', newline='') as file:
+        with open(full_path, mode='w', newline='') as file:
             writer = csv.writer(file)
             writer.writerow(self.headers)
 
@@ -36,7 +44,9 @@ class DataRecorder:
             print("Ошибка: начните новую запись, вызвав метод `start_new_recording()`.")
             return
 
-        print(f"Сохраняю данные в {self.csv_file}")
+        full_path = os.path.join(self.exel_dir,self.csv_file)
+
+        print(f"Сохраняю данные в {full_path}")
 
         # Преобразуем данные в строку в зависимости от типа
         if isinstance(data, dict):
@@ -48,32 +58,34 @@ class DataRecorder:
             return
 
         # Записываем строку данных в текущий CSV файл
-        with open(self.csv_file, mode='a', newline='') as file:
+        with open(full_path, mode='a', newline='') as file:
             writer = csv.writer(file)
             writer.writerow(data_row)
 
     def convert_csv_to_xlsx(self):
         """Конвертирует текущий CSV файл в XLSX и удаляет исходный CSV файл."""
-        if self.csv_file is None or not os.path.isfile(self.csv_file):
+        full_path = os.path.join(self.exel_dir, self.csv_file)
+
+        if self.csv_file is None or not os.path.isfile(full_path):
             print(f"Файл {self.csv_file} не найден. Нечего конвертировать.")
             return
 
         # Генерируем имя Excel файла на основе текущего CSV файла
-        self.xlsx_file = self.csv_file.replace('.csv', '_exl.xlsx')
+        self.xlsx_file = full_path.replace('.csv', '_exl.xlsx')
 
         # Конвертируем CSV в Excel
-        df = pd.read_csv(self.csv_file)
+        df = pd.read_csv(full_path)
         df.to_excel(self.xlsx_file, index=False)
 
-        print(f"CSV файл {self.csv_file} успешно конвертирован в {self.xlsx_file}")
+        print(f"CSV файл {full_path} успешно конвертирован в {self.xlsx_file}")
 
         # Удаляем исходный CSV файл
         try:
-            os.remove(self.csv_file)
-            print(f"CSV файл {self.csv_file} был удален.")
+            os.remove(full_path)
+            print(f"CSV файл {full_path} был удален.")
             self.csv_file = None  # Сбрасываем текущее имя CSV файла
         except OSError as e:
-            print(f"Ошибка при удалении файла {self.csv_file}: {e}")
+            print(f"Ошибка при удалении файла {full_path}: {e}")
 
     def clear_csv(self):
         """Очищает текущий CSV файл, оставляя только заголовки."""

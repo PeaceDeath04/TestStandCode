@@ -419,6 +419,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
     def toggle_read(self):
         #Изменяем состояние read при каждом нажатии кнопки
+
         self.read = not self.read
         globals.read_ready = self.read
         if self.read:
