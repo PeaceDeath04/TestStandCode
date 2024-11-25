@@ -11,7 +11,6 @@ from arduino_processing.ProjectProcessing import TxToARDU
 from data_processing.GraphHandler import *
 import globals
 from data_processing.Tables import FigureCanvas
-from UI.WindowAutoTest import IterationDialog
 from UI.settings_window import SettingsWindow
 from globals import read_ready
 

@@ -1,19 +1,21 @@
 import os.path
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtCore import QObject
+
+
 from data_processing.Data import export_to_json, create_json, import_from_json,json_dir
+from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QCheckBox
 import globals
 
 
 class SettingsWindow(QtWidgets.QWidget):
     def setupUi(self, Form):
         Form.setObjectName("Form")
-        Form.resize(719, 535)
+        Form.resize(1240, 536)
         font = QtGui.QFont()
         font.setFamily("Arial,sans-serif")
         font.setPointSize(-1)
-        font.setBold(False)
-        font.setWeight(50)
         Form.setFont(font)
         Form.setStyleSheet("QWidget {\n"
                            "    background-color: #1e1e1e;  /* Очень темный фон */\n"
@@ -138,7 +140,6 @@ class SettingsWindow(QtWidgets.QWidget):
         self.LaySettingsAutoTest = QtWidgets.QVBoxLayout(self.verticalLayoutWidget)
         self.LaySettingsAutoTest.setContentsMargins(0, 0, 0, 0)
         self.LaySettingsAutoTest.setObjectName("LaySettingsAutoTest")
-
         self.LabelNumberItteration = QtWidgets.QLabel(self.verticalLayoutWidget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -148,23 +149,15 @@ class SettingsWindow(QtWidgets.QWidget):
         self.LabelNumberItteration.setAlignment(QtCore.Qt.AlignCenter)
         self.LabelNumberItteration.setObjectName("LabelNumberItteration")
         self.LaySettingsAutoTest.addWidget(self.LabelNumberItteration)
-
         self.LabelComment = QtWidgets.QLabel(self.verticalLayoutWidget)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.LabelComment.sizePolicy().hasHeightForWidth())
-        self.LabelComment.setSizePolicy(sizePolicy)
-        self.LabelComment.setAlignment(QtCore.Qt.AlignCenter)
-        self.LabelComment.setObjectName("LabelNumberItteration")
+        self.LabelComment.setObjectName("LabelComment")
         self.LaySettingsAutoTest.addWidget(self.LabelComment)
-
         self.scroll_area = QtWidgets.QScrollArea(self.verticalLayoutWidget)
-
+        self.scroll_area.setEnabled(True)
         self.scroll_area.setWidgetResizable(True)
         self.scroll_area.setObjectName("scroll_area")
         self.scrollAreaWidgetContents_2 = QtWidgets.QWidget()
-        self.scrollAreaWidgetContents_2.setGeometry(QtCore.QRect(0, 0, 347, 402))
+        self.scrollAreaWidgetContents_2.setGeometry(QtCore.QRect(0, 0, 349, 349))
         self.scrollAreaWidgetContents_2.setObjectName("scrollAreaWidgetContents_2")
         self.scroll_area.setWidget(self.scrollAreaWidgetContents_2)
         self.LaySettingsAutoTest.addWidget(self.scroll_area)
@@ -177,38 +170,163 @@ class SettingsWindow(QtWidgets.QWidget):
         self.LaySettingsAutoTest.addWidget(self.scroll_area)
 
         self.pushButton = QtWidgets.QPushButton(self.verticalLayoutWidget)
-        self.SaveBut = QtWidgets.QPushButton(self.verticalLayoutWidget)
-
         font = QtGui.QFont()
         font.setFamily("Arial,sans-serif")
         font.setPointSize(-1)
         font.setBold(True)
         font.setWeight(75)
-
         self.pushButton.setFont(font)
-        self.SaveBut.setFont(font)
-
         self.pushButton.setIconSize(QtCore.QSize(16, 16))
-        self.pushButton.setIconSize(QtCore.QSize(16,16))
-
         self.pushButton.setObjectName("pushButton")
-        self.pushButton.setObjectName("SaveBut")
-
         self.LaySettingsAutoTest.addWidget(self.pushButton)
+        self.SaveBut = QtWidgets.QPushButton(self.verticalLayoutWidget)
+        self.SaveBut.setObjectName("SaveBut")
         self.LaySettingsAutoTest.addWidget(self.SaveBut)
+        self.verticalLayoutWidget_2 = QtWidgets.QWidget(Form)
+        self.verticalLayoutWidget_2.setGeometry(QtCore.QRect(400, 140, 291, 331))
+        self.verticalLayoutWidget_2.setObjectName("verticalLayoutWidget_2")
+        self.lay_read_settings = QtWidgets.QVBoxLayout(self.verticalLayoutWidget_2)
+        self.lay_read_settings.setContentsMargins(0, 0, 0, 0)
+        self.lay_read_settings.setSpacing(0)
+        self.lay_read_settings.setObjectName("lay_read_settings")
+        self.label_to_read = QtWidgets.QLabel(self.verticalLayoutWidget_2)
+        self.label_to_read.setAlignment(QtCore.Qt.AlignCenter)
+        self.label_to_read.setObjectName("label_to_read")
+        self.lay_read_settings.addWidget(self.label_to_read)
+        self.T_flach_E = QtWidgets.QCheckBox(self.verticalLayoutWidget_2)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.T_flach_E.sizePolicy().hasHeightForWidth())
+        self.T_flach_E.setSizePolicy(sizePolicy)
+        self.T_flach_E.setObjectName("T_flach_E")
+        self.lay_read_settings.addWidget(self.T_flach_E)
+        self.T_flash_O = QtWidgets.QCheckBox(self.verticalLayoutWidget_2)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.T_flash_O.sizePolicy().hasHeightForWidth())
+        self.T_flash_O.setSizePolicy(sizePolicy)
+        self.T_flash_O.setObjectName("T_flash_O")
+        self.lay_read_settings.addWidget(self.T_flash_O)
+        self.Voltage = QtWidgets.QCheckBox(self.verticalLayoutWidget_2)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.Voltage.sizePolicy().hasHeightForWidth())
+        self.Voltage.setSizePolicy(sizePolicy)
+        self.Voltage.setObjectName("Voltage")
+        self.lay_read_settings.addWidget(self.Voltage)
+        self.ShuntVoltage = QtWidgets.QCheckBox(self.verticalLayoutWidget_2)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.ShuntVoltage.sizePolicy().hasHeightForWidth())
+        self.ShuntVoltage.setSizePolicy(sizePolicy)
+        self.ShuntVoltage.setObjectName("ShuntVoltage")
+        self.lay_read_settings.addWidget(self.ShuntVoltage)
+        self.Temp = QtWidgets.QCheckBox(self.verticalLayoutWidget_2)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.Temp.sizePolicy().hasHeightForWidth())
+        self.Temp.setSizePolicy(sizePolicy)
+        self.Temp.setObjectName("Temp")
+        self.lay_read_settings.addWidget(self.Temp)
+        self.Traction = QtWidgets.QCheckBox(self.verticalLayoutWidget_2)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.Traction.sizePolicy().hasHeightForWidth())
+        self.Traction.setSizePolicy(sizePolicy)
+        self.Traction.setObjectName("Traction")
+        self.lay_read_settings.addWidget(self.Traction)
+        self.Weight = QtWidgets.QCheckBox(self.verticalLayoutWidget_2)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.Weight.sizePolicy().hasHeightForWidth())
+        self.Weight.setSizePolicy(sizePolicy)
+        self.Weight.setObjectName("Weight")
+        self.lay_read_settings.addWidget(self.Weight)
+        self.Weight_1 = QtWidgets.QCheckBox(self.verticalLayoutWidget_2)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.Weight_1.sizePolicy().hasHeightForWidth())
+        self.Weight_1.setSizePolicy(sizePolicy)
+        self.Weight_1.setObjectName("Weight_1")
+        self.lay_read_settings.addWidget(self.Weight_1)
+        self.Weight_2 = QtWidgets.QCheckBox(self.verticalLayoutWidget_2)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.Weight_2.sizePolicy().hasHeightForWidth())
+        self.Weight_2.setSizePolicy(sizePolicy)
+        self.Weight_2.setObjectName("Weight_2")
+        self.lay_read_settings.addWidget(self.Weight_2)
+        self.Time = QtWidgets.QCheckBox(self.verticalLayoutWidget_2)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.Time.sizePolicy().hasHeightForWidth())
+        self.Time.setSizePolicy(sizePolicy)
+        self.Time.setObjectName("Time")
+        self.lay_read_settings.addWidget(self.Time)
+        self.gas = QtWidgets.QCheckBox(self.verticalLayoutWidget_2)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.gas.sizePolicy().hasHeightForWidth())
+        self.gas.setSizePolicy(sizePolicy)
+        self.gas.setObjectName("gas")
+        self.lay_read_settings.addWidget(self.gas)
+        self.gas_min = QtWidgets.QCheckBox(self.verticalLayoutWidget_2)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.gas_min.sizePolicy().hasHeightForWidth())
+        self.gas_min.setSizePolicy(sizePolicy)
+        self.gas_min.setObjectName("gas_min")
+        self.lay_read_settings.addWidget(self.gas_min)
+        self.gas_max = QtWidgets.QCheckBox(self.verticalLayoutWidget_2)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.gas_max.sizePolicy().hasHeightForWidth())
+        self.gas_max.setSizePolicy(sizePolicy)
+        self.gas_max.setObjectName("gas_max")
+        self.lay_read_settings.addWidget(self.gas_max)
 
         self.retranslateUi(Form)
         QtCore.QMetaObject.connectSlotsByName(Form)
 
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
-        Form.setWindowTitle(_translate("Form", "Настройки автотеста"))
+        Form.setWindowTitle(_translate("Form", "Form"))
         self.text_change_step_5.setText(_translate("Form", "Изменить шаг подачи газа"))
         self.calib_label.setText(_translate("Form", "Изменить калибровочный вес"))
         self.LabelNumberItteration.setText(_translate("Form", "Настройка автотеста"))
-        self.LabelComment.setText(_translate("Form","Газ в %                     время в с."))
+        self.LabelComment.setText(_translate("Form", "                   Газ в %                        время в с."))
         self.pushButton.setText(_translate("Form", "+"))
-        self.SaveBut.setText(_translate("Form","Сохранить"))
+        self.SaveBut.setText(_translate("Form", "PushButton"))
+        self.label_to_read.setText(_translate("Form", "Данные для чтения выделите галочкой"))
+        self.T_flach_E.setText(_translate("Form", "T_flach_E"))
+        self.T_flash_O.setText(_translate("Form", "T_flash_O"))
+        self.Voltage.setText(_translate("Form", "Voltage"))
+        self.ShuntVoltage.setText(_translate("Form", "ShuntVoltage"))
+        self.Temp.setText(_translate("Form", "Temp"))
+        self.Traction.setText(_translate("Form", "Traction"))
+        self.Weight.setText(_translate("Form", "Weight"))
+        self.Weight_1.setText(_translate("Form", "Weight_1"))
+        self.Weight_2.setText(_translate("Form", "Weight_2"))
+        self.Time.setText(_translate("Form", "Time"))
+        self.gas.setText(_translate("Form", "gas"))
+        self.gas_min.setText(_translate("Form", "gas_min"))
+        self.gas_max.setText(_translate("Form", "gas_max"))
+
+        self.T_flash_O.isChecked()
+
 
     def __init__(self):
         super().__init__()
@@ -223,10 +341,24 @@ class SettingsWindow(QtWidgets.QWidget):
         self.values = {} # тут хранятся значения газ,время
         self.points = {} # тут упорядочный словарь по индексу в котором хронятся значения
 
+        # путь сохранения для автотеста
         self.name_file = "timings.json"
         self.full_path = os.path.join(json_dir, self.name_file)
 
+        # путь сохранения для чтения параметров
+        self.name_file_ToRead = "ToRead.json"
+        self.full_path_ToRead = os.path.join(json_dir,self.name_file_ToRead)
+        print(self.full_path_ToRead)
+
+
+
         create_json(name_file=self.name_file,data=self.values)
+
+        # Список для хранения чекбоксов
+        self.checkboxes = self.get_all_checkboxes_from_layout(self.lay_read_settings)
+
+        # подключаем события
+        self.connect_checkboxes()
 
     def create_time_point(self):
         # Создаём новый слой с двумя SpinBox
@@ -282,5 +414,30 @@ class SettingsWindow(QtWidgets.QWidget):
         step_size = self.spinbox_change_step.value()
         gas_min,gas_max = import_from_json("save_file.json","gas_min","gas_max")
         globals.step_size = (gas_max - gas_min) // step_size
+
+    # Метод для фильтрации только чекбоксов
+    def get_all_checkboxes_from_layout(self, layout):
+        checkboxes = []
+        for i in range(layout.count()):
+            item = layout.itemAt(i)
+            # Если это виджет и это QCheckBox
+            if item.widget() and isinstance(item.widget(), QCheckBox):
+                checkboxes.append(item.widget())
+            # Если это вложенный слой
+            elif item.layout():
+                checkboxes.extend(self.get_all_checkboxes_from_layout(item.layout()))
+        return checkboxes
+
+    def connect_checkboxes(self):
+        for box in self.checkboxes:
+            box.stateChanged.connect(self.save_state_check_box)
+
+    def save_state_check_box(self, state):
+        sender = self.sender()  # Определяем, какой чекбокс отправил сигнал
+        if sender:
+            # Сохраняем состояние чекбокса в JSON
+            data = {}
+            data[sender.text()] = sender.isChecked()
+            export_to_json(self.full_path_ToRead, **data)
 
 

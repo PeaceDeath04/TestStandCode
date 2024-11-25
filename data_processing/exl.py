@@ -2,6 +2,7 @@ import pandas as pd
 import csv
 import os
 from datetime import datetime
+from data_processing.Data import import_js,json_dir
 
 class DataRecorder:
     def __init__(self, base_filename='data'):
@@ -17,6 +18,9 @@ class DataRecorder:
         self.project_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # Текущая директория проекта
         self.exel_dir = os.path.join(self.project_dir, "Exel Tables")  # Папка "jsons" внутри проекта
 
+        self.name_file_ToRead = "ToRead.json"
+        self.full_path_ToRead = os.path.join(json_dir,self.name_file_ToRead)
+
         os.makedirs(self.exel_dir, exist_ok=True)  # создаем если нет папки
 
     def _generate_unique_filename(self, extension):
@@ -26,6 +30,8 @@ class DataRecorder:
 
     def start_new_recording(self):
         """Создает новый CSV файл для записи и инициализирует его заголовками."""
+        self.passed_to_write()
+
         # Генерируем уникальное имя для нового CSV файла
         self.csv_file = self._generate_unique_filename('csv')
 
@@ -98,3 +104,15 @@ class DataRecorder:
             writer.writerow(self.headers)
 
         print(f"Файл {self.csv_file} был очищен.")
+
+    def passed_to_write(self):
+        """Метод для отбора параметров для записи в exel , мы читаем файл из настроек , при совпадении хедара и ключа из файла и значение не true , то удаляем из списка"""
+        try:
+            data = import_js(self.full_path_ToRead)  # читаем файл параметров для пропуска к записи
+            for name, state in data.items():
+                for head in self.headers:
+                    if name == head:
+                        if state != True:
+                            self.headers.remove(name)
+        except Exception as e:
+            print(e)
