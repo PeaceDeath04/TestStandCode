@@ -30,7 +30,7 @@ class DataRecorder:
 
     def start_new_recording(self):
         """Создает новый CSV файл для записи и инициализирует его заголовками."""
-        self.passed_to_write()
+        headers = self.passed_to_write()
 
         # Генерируем уникальное имя для нового CSV файла
         self.csv_file = self._generate_unique_filename('csv')
@@ -40,7 +40,7 @@ class DataRecorder:
         # Создаем новый CSV файл с заголовками
         with open(full_path, mode='w', newline='') as file:
             writer = csv.writer(file)
-            writer.writerow(self.headers)
+            writer.writerow(headers)
 
         print(f"Начата новая запись: {self.csv_file}")
 
@@ -107,12 +107,16 @@ class DataRecorder:
 
     def passed_to_write(self):
         """Метод для отбора параметров для записи в exel , мы читаем файл из настроек , при совпадении хедара и ключа из файла и значение не true , то удаляем из списка"""
+        to_write = []
         try:
             data = import_js(self.full_path_ToRead)  # читаем файл параметров для пропуска к записи
             for name, state in data.items():
                 for head in self.headers:
+                    print(f"имя в файле: {name} имя в хедаре {head} состояние из файла: {state}")
                     if name == head:
-                        if state != True:
-                            self.headers.remove(name)
+                        if state:
+                            to_write.append(name)
+            return to_write
+
         except Exception as e:
             print(e)

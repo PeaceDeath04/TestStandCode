@@ -4,7 +4,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QObject
 
 
-from data_processing.Data import export_to_json, create_json, import_from_json,json_dir
+from data_processing.Data import export_to_json, create_json, import_from_json, json_dir, import_js
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QCheckBox
 import globals
 
@@ -348,7 +348,6 @@ class SettingsWindow(QtWidgets.QWidget):
         # путь сохранения для чтения параметров
         self.name_file_ToRead = "ToRead.json"
         self.full_path_ToRead = os.path.join(json_dir,self.name_file_ToRead)
-        print(self.full_path_ToRead)
 
 
 
@@ -359,6 +358,10 @@ class SettingsWindow(QtWidgets.QWidget):
 
         # подключаем события
         self.connect_checkboxes()
+
+        # устанавливаем состояние чекбоксов
+        self.load_state_check_box()
+
 
     def create_time_point(self):
         # Создаём новый слой с двумя SpinBox
@@ -439,5 +442,16 @@ class SettingsWindow(QtWidgets.QWidget):
             data = {}
             data[sender.text()] = sender.isChecked()
             export_to_json(self.full_path_ToRead, **data)
+
+    def load_state_check_box(self):
+        data = import_js(self.full_path_ToRead)
+        for name,state in data.items():
+            for box in self.checkboxes:
+                if name == box.text():
+                    if state:
+                        box.setChecked(True)
+                    else:
+                        box.setChecked(False)
+
 
 
