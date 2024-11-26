@@ -1,4 +1,6 @@
 import os
+import sys
+
 read_ready = False
 calib_weight = 62.5
 step_size = 10
@@ -13,3 +15,13 @@ colors = [
     '#6ab04c',  # Зеленый
     '#e17055',  # Оранжевый
 ]
+
+project_dir = os.path.dirname(os.path.abspath(sys.argv[0])) # Текущая директория проекта
+
+json_dir = os.path.join(project_dir, "Json Saves")  # Папка "jsons" внутри проекта
+exel_dir = os.path.join(project_dir,"Exel Tables") # папка с экселями
+
+
+
+
+

@@ -2,7 +2,8 @@ import pandas as pd
 import csv
 import os
 from datetime import datetime
-from data_processing.Data import import_js,json_dir
+from data_processing.Data import import_js
+from globals import json_dir,exel_dir
 
 class DataRecorder:
     def __init__(self, base_filename='data'):
@@ -15,13 +16,10 @@ class DataRecorder:
         ]
 
         # Указываем путь относительно папки проекта
-        self.project_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # Текущая директория проекта
-        self.exel_dir = os.path.join(self.project_dir, "Exel Tables")  # Папка "jsons" внутри проекта
+        self.exel_dir = exel_dir
 
         self.name_file_ToRead = "ToRead.json"
         self.full_path_ToRead = os.path.join(json_dir,self.name_file_ToRead)
-
-        os.makedirs(self.exel_dir, exist_ok=True)  # создаем если нет папки
 
     def _generate_unique_filename(self, extension):
         """Генерирует уникальное имя файла на основе текущего времени."""

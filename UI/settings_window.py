@@ -1,7 +1,7 @@
 import os.path
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import QObject
-from data_processing.Data import export_to_json, create_json, import_from_json, json_dir, import_js
+from data_processing.Data import export_to_json, create_json, import_from_json, import_js
+from globals import json_dir
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QCheckBox
 import globals
 
