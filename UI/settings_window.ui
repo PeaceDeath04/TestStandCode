@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1240</width>
-    <height>536</height>
+    <width>1540</width>
+    <height>833</height>
    </rect>
   </property>
   <property name="font">
@@ -108,8 +108,8 @@ QScrollBar::add-line:horizontal, QScrollBar::sub-line:horizontal {
   <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
-     <x>400</x>
-     <y>80</y>
+     <x>790</x>
+     <y>70</y>
      <width>189</width>
      <height>47</height>
     </rect>
@@ -133,8 +133,8 @@ QScrollBar::add-line:horizontal, QScrollBar::sub-line:horizontal {
   <widget class="QWidget" name="layoutWidget_2">
    <property name="geometry">
     <rect>
-     <x>400</x>
-     <y>20</y>
+     <x>790</x>
+     <y>10</y>
      <width>220</width>
      <height>47</height>
     </rect>
@@ -214,32 +214,43 @@ QScrollBar::add-line:horizontal, QScrollBar::sub-line:horizontal {
          <x>0</x>
          <y>0</y>
          <width>349</width>
-         <height>349</height>
+         <height>347</height>
         </rect>
        </property>
       </widget>
      </widget>
     </item>
     <item>
-     <widget class="QPushButton" name="pushButton">
-      <property name="font">
-       <font>
-        <family>Arial,sans-serif</family>
-        <pointsize>-1</pointsize>
-        <weight>75</weight>
-        <bold>true</bold>
-       </font>
-      </property>
-      <property name="text">
-       <string>+</string>
-      </property>
-      <property name="iconSize">
-       <size>
-        <width>16</width>
-        <height>16</height>
-       </size>
-      </property>
-     </widget>
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <item>
+       <widget class="QPushButton" name="ButDeletePoint">
+        <property name="text">
+         <string>-</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushButton">
+        <property name="font">
+         <font>
+          <family>Arial,sans-serif</family>
+          <pointsize>-1</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>+</string>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>16</width>
+          <height>16</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </item>
     <item>
      <widget class="QPushButton" name="SaveBut">
@@ -253,8 +264,8 @@ QScrollBar::add-line:horizontal, QScrollBar::sub-line:horizontal {
   <widget class="QWidget" name="verticalLayoutWidget_2">
    <property name="geometry">
     <rect>
-     <x>400</x>
-     <y>140</y>
+     <x>790</x>
+     <y>130</y>
      <width>291</width>
      <height>331</height>
     </rect>
@@ -439,6 +450,111 @@ QScrollBar::add-line:horizontal, QScrollBar::sub-line:horizontal {
       </property>
       <property name="text">
        <string>gas_max</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWidget" name="verticalLayoutWidget_3">
+   <property name="geometry">
+    <rect>
+     <x>390</x>
+     <y>10</y>
+     <width>351</width>
+     <height>461</height>
+    </rect>
+   </property>
+   <layout class="QVBoxLayout" name="LaySettingsAutoTest_2">
+    <item>
+     <widget class="QLabel" name="NameTable">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="text">
+       <string>Настройка графиков</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLabel" name="LabelComment_Graphs">
+      <property name="text">
+       <string>                   Ось X                        Ось Y.</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QScrollArea" name="scroll_area_2">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="widgetResizable">
+       <bool>true</bool>
+      </property>
+      <widget class="QWidget" name="scrollAreaWidgetContents_3">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>349</width>
+         <height>347</height>
+        </rect>
+       </property>
+      </widget>
+     </widget>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_3">
+      <item>
+       <widget class="QPushButton" name="pushButton_2">
+        <property name="font">
+         <font>
+          <family>Arial,sans-serif</family>
+          <pointsize>-1</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>-</string>
+        </property>
+        <property name="flat">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="But_AddGraph">
+        <property name="font">
+         <font>
+          <family>Arial,sans-serif</family>
+          <pointsize>-1</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>+</string>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>16</width>
+          <height>16</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <widget class="QPushButton" name="But_SaveGraphs">
+      <property name="text">
+       <string>сохранить</string>
       </property>
      </widget>
     </item>

@@ -1,15 +1,18 @@
 import os.path
+from turtledemo.clock import datum
+
 from PyQt5 import QtCore, QtGui, QtWidgets
 from data_processing.Data import export_to_json, create_json, import_from_json, import_js
-from globals import json_dir
-from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QCheckBox
+from data_processing.GraphHandler import graphs
+from globals import json_dir, full_path_ToGraphs
+from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QCheckBox, QComboBox
 import globals
 
 
 class SettingsWindow(QtWidgets.QWidget):
     def setupUi(self, Form):
         Form.setObjectName("Form")
-        Form.resize(1240, 536)
+        Form.resize(1540, 833)
         font = QtGui.QFont()
         font.setFamily("Arial,sans-serif")
         font.setPointSize(-1)
@@ -99,7 +102,7 @@ class SettingsWindow(QtWidgets.QWidget):
                            "    height: 0px;  /* Убирает размеры кнопок */\n"
                            "}")
         self.layoutWidget = QtWidgets.QWidget(Form)
-        self.layoutWidget.setGeometry(QtCore.QRect(400, 80, 189, 47))
+        self.layoutWidget.setGeometry(QtCore.QRect(790, 70, 189, 47))
         self.layoutWidget.setObjectName("layoutWidget")
         self.lay_change_step_5 = QtWidgets.QVBoxLayout(self.layoutWidget)
         self.lay_change_step_5.setContentsMargins(0, 0, 0, 0)
@@ -112,7 +115,7 @@ class SettingsWindow(QtWidgets.QWidget):
         self.spinbox_change_step.setObjectName("spinbox_change_step")
         self.lay_change_step_5.addWidget(self.spinbox_change_step)
         self.layoutWidget_2 = QtWidgets.QWidget(Form)
-        self.layoutWidget_2.setGeometry(QtCore.QRect(400, 20, 220, 47))
+        self.layoutWidget_2.setGeometry(QtCore.QRect(790, 10, 220, 47))
         self.layoutWidget_2.setObjectName("layoutWidget_2")
         self.lay_params = QtWidgets.QVBoxLayout(self.layoutWidget_2)
         self.lay_params.setContentsMargins(0, 0, 0, 0)
@@ -154,7 +157,7 @@ class SettingsWindow(QtWidgets.QWidget):
         self.scroll_area.setWidgetResizable(True)
         self.scroll_area.setObjectName("scroll_area")
         self.scrollAreaWidgetContents_2 = QtWidgets.QWidget()
-        self.scrollAreaWidgetContents_2.setGeometry(QtCore.QRect(0, 0, 349, 349))
+        self.scrollAreaWidgetContents_2.setGeometry(QtCore.QRect(0, 0, 349, 347))
         self.scrollAreaWidgetContents_2.setObjectName("scrollAreaWidgetContents_2")
         self.scroll_area.setWidget(self.scrollAreaWidgetContents_2)
         self.LaySettingsAutoTest.addWidget(self.scroll_area)
@@ -166,6 +169,11 @@ class SettingsWindow(QtWidgets.QWidget):
         self.scroll_area.setWidget(self.scroll_widget)
         self.LaySettingsAutoTest.addWidget(self.scroll_area)
 
+        self.horizontalLayout_2 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_2.setObjectName("horizontalLayout_2")
+        self.ButDeletePoint = QtWidgets.QPushButton(self.verticalLayoutWidget)
+        self.ButDeletePoint.setObjectName("ButDeletePoint")
+        self.horizontalLayout_2.addWidget(self.ButDeletePoint)
         self.pushButton = QtWidgets.QPushButton(self.verticalLayoutWidget)
         font = QtGui.QFont()
         font.setFamily("Arial,sans-serif")
@@ -175,12 +183,13 @@ class SettingsWindow(QtWidgets.QWidget):
         self.pushButton.setFont(font)
         self.pushButton.setIconSize(QtCore.QSize(16, 16))
         self.pushButton.setObjectName("pushButton")
-        self.LaySettingsAutoTest.addWidget(self.pushButton)
+        self.horizontalLayout_2.addWidget(self.pushButton)
+        self.LaySettingsAutoTest.addLayout(self.horizontalLayout_2)
         self.SaveBut = QtWidgets.QPushButton(self.verticalLayoutWidget)
         self.SaveBut.setObjectName("SaveBut")
         self.LaySettingsAutoTest.addWidget(self.SaveBut)
         self.verticalLayoutWidget_2 = QtWidgets.QWidget(Form)
-        self.verticalLayoutWidget_2.setGeometry(QtCore.QRect(400, 140, 291, 331))
+        self.verticalLayoutWidget_2.setGeometry(QtCore.QRect(790, 130, 291, 331))
         self.verticalLayoutWidget_2.setObjectName("verticalLayoutWidget_2")
         self.lay_read_settings = QtWidgets.QVBoxLayout(self.verticalLayoutWidget_2)
         self.lay_read_settings.setContentsMargins(0, 0, 0, 0)
@@ -294,17 +303,79 @@ class SettingsWindow(QtWidgets.QWidget):
         self.gas_max.setSizePolicy(sizePolicy)
         self.gas_max.setObjectName("gas_max")
         self.lay_read_settings.addWidget(self.gas_max)
+        self.verticalLayoutWidget_3 = QtWidgets.QWidget(Form)
+        self.verticalLayoutWidget_3.setGeometry(QtCore.QRect(390, 10, 351, 461))
+        self.verticalLayoutWidget_3.setObjectName("verticalLayoutWidget_3")
+        self.LaySettingsAutoTest_2 = QtWidgets.QVBoxLayout(self.verticalLayoutWidget_3)
+        self.LaySettingsAutoTest_2.setContentsMargins(0, 0, 0, 0)
+        self.LaySettingsAutoTest_2.setObjectName("LaySettingsAutoTest_2")
+        self.NameTable = QtWidgets.QLabel(self.verticalLayoutWidget_3)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.NameTable.sizePolicy().hasHeightForWidth())
+        self.NameTable.setSizePolicy(sizePolicy)
+        self.NameTable.setAlignment(QtCore.Qt.AlignCenter)
+        self.NameTable.setObjectName("NameTable")
+        self.LaySettingsAutoTest_2.addWidget(self.NameTable)
+        self.LabelComment_Graphs = QtWidgets.QLabel(self.verticalLayoutWidget_3)
+        self.LabelComment_Graphs.setObjectName("LabelComment_Graphs")
+        self.LaySettingsAutoTest_2.addWidget(self.LabelComment_Graphs)
+        self.scroll_area_2 = QtWidgets.QScrollArea(self.verticalLayoutWidget_3)
+        self.scroll_area_2.setEnabled(True)
+        self.scroll_area_2.setWidgetResizable(True)
+        self.scroll_area_2.setObjectName("scroll_area_2")
+        self.scrollAreaWidgetContents_3 = QtWidgets.QWidget()
+        self.scrollAreaWidgetContents_3.setGeometry(QtCore.QRect(0, 0, 349, 347))
+        self.scrollAreaWidgetContents_3.setObjectName("scrollAreaWidgetContents_3")
+        self.scroll_area_2.setWidget(self.scrollAreaWidgetContents_3)
+        self.LaySettingsAutoTest_2.addWidget(self.scroll_area_2)
+
+        # Виджет внутри настройки графиков
+        self.scroll_widget_graphs = QtWidgets.QWidget()
+        self.scroll_layout_graphs = QtWidgets.QVBoxLayout(self.scroll_widget_graphs)
+        self.scroll_layout_graphs.setAlignment(QtCore.Qt.AlignTop)
+        self.scroll_area_2.setWidget(self.scroll_widget_graphs)
+        self.LaySettingsAutoTest_2.addWidget(self.scroll_area_2)
+
+        self.horizontalLayout_3 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_3.setObjectName("horizontalLayout_3")
+        self.pushButton_2 = QtWidgets.QPushButton(self.verticalLayoutWidget_3)
+        font = QtGui.QFont()
+        font.setFamily("Arial,sans-serif")
+        font.setPointSize(-1)
+        font.setBold(True)
+        font.setWeight(75)
+        self.pushButton_2.setFont(font)
+        self.pushButton_2.setFlat(False)
+        self.pushButton_2.setObjectName("pushButton_2")
+        self.horizontalLayout_3.addWidget(self.pushButton_2)
+        self.But_AddGraph = QtWidgets.QPushButton(self.verticalLayoutWidget_3)
+        font = QtGui.QFont()
+        font.setFamily("Arial,sans-serif")
+        font.setPointSize(-1)
+        font.setBold(True)
+        font.setWeight(75)
+        self.But_AddGraph.setFont(font)
+        self.But_AddGraph.setIconSize(QtCore.QSize(16, 16))
+        self.But_AddGraph.setObjectName("But_AddGraph")
+        self.horizontalLayout_3.addWidget(self.But_AddGraph)
+        self.LaySettingsAutoTest_2.addLayout(self.horizontalLayout_3)
+        self.But_SaveGraphs = QtWidgets.QPushButton(self.verticalLayoutWidget_3)
+        self.But_SaveGraphs.setObjectName("But_SaveGraphs")
+        self.LaySettingsAutoTest_2.addWidget(self.But_SaveGraphs)
 
         self.retranslateUi(Form)
         QtCore.QMetaObject.connectSlotsByName(Form)
 
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
-        Form.setWindowTitle(_translate("Form", "Настройки"))
+        Form.setWindowTitle(_translate("Form", "Form"))
         self.text_change_step_5.setText(_translate("Form", "Изменить шаг подачи газа"))
         self.calib_label.setText(_translate("Form", "Изменить калибровочный вес"))
         self.LabelNumberItteration.setText(_translate("Form", "Настройка автотеста"))
         self.LabelComment.setText(_translate("Form", "                   Газ в %                        время в с."))
+        self.ButDeletePoint.setText(_translate("Form", "-"))
         self.pushButton.setText(_translate("Form", "+"))
         self.SaveBut.setText(_translate("Form", "сохранить"))
         self.label_to_read.setText(_translate("Form", "Данные для чтения выделите галочкой"))
@@ -321,18 +392,25 @@ class SettingsWindow(QtWidgets.QWidget):
         self.gas.setText(_translate("Form", "gas"))
         self.gas_min.setText(_translate("Form", "gas_min"))
         self.gas_max.setText(_translate("Form", "gas_max"))
-
-        self.T_flash_O.isChecked()
+        self.NameTable.setText(_translate("Form", "Настройка графиков"))
+        self.LabelComment_Graphs.setText(_translate("Form", "                   Ось X                        Ось Y."))
+        self.pushButton_2.setText(_translate("Form", "-"))
+        self.But_AddGraph.setText(_translate("Form", "+"))
+        self.But_SaveGraphs.setText(_translate("Form", "сохранить"))
 
     def __init__(self):
         super().__init__()
         self.setupUi(self)
 
-        self.pushButton.clicked.connect(self.create_time_point)
+        self.pushButton.clicked.connect(self.create_time_point) # кнопка + при создании точки
+        self.pushButton_2.clicked.connect(lambda : print(self.graphs))
         self.SaveBut.clicked.connect(self.save_values)
-
         self.calib_weight_spinbox.valueChanged.connect(self.change_weight)
         self.spinbox_change_step.valueChanged.connect(self.change_step)
+        self.But_AddGraph.clicked.connect(self.create_graph)
+        self.But_SaveGraphs.clicked.connect(self.save_graphs)
+        self.pushButton_2.clicked.connect(self.remove_last_graph_layer)
+        self.ButDeletePoint.clicked.connect(self.remove_last_spinbox_layer)
 
         self.values = {} # тут хранятся значения газ,время
         self.points = {} # тут упорядочный словарь по индексу в котором хронятся значения
@@ -350,11 +428,30 @@ class SettingsWindow(QtWidgets.QWidget):
         # Список для хранения чекбоксов
         self.checkboxes = self.get_all_checkboxes_from_layout(self.lay_read_settings)
 
+        self.graphs = {} # он тоже нужен , он работает напрямую с обьектами QTWidgets.QComboBox
+
         # подключаем события
         self.connect_checkboxes()
 
         # устанавливаем состояние чекбоксов
         self.load_state_check_box()
+
+        self.keys_to_graph = ["T_flach_E", "T_flash_O", "Voltage", "ShuntVoltage", "Temp", "Traction","Weight", "Weight_1",
+                               "Weight_2", "Time"]
+
+        self.load_graphs()
+
+    # Изменение калибровочного веса
+    def change_weight(self):
+        globals.calib_weight = self.calib_weight_spinbox.value()
+
+    # изменение шага в процентах
+    def change_step(self):
+        step_size = self.spinbox_change_step.value()
+        gas_min,gas_max = import_from_json("save_file.json","gas_min","gas_max")
+        globals.step_size = (gas_max - gas_min) // step_size
+
+    #region Настройка Автотеста
 
     def create_time_point(self):
         # Создаём новый слой с двумя SpinBox
@@ -403,15 +500,6 @@ class SettingsWindow(QtWidgets.QWidget):
                 print(f"Ошибка при удалении файла: {e}")
         create_json("timings.json", self.points)
 
-    def change_weight(self):
-        globals.calib_weight = self.calib_weight_spinbox.value()
-
-    # изменение шага в процентах
-    def change_step(self):
-        step_size = self.spinbox_change_step.value()
-        gas_min,gas_max = import_from_json("save_file.json","gas_min","gas_max")
-        globals.step_size = (gas_max - gas_min) // step_size
-
     # Метод для фильтрации только чекбоксов
     def get_all_checkboxes_from_layout(self, layout):
         checkboxes = []
@@ -455,3 +543,149 @@ class SettingsWindow(QtWidgets.QWidget):
                 print(e)
         else:
             pass
+
+    #endregion
+
+    def load_graphs(self):
+        if os.path.isfile(full_path_ToGraphs):
+            try:
+                data = import_js(full_path_ToGraphs)
+                print(data)
+
+                # извлекаем из словаря json параметры и создаем combobox на их основе которые передаем в self.graphs
+                for name,graph in data.items():
+                    comboBox_graphs = []
+
+                    for key,value in graph.items():
+                        print(f"график {name} ключ: {key} значение {value}")
+
+                        if key == "x":
+                            comboBox_x = QtWidgets.QComboBox(self.verticalLayoutWidget_3)
+                            comboBox_x.setObjectName("comboBox_x")
+                            comboBox_x.addItems(self.keys_to_graph)
+                            comboBox_x.setCurrentText(value)
+                            comboBox_graphs.append(comboBox_x)
+
+                        else:
+                            comboBox_y = QtWidgets.QComboBox(self.verticalLayoutWidget_3)
+                            comboBox_y.setObjectName("comboBox_y")
+                            comboBox_y.addItems(self.keys_to_graph)
+                            comboBox_y.setCurrentText(value)
+                            comboBox_graphs.append(comboBox_y)
+
+                    self.graphs[comboBox_graphs[0]] = comboBox_graphs[1]
+
+                # добавляем на слой
+                for x,y in self.graphs.items():
+                    # Создаём новый слой с двумя SpinBox
+                    layer_widget = QtWidgets.QWidget(self.scroll_widget_graphs)
+                    layer_widget.setFixedHeight(50)  # Фиксированная высота
+                    layer_layout = QtWidgets.QHBoxLayout(layer_widget)
+
+                    # Настраиваем позицию элементов
+                    layer_widget.setSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
+                    x.setSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
+                    y.setSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
+
+                    layer_layout.addWidget(x)
+                    layer_layout.addWidget(y)
+
+                    # Добавляем новый слой в основной макет
+                    self.scroll_layout_graphs.addWidget(layer_widget)
+
+            except Exception as e:
+                print(e)
+
+    def create_graph(self):
+        # Создаём новый слой с двумя SpinBox
+        layer_widget = QtWidgets.QWidget(self.scroll_widget_graphs)
+        layer_widget.setFixedHeight(50)  # Фиксированная высота
+        layer_layout = QtWidgets.QHBoxLayout(layer_widget)
+
+        comboBox_x = QtWidgets.QComboBox(self.verticalLayoutWidget_3)
+        comboBox_x.setObjectName("comboBox_x")
+
+        comboBox_y = QtWidgets.QComboBox(self.verticalLayoutWidget_3)
+        comboBox_y.setObjectName("comboBox_y")
+
+        # начальный текст
+        comboBox_x.addItem("Выберите параметр X")
+        comboBox_x.model().item(0).setEnabled(False)  # Отключение выбора первого элемента
+        # добавляем ключи
+        comboBox_x.addItems(self.keys_to_graph)
+
+        # начальный текст
+        comboBox_y.addItem("Выберите параметр Y")
+        comboBox_y.model().item(0).setEnabled(False)  # Отключение выбора первого элемента
+        # добавляем ключи
+        comboBox_y.addItems(self.keys_to_graph)
+
+
+        self.graphs[comboBox_x] = comboBox_y
+
+        #Настраиваем позицию элементов
+        layer_widget.setSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
+        comboBox_x.setSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
+        comboBox_y.setSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
+
+        layer_layout.addWidget(comboBox_x)
+        layer_layout.addWidget(comboBox_y)
+
+        # Добавляем новый слой в основной макет
+        self.scroll_layout_graphs.addWidget(layer_widget)
+
+    def save_graphs(self):
+        if os.path.isfile(full_path_ToGraphs):
+            os.remove(full_path_ToGraphs)
+        data = {}
+        for x, y in self.graphs.items():
+            if isinstance(x, QtWidgets.QComboBox) and isinstance(y, QtWidgets.QComboBox):
+                name = f"{x.currentText()} / {y.currentText()}"
+                data[name] = {"x": x.currentText(), "y": y.currentText()}
+        create_json("keys_graphs.json",data)
+
+    def remove_last_graph_layer(self):
+        if self.graphs:  # Проверяем, есть ли слои для удаления
+            # Получаем последний добавленный элемент
+            last_combo_x = list(self.graphs.keys())[-1]
+            last_combo_y = self.graphs[last_combo_x]
+
+            # Удаляем виджеты из макета
+            for i in range(self.scroll_layout_graphs.count() - 1, -1, -1):
+                item = self.scroll_layout_graphs.itemAt(i).widget()
+                if item and last_combo_x in item.children() and last_combo_y in item.children():
+                    self.scroll_layout_graphs.removeWidget(item)
+                    item.deleteLater()  # Удаляем виджет
+                    break
+
+            # Удаляем элемент из словаря
+            del self.graphs[last_combo_x]
+            print("Последний график удалён.")
+        else:
+            print("Нет графиков для удаления.")
+
+    def remove_last_spinbox_layer(self):
+        if self.values:  # Проверяем, есть ли слои для удаления
+            # Получаем последний добавленный элемент
+            last_spinBox_gas = list(self.values.keys())[-1]
+            last_spinBox_time = self.values[last_spinBox_gas]
+
+            # Удаляем виджеты из макета
+            for i in range(self.scroll_layout.count() - 1, -1, -1):
+                item = self.scroll_layout.itemAt(i).widget()
+                if item and last_spinBox_gas in item.children() and last_spinBox_time in item.children():
+                    self.scroll_layout.removeWidget(item)
+                    item.deleteLater()  # Удаляем виджет
+                    break
+
+            # Удаляем элемент из словаря
+            del self.values[last_spinBox_gas]
+            print("Последний слой с SpinBox удалён.")
+        else:
+            print("Нет слоёв с SpinBox для удаления.")
+
+
+
+
+
+

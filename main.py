@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import QApplication
 from UI.Window import Ui_MainWindow
 import sys
-import osп
+import os
 from globals import json_dir,exel_dir
 
 if not os.path.exists(json_dir):
