@@ -106,17 +106,21 @@ class DataRecorder:
         print(f"Файл {self.csv_file} был очищен.")
 
     def passed_to_write(self):
-        """Метод для отбора параметров для записи в exel , мы читаем файл из настроек , при совпадении хедара и ключа из файла и значение не true , то удаляем из списка"""
+        """
+        Метод для отбора параметров для записи в Excel.
+        Мы читаем файл из настроек, при совпадении хедера и ключа из файла
+        и состоянии True добавляем в список для записи.
+        """
         to_write = []
         try:
             data = import_js(self.full_path_ToRead)  # читаем файл параметров для пропуска к записи
             for name, state in data.items():
                 for head in self.headers:
-                    print(f"имя в файле: {name} имя в хедаре {head} состояние из файла: {state}")
-                    if name == head:
-                        if state:
-                            to_write.append(name)
+                    if name == head and state:
+                        to_write.append(name)
+                        # Переходим к следующей итерации внешнего цикла
+                        break  # Заканчиваем текущую проверку для этого `name`
             return to_write
-
         except Exception as e:
             print(e)
+

@@ -1,1 +1,10 @@
-{}
+{
+    "Time / Traction": {
+        "x": "Time",
+        "y": "Traction"
+    },
+    "Time / Weight": {
+        "x": "Time",
+        "y": "Weight"
+    }
+}

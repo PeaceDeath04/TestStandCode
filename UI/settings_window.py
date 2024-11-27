@@ -1,9 +1,8 @@
 import os.path
-from turtledemo.clock import datum
+from types import NoneType
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from data_processing.Data import export_to_json, create_json, import_from_json, import_js
-from data_processing.GraphHandler import graphs
 from globals import json_dir, full_path_ToGraphs
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QCheckBox, QComboBox
 import globals
@@ -403,7 +402,6 @@ class SettingsWindow(QtWidgets.QWidget):
         self.setupUi(self)
 
         self.pushButton.clicked.connect(self.create_time_point) # кнопка + при создании точки
-        self.pushButton_2.clicked.connect(lambda : print(self.graphs))
         self.SaveBut.clicked.connect(self.save_values)
         self.calib_weight_spinbox.valueChanged.connect(self.change_weight)
         self.spinbox_change_step.valueChanged.connect(self.change_step)
@@ -441,6 +439,8 @@ class SettingsWindow(QtWidgets.QWidget):
 
         self.load_graphs()
 
+    #region изменение переменных на прямую
+
     # Изменение калибровочного веса
     def change_weight(self):
         globals.calib_weight = self.calib_weight_spinbox.value()
@@ -450,6 +450,58 @@ class SettingsWindow(QtWidgets.QWidget):
         step_size = self.spinbox_change_step.value()
         gas_min,gas_max = import_from_json("save_file.json","gas_min","gas_max")
         globals.step_size = (gas_max - gas_min) // step_size
+
+    #endregion
+
+    #region Настройка читаемых параметров
+
+    # Метод для фильтрации только чекбоксов
+    def get_all_checkboxes_from_layout(self, layout):
+        checkboxes = []
+        for i in range(layout.count()):
+            item = layout.itemAt(i)
+            # Если это виджет и это QCheckBox
+            if item.widget() and isinstance(item.widget(), QCheckBox):
+                checkboxes.append(item.widget())
+            # Если это вложенный слой
+            elif item.layout():
+                checkboxes.extend(self.get_all_checkboxes_from_layout(item.layout()))
+        return checkboxes
+
+        # подключаем события к чекбоксам
+
+    def connect_checkboxes(self):
+        for box in self.checkboxes:
+            box.stateChanged.connect(self.save_state_check_box)
+
+        # сохраняем состояние чекбокса
+
+    def save_state_check_box(self, state):
+        sender = self.sender()  # Определяем, какой чекбокс отправил сигнал
+        if sender:
+            # Сохраняем состояние чекбокса в JSON
+            data = {}
+            data[sender.text()] = sender.isChecked()
+            export_to_json(self.name_file_ToRead, **data)
+
+    # подгружаем из json файла состояние кнопок на последний момент при запуске программы
+    def load_state_check_box(self):
+        if os.path.isfile(self.full_path_ToRead):
+            try:
+                data = import_js(self.full_path_ToRead)
+                for name, state in data.items():
+                    for box in self.checkboxes:
+                        if name == box.text():
+                            if state:
+                                box.setChecked(True)
+                            else:
+                                box.setChecked(False)
+            except Exception as e:
+                print("файл с чекбоксами найден , но не имеет элементов. Exception:",e)
+        else:
+            pass
+
+    #endregion
 
     #region Настройка Автотеста
 
@@ -489,9 +541,6 @@ class SettingsWindow(QtWidgets.QWidget):
                 gas.value(): time.value() * 1000
             }
 
-            # Вывод текущих данных
-            print(f"Индекс: {index}, значение газа (x): {gas.value()}, значение времени (y): {time.value()}")
-
         # Экспортируем итоговый JSON , если таковой имеется то удаляем
         if os.path.isfile(self.full_path):  # Проверяем, существует ли файл по указанному пути
             try:
@@ -500,64 +549,40 @@ class SettingsWindow(QtWidgets.QWidget):
                 print(f"Ошибка при удалении файла: {e}")
         create_json("timings.json", self.points)
 
-    # Метод для фильтрации только чекбоксов
-    def get_all_checkboxes_from_layout(self, layout):
-        checkboxes = []
-        for i in range(layout.count()):
-            item = layout.itemAt(i)
-            # Если это виджет и это QCheckBox
-            if item.widget() and isinstance(item.widget(), QCheckBox):
-                checkboxes.append(item.widget())
-            # Если это вложенный слой
-            elif item.layout():
-                checkboxes.extend(self.get_all_checkboxes_from_layout(item.layout()))
-        return checkboxes
+    # удаление последней точки автотеста в ui
+    def remove_last_spinbox_layer(self):
+        if self.values:  # Проверяем, есть ли слои для удаления
+            # Получаем последний добавленный элемент
+            last_spinBox_gas = list(self.values.keys())[-1]
+            last_spinBox_time = self.values[last_spinBox_gas]
 
-    # подключаем события к чекбоксам
-    def connect_checkboxes(self):
-        for box in self.checkboxes:
-            box.stateChanged.connect(self.save_state_check_box)
+            # Удаляем виджеты из макета
+            for i in range(self.scroll_layout.count() - 1, -1, -1):
+                item = self.scroll_layout.itemAt(i).widget()
+                if item and last_spinBox_gas in item.children() and last_spinBox_time in item.children():
+                    self.scroll_layout.removeWidget(item)
+                    item.deleteLater()  # Удаляем виджет
+                    break
 
-    # сохраняем состояние чекбокса
-    def save_state_check_box(self, state):
-        sender = self.sender()  # Определяем, какой чекбокс отправил сигнал
-        if sender:
-            # Сохраняем состояние чекбокса в JSON
-            data = {}
-            data[sender.text()] = sender.isChecked()
-            export_to_json(self.full_path_ToRead, **data)
-
-    # подгружаем из json файла состояние кнопок на последний момент при запуске программы
-    def load_state_check_box(self):
-        if os.path.isfile(self.full_path_ToRead):
-            try:
-                data = import_js(self.full_path_ToRead)
-                for name, state in data.items():
-                    for box in self.checkboxes:
-                        if name == box.text():
-                            if state:
-                                box.setChecked(True)
-                            else:
-                                box.setChecked(False)
-            except Exception as e:
-                print(e)
+            # Удаляем элемент из словаря
+            del self.values[last_spinBox_gas]
         else:
-            pass
+            print("Нет слоёв с SpinBox для удаления.")
 
     #endregion
+
+    #region Настройка графиков
 
     def load_graphs(self):
         if os.path.isfile(full_path_ToGraphs):
             try:
                 data = import_js(full_path_ToGraphs)
-                print(data)
 
                 # извлекаем из словаря json параметры и создаем combobox на их основе которые передаем в self.graphs
                 for name,graph in data.items():
                     comboBox_graphs = []
 
                     for key,value in graph.items():
-                        print(f"график {name} ключ: {key} значение {value}")
 
                         if key == "x":
                             comboBox_x = QtWidgets.QComboBox(self.verticalLayoutWidget_3)
@@ -660,29 +685,12 @@ class SettingsWindow(QtWidgets.QWidget):
 
             # Удаляем элемент из словаря
             del self.graphs[last_combo_x]
-            print("Последний график удалён.")
         else:
             print("Нет графиков для удаления.")
 
-    def remove_last_spinbox_layer(self):
-        if self.values:  # Проверяем, есть ли слои для удаления
-            # Получаем последний добавленный элемент
-            last_spinBox_gas = list(self.values.keys())[-1]
-            last_spinBox_time = self.values[last_spinBox_gas]
+    #endregion
 
-            # Удаляем виджеты из макета
-            for i in range(self.scroll_layout.count() - 1, -1, -1):
-                item = self.scroll_layout.itemAt(i).widget()
-                if item and last_spinBox_gas in item.children() and last_spinBox_time in item.children():
-                    self.scroll_layout.removeWidget(item)
-                    item.deleteLater()  # Удаляем виджет
-                    break
 
-            # Удаляем элемент из словаря
-            del self.values[last_spinBox_gas]
-            print("Последний слой с SpinBox удалён.")
-        else:
-            print("Нет слоёв с SpinBox для удаления.")
 
 
 

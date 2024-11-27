@@ -29,6 +29,9 @@ def export_to_json(name_file,**keys):
         try:
             with open(os.path.join(json_dir,name_file), mode="r", encoding="Latin-1") as save_file:
                 data = json.load(save_file)
+                if data is None:
+                    print("JSON-файл пуст или некорректен, инициализируем пустой словарь.")
+                    data = {}
         except FileNotFoundError:
             data = localData.copy()
         for key, value in keys.items():

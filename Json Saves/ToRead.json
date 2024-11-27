@@ -1,0 +1,13 @@
+{
+    "Traction": true,
+    "Weight": true,
+    "Temp": true,
+    "ShuntVoltage": true,
+    "Voltage": true,
+    "gas": true,
+    "Time": true,
+    "T_flash_O": true,
+    "T_flach_E": true,
+    "Weight_1": true,
+    "Weight_2": true
+}
