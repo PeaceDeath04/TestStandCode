@@ -3,7 +3,7 @@ from types import NoneType
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from data_processing.Data import export_to_json, create_json, import_from_json, import_js
-from globals import json_dir, full_path_ToGraphs
+from globals import json_dir, full_path_ToGraphs, calib_weight
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QCheckBox, QComboBox
 import globals
 
@@ -401,6 +401,8 @@ class SettingsWindow(QtWidgets.QWidget):
         super().__init__()
         self.setupUi(self)
 
+        self.calib_weight_spinbox.setMaximum(1000000)
+
         self.pushButton.clicked.connect(self.create_time_point) # кнопка + при создании точки
         self.SaveBut.clicked.connect(self.save_values)
         self.calib_weight_spinbox.valueChanged.connect(self.change_weight)
@@ -437,6 +439,8 @@ class SettingsWindow(QtWidgets.QWidget):
         self.keys_to_graph = ["T_flach_E", "T_flash_O", "Voltage", "ShuntVoltage", "Temp", "Traction","Weight", "Weight_1",
                                "Weight_2", "Time"]
 
+        self.load_calib_weight()
+
         self.load_graphs()
 
     #region изменение переменных на прямую
@@ -444,6 +448,14 @@ class SettingsWindow(QtWidgets.QWidget):
     # Изменение калибровочного веса
     def change_weight(self):
         globals.calib_weight = self.calib_weight_spinbox.value()
+        export_to_json(name_file="save_file.json", calib_weight=globals.calib_weight)
+
+    def load_calib_weight(self):
+        try:
+            globals.calib_weight = import_from_json("save_file.json", "calib_weight")[0]
+            self.calib_weight_spinbox.setValue(globals.calib_weight)
+        except Exception as e:
+            print(f"Ошибка при загрузке калибровочного веса , текст ошибки: {e}")
 
     # изменение шага в процентах
     def change_step(self):

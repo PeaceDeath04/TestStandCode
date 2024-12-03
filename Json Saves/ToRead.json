@@ -9,5 +9,7 @@
     "T_flash_O": true,
     "T_flach_E": true,
     "Weight_1": true,
-    "Weight_2": true
+    "Weight_2": true,
+    "gas_min": true,
+    "gas_max": true
 }

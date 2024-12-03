@@ -50,6 +50,7 @@ def validate_data_packet(packet):
 
     # 3. Пакет успешно прошел проверку
     return True
+
 def read_data():
     global buffer
     try:

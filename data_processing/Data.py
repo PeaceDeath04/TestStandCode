@@ -61,7 +61,6 @@ def import_from_json(name_file,*keys):
         print(f"Ошибка декодирования JSON в файле {save_file}.")
         return None
 
-
 def create_json(name_file, data):
     """
     Создает JSON файл по указанному пути, если он не существует.
@@ -81,7 +80,6 @@ def create_json(name_file, data):
     else:
         pass
         #print(f"Файл {full_path} уже существует.")
-
 
 def import_js(name_file):
     """Передаем в качестве параметра имя искомого файла и передаем dict/None в зависимости от результата"""
