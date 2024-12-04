@@ -25,10 +25,12 @@ def but_taring(param):
 def taring_values(packet_data):
     if dict_tar is not None:
         for key_packet, value_packet in packet_data.items():
+            print(f"до тарирования{packet_data[key_packet]}")
             for key_tar, value_tar in dict_tar.items():
                 if key_tar == key_packet:
                     packet_data[key_packet] -= value_tar
     return packet_data
+
 
 def get_kef_tenz(key_value):
     calib_weight = globals.calib_weight
@@ -39,6 +41,8 @@ def get_kef_tenz(key_value):
     if key_value == "Weight":
         params_tenz_kef["Weight_1"] = localData.get("Weight_1") / calib_weight
         params_tenz_kef["Weight_2"] = localData.get("Weight_2") / calib_weight
+
+
 
 def get_result_value(pia_data):
     """производим деление параметров на их коэффициенты если таковы имеются"""
@@ -54,22 +58,48 @@ def rounding_params(data):
         data[key] = round(value,2)
     return data
 
+# Обновлённые функции для тарирования и вычислений
+def but_taring_after_calibration(pia_data, param):
+    """Тарирование после калибровки"""
+    if param == "Traction":
+        dict_tar["Traction"] = pia_data["Traction"]
+    if param == "Weight":
+        dict_tar["Weight_1"] = pia_data["Weight_1"]
+        dict_tar["Weight_2"] = pia_data["Weight_2"]
+
+def get_result_value_after_taring(pia_data):
+    """Учитываем тару поверх уже откалиброванных значений"""
+    for key, value_tar in dict_tar.items():
+        if key in pia_data:
+            pia_data[key] -= value_tar  # Вычитаем только значение тары
+    return pia_data
+
 
 def pia(data):
-    """ Processing Information from Arduino / обработка информации c arduino"""
+    """Обработка с учётом тарирования после калибровки"""
     pia_data = {}
-    # сохранили внутри метода пакет данных из сериал порта
+
+    # 1. Создаём сырые данные
     for key, value in zip(keys_to_update_ard, data):
         pia_data[key] = float(value)
 
-    pia_data.update(taring_values(pia_data))  # производим тарирование
+    # 2. Применяем коэффициенты калибровки
+    if params_tenz_kef:
+        pia_data.update(get_result_value(pia_data))
 
-    pia_data.update(get_result_value(pia_data))  # производим деление параметров на коэф
+    # 3. Применяем тару (если она установлена)
+    if dict_tar:
+        pia_data.update(get_result_value_after_taring(pia_data))
 
-    pia_data["Weight"] = (pia_data["Weight_1"] - pia_data["Weight_2"]) / 2  # получаем общий вес
+    # 4. Вычисляем общий вес
+    pia_data["Weight"] = (pia_data["Weight_1"] - pia_data["Weight_2"]) / 2
 
-    pia_data.update(rounding_params(pia_data)) # округляем значения до сотых
+    # 5. Округляем значения
+    pia_data.update(rounding_params(pia_data))
 
-    localData.update(pia_data)  # сохраняем в локал дату обработанный пакет данных
+    # Сохраняем в локальные данные
+    localData.update(pia_data)
 
+    # Обновляем графики
     add_thread_graphs()
+

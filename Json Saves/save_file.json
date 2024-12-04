@@ -12,5 +12,5 @@
     "gas": 750,
     "gas_min": 750,
     "gas_max": 2800,
-    "calib_weight": 12.0
+    "calib_weight": 100.0
 }
