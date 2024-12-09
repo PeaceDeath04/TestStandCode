@@ -337,10 +337,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.ButCalibTraction.clicked.connect(lambda:get_kef_tenz("Traction"))
         self.ButCalibWeight.clicked.connect(lambda:get_kef_tenz("Weight"))
         self.ActionSettings.triggered.connect(self.open_settings)
-
-        """     self.calib_weight_spinbox.valueChanged.connect(self.change_weight)
-                self.spinbox_change_step.valueChanged.connect(self.change_step)"""
-
         self.ButSaveExl.setCheckable(True)
         self.read = False
         self.port_open = False

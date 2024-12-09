@@ -1,7 +1,6 @@
 import json
 import os
 from globals import json_dir
-from types import NoneType
 
 name_save_file = "save_file.json"
 
@@ -17,10 +16,6 @@ keys_to_update_ard = ["T_flach_E", "T_flash_O", "Voltage", "ShuntVoltage", "Temp
 key_to_Graphs = {
         "TractionGraph": {"x": "Time", "y": "Traction"}
     }
-
-keysArduino = {"gas": "g", "gas_min": "m", "gas_max": "x", "ButCalibMotor": "k", "ResetTime": "t",
-                            "Traction": "r", "Weight_1": "o", "Weight_2": "w"}
-
 
 
 def export_to_json(name_file,**keys):

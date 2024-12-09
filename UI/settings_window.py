@@ -1,10 +1,9 @@
 import os.path
-from types import NoneType
-
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QCheckBox, QComboBox
+
 from data_processing.Data import export_to_json, create_json, import_from_json, import_js
 from globals import json_dir, full_path_ToGraphs, calib_weight
-from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QCheckBox, QComboBox
 import globals
 
 
