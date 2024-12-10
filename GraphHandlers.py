@@ -23,13 +23,12 @@ plt.rcParams.update({
 })
 
 class Graph:
-    def __init__(self, parent=None, max_points=50,color):
+    def __init__(self, parent=None, max_points=50,color = '#00b894'):
         self.fig = Figure()  # Создаем объект Figure для графика
         self.canvas = FigureCanvas(self.fig)  # Холст для графика
         self.ax = self.fig.add_subplot(111)  # Добавляем ось
         self.fig.tight_layout()
         self.fig.subplots_adjust(0.04, 0, 0.99, 0.99,)  # left,bottom,right,top
-        self.color = color
         self.ax.grid(color='#303030', linestyle='-.', linewidth=1)
 
         self.x_data = []  # Данные по оси X
@@ -40,7 +39,7 @@ class Graph:
         self.scale_factor = 1.0
 
         # Настройка осей графика
-        self.line, = self.ax.plot([], [], label="название", marker='*', linestyle='-',color=self.color)  # Линия на графике с маркерами
+        self.line, = self.ax.plot([], [], label="название", marker='*', linestyle='-',color=color)  # Линия на графике с маркерами
         self.ax.legend()
 
     def add_data(self, x, y, name):
