@@ -6,11 +6,8 @@ class Transceiver:
     def __init__(self,controller):
         self.controller = controller
 
-        # Экземпляр класса по работе с сериал портом
-        self.serial = QSerialPort()
-
         # Экземпляр класса для работы с портами
-        self.port_handler = PortHandler(speed_baud_rate=9600,serial=self.serial)
+        self.port_handler = PortHandler(speed_baud_rate=9600)
 
         # буффер вспомогательная строка для чтения по com порту
         self.buffer = ""
@@ -20,7 +17,7 @@ class Transceiver:
                             "Traction": "r", "Weight_1": "o", "Weight_2": "w"}
 
         # подключаем событие если сериал порт открыт и готов к чтению/отправке
-        self.serial.readyRead.connect(self.read_data)
+        self.port_handler.serial.readyRead.connect(self.read_data)
 
     # статический метод для проверки валидности пакета с ардуино
     @staticmethod
@@ -87,8 +84,9 @@ class Transceiver:
     #endregion
 
 class PortHandler:
-    def __init__(self,speed_baud_rate = 9600,serial = None):
-        self.serial = serial
+    def __init__(self,speed_baud_rate = 9600):
+        # Экземпляр класса по работе с сериал портом
+        self.serial = QSerialPort()
         self.serial.setBaudRate(speed_baud_rate)
 
     def open_port(self,port_name):

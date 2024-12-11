@@ -3,9 +3,6 @@ import pandas as pd
 import csv
 from datetime import datetime
 
-
-from globals import calib_weight
-
 exel_dir = os.path.join(project_dir,"Exel Tables") # папка с экселями
 
 full_path_ToGraphs = os.path.join(json_dir, "keys_graphs.json")
@@ -295,5 +292,3 @@ class DataRecorder:
             return to_write
         except Exception as e:
             print(e)
-
-

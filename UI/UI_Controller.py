@@ -10,6 +10,10 @@ class UiController:
         self.ui_main.setupUi(self.ui_main)
         self.ui_settings.setupUi(self.ui_settings)
 
+    def add_graph(self):
+        """Метод для добавления обьекта класса Graph на ui слой в главном окне"""
+
+
     def connect_events_main(self):
         pass
 
