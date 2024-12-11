@@ -1,3 +1,5 @@
+from PyQt5.QtTest import QTest
+
 from Transceiver import Transceiver
 from UI.UI_Controller import UiController
 from DataControl import *
@@ -13,6 +15,41 @@ class Controller:
     def save_ui_values(self):
         controller = self.ui_controller
         export_to_json("save_file.json",gas_min=controller.ui_main.spinBoxMin,gas_max=controller.ui_main.spinBoxMax,step_size=controller.step_size)
+
+    def start_auto_test(self):
+        # ??? а точный ли путь то timings.json?
+
+        # если запись не начата
+        if not self.recorder.is_reading:
+            self.ui_controller.ui_main.ButAutoTest.setText("Автотест запущен")
+
+            #обнуляем время
+            self.transceiver.send_data(ResetTime=0)
+
+            # получаем временные точки для автотеста
+            points = import_js("timings.json")
+
+            # меняем дефолт название файла
+            self.recorder.base_filename = "AutoTest"
+
+            # проводим автотест
+            for point in points.values():
+                for gas,time in point.items():
+                    gas,time = int(gas),int(time)
+                    gas = self.ui_controller.calculate_value_from_percentage(gas)
+                    self.ui_controller.ui_main.SlidePower.setValue(gas)
+                    QTest.qWait(ms=time)
+
+            # прекращаем запись
+            self.recorder.convert_csv_to_xlsx()
+            # указываем минимальное значение
+            self.ui_controller.ui_main.SlidePower.setValue(self.ui_controller.ui_main.spinBoxMin.value())
+            # выставляем изначальный текст
+            self.ui_controller.ui_main.ButAutoTest.setText("Начать запись")
+        else:
+            print("Для начала прекратите записывать в обычном режиме")
+
+
 
     #region работа с Трансивером
     def open_port(self,port_name):

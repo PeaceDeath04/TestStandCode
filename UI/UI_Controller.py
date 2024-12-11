@@ -172,6 +172,21 @@ class UiController:
         except:
             return "Ошибка при вычилсении процента"
 
+    def calculate_value_from_percentage(self,percentage):
+        """
+        Вычисляет число в заданном диапазоне для определенного процента.
+
+        :param percentage: Процент (int или float, 0-100)
+        :return: Число, соответствующее percentage% от диапазона
+        """
+        try:
+            if not (0 <= percentage <= 100):
+                return "Ошибка: процент должен быть в диапазоне от 0 до 100"
+
+            return int(self.ui_main.spinBoxMin.value() + (percentage / 100) * (self.ui_main.spinBoxMax.value() - self.ui_main.spinBoxMin.value()))
+        except TypeError:
+            return "Ошибка: переданы некорректные значения"
+
     """работа с событиями"""
 
     def connect_events_main(self):
@@ -190,7 +205,7 @@ class UiController:
         self.ui_main.ActionSettings.triggered.connect(self.ui_settings.show)
 
         # подключение работы автотеста
-        self.ui_main.ButAutoTest.clicked.connect("Нажата кнопка автотеста")
+        self.ui_main.ButAutoTest.clicked.connect(self.controller.start_auto_test)
 
         # подключение записи параметров
         self.ui_main.ButSaveExl.clicked.connect("Начать запись параметров")

@@ -184,6 +184,8 @@ class DataRecorder:
             'Temp', 'Traction', 'Weight', 'Time', 'gas', 'gas_min', 'gas_max'
         ]
 
+        self.is_reading = False
+
         # Указываем путь относительно папки проекта
         self.exel_dir = exel_dir
 
@@ -197,6 +199,8 @@ class DataRecorder:
 
     def start_new_recording(self):
         """Создает новый CSV файл для записи и инициализирует его заголовками."""
+        self.is_reading = True
+
         headers = self.passed_to_write()
 
         # Генерируем уникальное имя для нового CSV файла
