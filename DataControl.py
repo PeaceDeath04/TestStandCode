@@ -45,19 +45,19 @@ class Data:
             return
 
 
-        if calib_weight == 0:
+        if self.calib_weight == 0:
             print("Ошибка: калибровочный вес равен нулю.")
             return
 
         # Расчет коэффициента калибровки
         if key_param == "Traction":
-            self.param_kef["Traction"] = last_packet._data.get("Traction") / calib_weight
+            self.param_kef["Traction"] = last_packet._data.get("Traction") / self.calib_weight
 
             print(f"Коэффициент калибровки для Traction: {self.param_kef.get('Traction')}")
 
         if key_param == "Weight":
-            self.param_kef["Weight_1"] = last_packet._data.get("Weight_1") / calib_weight
-            self.param_kef["Weight_2"] = last_packet._data.get("Weight_2") / calib_weight
+            self.param_kef["Weight_1"] = last_packet._data.get("Weight_1") / self.calib_weight
+            self.param_kef["Weight_2"] = last_packet._data.get("Weight_2") / self.calib_weight
 
             print(f"Коэффициент калибровки для Weight_1: {self.param_kef.get('Weight_1')}")
             print(f"Коэффициент калибровки для Weight_2: {self.param_kef.get('Weight_2')}")
@@ -107,13 +107,14 @@ class Packet:
         # получаем словарь тарирований weight из экземпляра класса Data
         self.taring_weight = data.taring_weight
 
-        # Здесь проходит обработка пакета данных
-        self.processing_packet()
-
-    def processing_packet(self):
-        """Здесь проходит обработка пакета данных"""
         # номер иттерации для первичного и вторичного тарирования
         self.iter_taring = 1
+
+        # Здесь проходит обработка пакета данных
+        self.processing_packet(raw_packet=raw_packet)
+
+    def processing_packet(self,raw_packet):
+        """Здесь проходит обработка пакета данных"""
 
         # 1. Обьединям наименования ключей с их значениями
         for key, value in zip(self.keys_to_update_ard, raw_packet):
@@ -172,7 +173,7 @@ class Packet:
 
     def rounding_params(self):
         for key, value in self._data.items():
-            data[key] = round(value, 2)
+            self._data[key] = round(value, 2)
 
 class DataRecorder:
     def __init__(self, base_filename='data'):
