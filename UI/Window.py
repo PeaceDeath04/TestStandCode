@@ -323,7 +323,9 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         super().__init__()
         self.window_settings = SettingsWindow()
         self.setupUi(self)
+
         serial.readyRead.connect(read_data)
+
         self.spinBoxMin.valueChanged.connect(self.GetRangeGas)
         self.spinBoxMax.valueChanged.connect(self.GetRangeGas)
         self.ButOpenPort.clicked.connect(self.toggle_port)
@@ -337,6 +339,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.ButCalibTraction.clicked.connect(lambda:get_kef_tenz("Traction"))
         self.ButCalibWeight.clicked.connect(lambda:get_kef_tenz("Weight"))
         self.ActionSettings.triggered.connect(self.open_settings)
+
         self.ButSaveExl.setCheckable(True)
         self.read = False
         self.port_open = False
@@ -354,8 +357,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         self.onStartUp()
 
-    def open_settings(self):
-        self.window_settings.show()
 
     def get_gas_percentage(self):
         try:

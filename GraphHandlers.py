@@ -44,7 +44,8 @@ class GraphController:
         ]
 
     def create_graph(self,obj):
-        """Метод получает словарь далее создает и добавляет в него обьект класса Graph и весь этот передается self.graphs
+        """
+        Метод получает словарь далее создает и добавляет в него обьект класса Graph и весь этот передается self.graphs
          """
         if not isinstance(obj,dict):
             print("Данный обьект не является словарем!!!")
@@ -52,11 +53,14 @@ class GraphController:
         for name_graph , _dict in obj.items():
             if not "obj" in _dict:
                 _dict["obj"] = Graph(color=self.colors[0])
+                self.colors.pop(0)
         self.graphs = obj.copy()
 
 
+
+
 class Graph:
-    def __init__(self, parent=None, max_points=50,color = None):
+    def __init__(self, parent=None, max_points=25,color = None):
         self.fig = Figure()  # Создаем объект Figure для графика
         self.canvas = FigureCanvas(self.fig)  # Холст для графика
         self.ax = self.fig.add_subplot(111)  # Добавляем ось

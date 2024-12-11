@@ -53,7 +53,7 @@ class Transceiver:
                         data = packet.strip().split(",")
                         if all(item != '' for item in data):
                             if self.validate_data_packet(data):
-                                self.controller(data)
+                                self.controller.local_data.create_pack(data)
 
                 self.buffer = packets[-1]
         except Exception as e:
@@ -71,17 +71,6 @@ class Transceiver:
                 self.serial.write(result.encode())
             else:
                 print(f"Не найдено соответствие для {key_packet}")
-
-    #region сокрытие методов дочернего класса
-    def open_port(self,port_name):
-        self.port_handler.open_port(port_name=port_name)
-
-    def close_port(self):
-        self.port_handler.close_port()
-
-    def update_port_list(self):
-        return self.port_handler.update_port_list()
-    #endregion
 
 class PortHandler:
     def __init__(self,speed_baud_rate = 9600):
@@ -101,7 +90,8 @@ class PortHandler:
         if self.serial.open(QIODevice.ReadWrite):
             print(f"Порт {port_name} открыт")
         else:
-            print(f"Не удалось открыть порт {port_name} , т.к он уже используется")
+            self.serial.close()
+            print("закрыли текущий порт")
 
     def close_port(self):
         if self.serial.isOpen():
