@@ -34,7 +34,7 @@ class UiController:
         # ключи графиков ( используется для списка возможных отображений графика по выбранной оси)
         self.keys_to_graph = ["T_flach_E", "T_flash_O", "Voltage", "ShuntVoltage", "Temp", "Traction", "Weight","Weight_1","Weight_2", "Time"]
 
-        # сохраняет в себе # он тоже нужен , он работает напрямую с обьектами QTWidgets.QComboBox
+        # хранит в себе ключ значние где ключ это QWidget для оси x аналогично по оси y (self.graphs[comboBox_x] = comboBox_y)
         self.graphs = {}
 
 
@@ -422,6 +422,7 @@ class UiController:
             if isinstance(x, QtWidgets.QComboBox) and isinstance(y, QtWidgets.QComboBox):
                 name = f"{x.currentText()} / {y.currentText()}"
                 data[name] = {"x": x.currentText(), "y": y.currentText()}
+
         # сохраняем в json
         create_json("keys_graphs.json", data)
 

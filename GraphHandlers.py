@@ -1,8 +1,9 @@
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
+from pandas.core.config_init import float_format_doc
 
-from globals import colors
+from DataControl import Packet
 
 # Настройка параметров
 plt.style.use('seaborn-v0_8-dark')
@@ -43,24 +44,29 @@ class GraphController:
             '#e17055',  # Оранжевый
         ]
 
-    def create_graph(self,obj):
+    def create_graph(self,name_legend,x,y):
         """
-        Метод получает словарь далее создает и добавляет в него обьект класса Graph и весь этот передается self.graphs
+        Метод получает имя легенды , Название параметра для дальнейшего парсинга по оси x and y
+        Далее заносит данные в собственный словарь self.graphs[name_legend] = {"x":x,"y":y,'obj':Graph}
          """
-        if not isinstance(obj,dict):
-            print("Данный обьект не является словарем!!!")
-            return
-        for name_graph , _dict in obj.items():
-            if not "obj" in _dict:
-                _dict["obj"] = Graph(color=self.colors[0])
-                self.colors.pop(0)
-        self.graphs = obj.copy()
+        self.graphs[name_legend] = {"x":x,"y":y,'obj':Graph(color=self.colors[0],name=name_legend)}
 
+        # удаляем первый цвет из списка , т.к уже его применили
+        self.colors.pop(0)
+
+    def update_graphs(self,packet):
+        if not self.graphs:
+            return
+        for params_graph in self.graphs.values():
+            graph = params_graph.get("obj")
+            x = params_graph.get("x")
+            y = params_graph.get("y")
+            graph.add_data(x=packet._data.get(x),y=packet._data.get(y))
 
 
 
 class Graph:
-    def __init__(self, parent=None, max_points=25,color = None):
+    def __init__(self, parent=None, max_points=50,color = None,name = None):
         self.fig = Figure()  # Создаем объект Figure для графика
         self.canvas = FigureCanvas(self.fig)  # Холст для графика
         self.ax = self.fig.add_subplot(111)  # Добавляем ось
@@ -76,15 +82,13 @@ class Graph:
         self.scale_factor = 1.0
 
         # Настройка осей графика
-        self.line, = self.ax.plot([], [], label="название", marker='*', linestyle='-',color=color)  # Линия на графике с маркерами
-        self.ax.legend()
+        self.line, = self.ax.plot([], [], label= name, marker='*', linestyle='-',color=color)  # Линия на графике с маркерами
+        self.ax.legend(loc='upper right')
 
-    def add_data(self, x, y, name):
+    def add_data(self, x, y):
         """Добавляем данные в график и обновляем его"""
         self.x_data.append(x)
         self.y_data.append(y)
-        self.line.set_label(name)
-        self.ax.legend(loc='upper right')
 
         # Ограничиваем количество точек до max_points
         if len(self.x_data) > self.max_points:

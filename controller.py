@@ -1,5 +1,6 @@
 from PyQt5.QtTest import QTest
 
+from GraphHandlers import GraphController
 from Transceiver import Transceiver
 from UI.UI_Controller import UiController
 from DataControl import *
@@ -12,6 +13,7 @@ class Controller:
         self.transceiver = Transceiver(controller=self)
         self.recorder = DataRecorder()
         self.ui_controller = UiController(self)
+        self.graph_controller = GraphController()
 
     def save_ui_values(self):
         controller = self.ui_controller
