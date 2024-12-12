@@ -6,114 +6,42 @@ from JsonHandler import *
 
 class UiController:
     def __init__(self,controller):
+        # ui (обертка главного окна)
         self.ui_main = MainWindow()
+
+        # ui (обертка окна настроек)
         self.ui_settings = SettingsWindow()
 
+        #подключаем события у главного окна
         self.connect_events_main()
 
+        # получаем существующий экземпляр класса главного контроллера
         self.controller = controller
 
         # Список для хранения чекбоксов ( чекбоксами являются ui элементы при нажатии которых выбранный параметр (Traction,Weight...) будет отображается в exel таблицах)
         self.checkboxes = self.get_all_checkboxes_from_layout(self.ui_settings.lay_read_settings)
 
-        # стиль ui
-        self.styleSheet = ("QWidget {\n"
-                           "    background-color: #1e1e1e;  /* Очень темный фон */\n"
-                           "    color: #d3d3d3;  /* Светло-серый цвет текста */\n"
-                           "    font-family: Arial, sans-serif;\n"
-                           "    font-size: 12px;\n"
-                           "}\n"
-                           "\n"
-                           "QPushButton {\n"
-                           "    background-color: #2d2d2d;  /* Темный фон для кнопок */\n"
-                           "    border: 1px solid #1e1e1e;\n"
-                           "    border-radius: 5px;\n"
-                           "    padding: 5px;\n"
-                           "    font-weight: bold;\n"
-                           "}\n"
-                           "\n"
-                           "QPushButton:hover {\n"
-                           "    background-color: #00b894;  /* Светло-зеленый при наведении */\n"
-                           "    color: #1e1e1e;\n"
-                           "}\n"
-                           "\n"
-                           "QComboBox {\n"
-                           "    border: 1px solid #2d2d2d;\n"
-                           "    border-radius: 5px;\n"
-                           "    padding: 2px;\n"
-                           "    background-color: #2d2d2d;\n"
-                           "}\n"
-                           "\n"
-                           "QTextBrowser {\n"
-                           "    background-color: #2d2d2d;  /* Темный фон для окна вывода */\n"
-                           "    border: 1px solid #1e1e1e;\n"
-                           "    border-radius: 5px;\n"
-                           "    padding: 5px;\n"
-                           "}\n"
-                           "\n"
-                           "QLabel {\n"
-                           "    color: #d3d3d3;  /* Мягкий серый цвет для текста */\n"
-                           "    font-weight: bold;\n"
-                           "    font-size: 14px;\n"
-                           "}\n"
-                           "\n"
-                           "QSpinBox {\n"
-                           "    background-color: #2d2d2d;\n"
-                           "    border: 1px solid #1e1e1e;\n"
-                           "    border-radius: 5px;\n"
-                           "    padding: 2px;\n"
-                           "    color: #d3d3d3;\n"
-                           "}\n"
-                           "\n"
-                           "QDoubleSpinBox {\n"
-                           "    background-color: #2d2d2d;\n"
-                           "    border: 1px solid #1e1e1e;\n"
-                           "    border-radius: 5px;\n"
-                           "    padding: 2px;\n"
-                           "    color: #d3d3d3;\n"
-                           "}\n"
-                           "\n"
-                           "QSlider {\n"
-                           "    background-color: #2d2d2d;\n"
-                           "    border-radius: 5px;\n"
-                           "}\n"
-                           "\n"
-                           "QScrollArea {\n"
-                           "    border: none;\n"
-                           "}\n"
-                           "\n"
-                           "QScrollBar:vertical {\n"
-                           "    background: rgb(45, 45, 45);\n"
-                           "}\n"
-                           "\n"
-                           "QScrollBar::handle:vertical {\n"
-                           "    background: rgb(0, 184, 148);\n"
-                           "    min-width: 20px;\n"
-                           "}\n"
-                           "\n"
-                           "QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {\n"
-                           "    background: none;\n"
-                           "}\n"
-                           "\n"
-                           "QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical,\n"
-                           "QScrollBar::add-line:horizontal, QScrollBar::sub-line:horizontal {\n"
-                           "    background: transparent;  /* Убирает стрелки вверх и вниз */\n"
-                           "    width: 0px;  /* Убирает размеры кнопок */\n"
-                           "    height: 0px;  /* Убирает размеры кнопок */\n"
-                           "}")
-
+        # шаг изменения ползунка слайдера в процентах
         self.step_size = 1
 
+        # отображение главного окна
         self.ui_main.show()
 
+        # для работы с автотестом
         self.values = {}  # тут хранятся значения газ,время
         self.points = {}  # тут упорядочный словарь по индексу в котором хронятся значения
+
+        # ключи графиков ( используется для списка возможных отображений графика по выбранной оси)
+        self.keys_to_graph = ["T_flach_E", "T_flash_O", "Voltage", "ShuntVoltage", "Temp", "Traction", "Weight","Weight_1","Weight_2", "Time"]
+
+        # сохраняет в себе # он тоже нужен , он работает напрямую с обьектами QTWidgets.QComboBox
+        self.graphs = {}
 
 
     def add_graph(self):
         """Метод для добавления обьекта класса Graph на ui слой в главном окне"""
 
-    """Работа с портами"""
+    #region Работа с портами
 
     def toggle_port(self):
         is_open = self.controller.open_port(self.ui_main.ListPorts.currentText())
@@ -127,7 +55,9 @@ class UiController:
         ports = self.controller.update_port_list()
         self.ui_main.ListPorts.addItems(ports)
 
-    """#работа с газом"""
+    #endregion
+
+    #regionработа с газом
 
     def range_gas_changed(self):
         gas_min, gas_max = self.ui_main.spinBoxMin.value(), self.ui_main.spinBoxMax.value()
@@ -193,8 +123,9 @@ class UiController:
             return int(self.ui_main.spinBoxMin.value() + (percentage / 100) * (self.ui_main.spinBoxMax.value() - self.ui_main.spinBoxMin.value()))
         except TypeError:
             return "Ошибка: переданы некорректные значения"
+    #endregion
 
-    """работа с событиями"""
+    #regionработа с событиями
 
     def connect_events_main(self):
         """Подключение событий для главного окна"""
@@ -226,18 +157,6 @@ class UiController:
         self.ui_main.ButCalibTraction.clicked.connect(lambda :self.controller.set_value_for_calib(key_param="Traction"))
         self.ui_main.ButCalibWeight.clicked.connect(lambda :self.controller.set_value_for_calib(key_param="Weight"))
 
-    def auto_test(self):
-        if not self.controller.recorder_is_run():
-            self.ui_main.ButAutoTest.setText("Автотест запущен")
-            self.controller.start_auto_test()
-
-    def record_params(self):
-        self.controller.switch_recording()
-        if not self.controller.recorder_is_run():
-            self.ui_main.ButSaveExl.setText("Закончить запись параметров")
-        if self.controller.recorder_is_run():
-            self.ui_main.ButSaveExl.setText("Начать запись параметров")
-
     def connect_events_settings(self):
         # подключение по созданию временной точки автотеста
         self.ui_settings.pushButton.clicked.connect(self.create_time_point)  # кнопка + при создании точки
@@ -257,8 +176,21 @@ class UiController:
         self.ui_settings.But_AddGraph.clicked.connect(self.create_graph)
         self.ui_settings.But_SaveGraphs.clicked.connect(self.save_graphs)
         self.ui_settings.pushButton_2.clicked.connect(self.remove_last_graph_layer)
+    #endregion
 
+    #region работа с автотестом и записью в exel
+    def auto_test(self):
+        if not self.controller.recorder_is_run():
+            self.ui_main.ButAutoTest.setText("Автотест запущен")
+            self.controller.start_auto_test()
 
+    def record_params(self):
+        self.controller.switch_recording()
+        if not self.controller.recorder_is_run():
+            self.ui_main.ButSaveExl.setText("Закончить запись параметров")
+        if self.controller.recorder_is_run():
+            self.ui_main.ButSaveExl.setText("Начать запись параметров")
+    #endregion
 
     #region Настройка Автотеста
 
@@ -490,6 +422,7 @@ class UiController:
             if isinstance(x, QtWidgets.QComboBox) and isinstance(y, QtWidgets.QComboBox):
                 name = f"{x.currentText()} / {y.currentText()}"
                 data[name] = {"x": x.currentText(), "y": y.currentText()}
+        # сохраняем в json
         create_json("keys_graphs.json", data)
 
     def remove_last_graph_layer(self):
