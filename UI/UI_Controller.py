@@ -1,7 +1,6 @@
 from .UI import SettingsWindow,MainWindow
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QCheckBox, QComboBox
-import os
 from JsonHandler import *
 
 class UiController:
@@ -12,8 +11,6 @@ class UiController:
         # ui (обертка окна настроек)
         self.ui_settings = SettingsWindow()
 
-        #подключаем события у главного окна
-        self.connect_events_main()
 
         # получаем существующий экземпляр класса главного контроллера
         self.controller = controller
@@ -37,9 +34,37 @@ class UiController:
         # хранит в себе ключ значние где ключ это QWidget для оси x аналогично по оси y (self.graphs[comboBox_x] = comboBox_y)
         self.graphs = {}
 
+        self.OnStartUp()
 
-    def add_graph(self):
-        """Метод для добавления обьекта класса Graph на ui слой в главном окне"""
+        # подключаем события у главного окна
+        self.connect_events_main()
+
+        # подключаем события для окна настроек
+        self.connect_events_settings()
+
+
+
+
+    def clear_layout(self,layout):
+        while layout.count():
+            item = layout.takeAt(0)
+            widget = item.widget()
+            if widget is not None:
+                widget.deleteLater()
+            else:
+                self.clear_layout(item.layout())
+
+    def OnStartUp(self):
+        # это максимальное число которое можно будет ввести
+        max_value = 1000000
+
+        #вводим максимальное значение для ввода
+        self.ui_main.spinBoxMin.setMaximum(max_value)
+        self.ui_main.spinBoxMax.setMaximum(max_value)
+        self.ui_settings.calib_weight_spinbox.setMaximum(max_value)
+
+        self.load_graphs()
+
 
     #region Работа с портами
 
@@ -330,6 +355,7 @@ class UiController:
     # region Настройка графиков
 
     def load_graphs(self):
+        print("начал работу")
         if os.path.isfile(full_path_ToGraphs):
             try:
                 data = import_js(full_path_ToGraphs)
@@ -379,14 +405,14 @@ class UiController:
 
     def create_graph(self):
         # Создаём новый слой с двумя SpinBox
-        layer_widget = QtWidgets.QWidget(self.scroll_widget_graphs)
+        layer_widget = QtWidgets.QWidget(self.ui_settings.scroll_widget_graphs)
         layer_widget.setFixedHeight(50)  # Фиксированная высота
         layer_layout = QtWidgets.QHBoxLayout(layer_widget)
 
-        comboBox_x = QtWidgets.QComboBox(self.verticalLayoutWidget_3)
+        comboBox_x = QtWidgets.QComboBox(self.ui_settings.verticalLayoutWidget_3)
         comboBox_x.setObjectName("comboBox_x")
 
-        comboBox_y = QtWidgets.QComboBox(self.verticalLayoutWidget_3)
+        comboBox_y = QtWidgets.QComboBox(self.ui_settings.verticalLayoutWidget_3)
         comboBox_y.setObjectName("comboBox_y")
 
         # начальный текст
@@ -412,7 +438,7 @@ class UiController:
         layer_layout.addWidget(comboBox_y)
 
         # Добавляем новый слой в основной макет
-        self.scroll_layout_graphs.addWidget(layer_widget)
+        self.ui_settings.scroll_layout_graphs.addWidget(layer_widget)
 
     def save_graphs(self):
         if os.path.isfile(full_path_ToGraphs):
@@ -422,9 +448,24 @@ class UiController:
             if isinstance(x, QtWidgets.QComboBox) and isinstance(y, QtWidgets.QComboBox):
                 name = f"{x.currentText()} / {y.currentText()}"
                 data[name] = {"x": x.currentText(), "y": y.currentText()}
+                # добавляем в список графиков
+                self.controller.graph_controller.create_graph(name, x.currentText(), y.currentText())
 
         # сохраняем в json
         create_json("keys_graphs.json", data)
+
+        # обновляем в ui список графиков
+        self.update_graphs()
+
+    def update_graphs(self):
+        """Метод обновляет список графиков в слое для отображения"""
+        if self.controller.graph_controller.graphs:
+            # очищаем перед добавлением
+            self.clear_layout(self.ui_main.graph_Layout)
+
+            for params_graph in self.controller.graph_controller.graphs.values():
+                graph = params_graph.get("obj")
+                self.ui_main.graph_Layout.addWidget(graph.canvas)
 
     def remove_last_graph_layer(self):
         if self.graphs:  # Проверяем, есть ли слои для удаления
@@ -433,10 +474,10 @@ class UiController:
             last_combo_y = self.graphs[last_combo_x]
 
             # Удаляем виджеты из макета
-            for i in range(self.scroll_layout_graphs.count() - 1, -1, -1):
-                item = self.scroll_layout_graphs.itemAt(i).widget()
+            for i in range(self.ui_settings.scroll_layout_graphs.count() - 1, -1, -1):
+                item = self.ui_settings.scroll_layout_graphs.itemAt(i).widget()
                 if item and last_combo_x in item.children() and last_combo_y in item.children():
-                    self.scroll_layout_graphs.removeWidget(item)
+                    self.ui_settings.scroll_layout_graphs.removeWidget(item)
                     item.deleteLater()  # Удаляем виджет
                     break
 

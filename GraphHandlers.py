@@ -1,9 +1,6 @@
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
-from pandas.core.config_init import float_format_doc
-
-from DataControl import Packet
 
 # Настройка параметров
 plt.style.use('seaborn-v0_8-dark')
@@ -57,11 +54,18 @@ class GraphController:
     def update_graphs(self,packet):
         if not self.graphs:
             return
-        for params_graph in self.graphs.values():
-            graph = params_graph.get("obj")
-            x = params_graph.get("x")
-            y = params_graph.get("y")
-            graph.add_data(x=packet._data.get(x),y=packet._data.get(y))
+        for name,dict_params in self.graphs.items():
+            graph = dict_params.get("obj")
+
+            x = dict_params.get("x")
+            x = packet.get(x)
+
+            y = dict_params.get("y")
+            y = packet.get(y)
+
+            graph.add_data(x, y)
+
+
 
 
 

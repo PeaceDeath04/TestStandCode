@@ -87,6 +87,9 @@ class Data:
                 self.taring_weight["Weight_12"] = last_packet._data.get("Weight_1", 0)
                 self.taring_weight["Weight_22"] = last_packet._data.get("Weight_2", 0)
 
+    def get_last_packet(self):
+        return (self.local_data[-1]._data)
+
 class Packet:
     def __init__(self,raw_packet,data):
         # наименования параметров для будущего словаря

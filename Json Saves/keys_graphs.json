@@ -6,5 +6,9 @@
     "Time / Weight": {
         "x": "Time",
         "y": "Weight"
+    },
+    "T_flash_O / T_flach_E": {
+        "x": "T_flash_O",
+        "y": "T_flach_E"
     }
 }
