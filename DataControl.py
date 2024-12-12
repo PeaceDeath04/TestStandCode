@@ -3,9 +3,6 @@ import pandas as pd
 import csv
 from datetime import datetime
 
-exel_dir = os.path.join(project_dir,"Exel Tables") # папка с экселями
-
-full_path_ToGraphs = os.path.join(json_dir, "keys_graphs.json")
 
 class Data:
     def __init__(self):

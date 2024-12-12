@@ -390,6 +390,10 @@ class SettingsWindow(QtWidgets.QWidget):
         self.But_AddGraph.setText(_translate("Form", "+"))
         self.But_SaveGraphs.setText(_translate("Form", "сохранить"))
 
+    def __init__(self):
+        super().__init__()
+        self.setupUi(self)
+
 
 class MainWindow(QtWidgets.QMainWindow):
     def setupUi(self, MainWindow):
@@ -698,3 +702,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.action.setText(_translate("MainWindow", "настройки"))
         self.action_2.setText(_translate("MainWindow", "настройки параметров"))
         self.ActionSettings.setText(_translate("MainWindow", "настройки"))
+
+    def __init__(self):
+        super().__init__()
+        self.setupUi(self)

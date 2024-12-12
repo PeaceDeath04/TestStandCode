@@ -2,6 +2,7 @@ from PyQt5.QtSerialPort import QSerialPort, QSerialPortInfo
 from PyQt5.QtCore import QIODevice
 
 
+
 class Transceiver:
     def __init__(self,controller):
         self.controller = controller
@@ -42,7 +43,7 @@ class Transceiver:
     def read_data(self):
         try:
 
-            rx = self.serial.readLine()
+            rx = self.port_handler.serial.readLine()
             rxs = str(rx, 'utf-8', errors='ignore')
             self.buffer += rxs
 
@@ -55,12 +56,16 @@ class Transceiver:
                             if self.validate_data_packet(data):
                                 self.controller.local_data.create_pack(data)
 
+                                # если начата запись то записываем последний обработанный пакет данных
+                                if self.controller.recorder_is_run():
+                                    self.controller.recorder.save_to_csv(self.controller.local_data.local_data[-1])
+
                 self.buffer = packets[-1]
         except Exception as e:
             print(f"что то пошло не так с вводом данных {self.buffer} \n {e}")
 
     def send_data(self, **packet_data):
-        if not self.serial.isOpen():
+        if not self.port_handler.serial.isOpen():
             print("Откройте порт перед отправкой")
             return
 
@@ -68,7 +73,7 @@ class Transceiver:
             key_ard = self.keysArduino.get(key_packet)
             if key_ard:
                 result = key_ard + str(value)
-                self.serial.write(result.encode())
+                self.port_handler.serial.write(result.encode())
             else:
                 print(f"Не найдено соответствие для {key_packet}")
 
