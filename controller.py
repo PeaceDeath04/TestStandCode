@@ -21,10 +21,12 @@ class Controller:
 
     #region работа с записью параметров и автотестом
     def switch_recording(self):
-        if self.recorder.is_reading:
-            self.recorder.convert_csv_to_xlsx()
-        else:
+        if not self.recorder.is_reading:
             self.recorder.start_new_recording()
+            self.ui_controller.ui_main.ButSaveExl.setText("Остановить запись параметров")
+        else:
+            self.recorder.convert_csv_to_xlsx()
+            self.ui_controller.ui_main.ButSaveExl.setText("Начать запись параметров")
 
     def start_auto_test(self):
         # обнуляем время

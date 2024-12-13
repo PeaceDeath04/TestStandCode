@@ -171,7 +171,7 @@ class UiController:
         self.ui_main.ButAutoTest.clicked.connect(self.auto_test)
 
         # подключение записи параметров
-        self.ui_main.ButSaveExl.clicked.connect(self.record_params)
+        self.ui_main.ButSaveExl.clicked.connect(self.controller.switch_recording)
 
         # подключение настроек тарирования
         self.ui_main.ButTarTraction.clicked.connect(lambda :self.controller.set_value_for_taring(key_param="Traction"))

@@ -59,8 +59,6 @@ class Transceiver:
                                 # если начата запись то записываем последний обработанный пакет данных
                                 if self.controller.recorder_is_run():
                                     self.controller.recorder.save_to_csv(self.controller.local_data.get_last_packet())
-                                # обновляем графики если они есть
-                                self.controller.graph_controller.update_graphs(self.controller.local_data.get_last_packet())
 
                 self.buffer = packets[-1]
         except Exception as e:
