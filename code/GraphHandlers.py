@@ -32,7 +32,7 @@ class GraphController:
 
     def update_graphs(self,packet):
         """Метод обновления графиков , принимает обьект класса Packet"""
-        if not self.graphs:
+        if self.graphs:
             data = packet.data
 
             for graph_dict in self.graphs.values():

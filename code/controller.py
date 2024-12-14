@@ -27,6 +27,7 @@ class Controller:
         if self.recorder.is_reading:
             self.recorder.save_to_csv(self.local_data.packet.data)
 
+
         #обновляем графики
         self.graph_controller.update_graphs(self.local_data.packet)
 
@@ -95,4 +96,21 @@ class Controller:
     def set_value_for_calib(self,key_param):
         """Метод принимает и передает ключ для последющей калибровки"""
         self.local_data.input_params_for_calib(key_param=key_param)
+
+    def update_graphs_widget(self):
+        """Метод обновляет отображаемые графики в UI"""
+        if self.graph_controller.graphs:
+
+            # очищаем все графики что были
+            self.ui_controller.clear_layout(self.ui_controller.ui_main.graph_Layout)
+
+            # получаем виджеты для pyqt
+            widgets = self.graph_controller.get_widget_graphs()
+
+            # добавляем виджеты
+            for widget in widgets:
+                self.ui_controller.ui_main.graph_Layout.addWidget(widget)
+
+
+
 

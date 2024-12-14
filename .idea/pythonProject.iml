@@ -10,9 +10,7 @@
   <component name="PyNamespacePackagesService">
     <option name="namespacePackageFolders">
       <list>
-        <option value="$MODULE_DIR$/arduino_processing" />
         <option value="$MODULE_DIR$/UI" />
-        <option value="$MODULE_DIR$/data_processing" />
         <option value="$MODULE_DIR$/build" />
       </list>
     </option>

@@ -338,7 +338,6 @@ class UiController:
     # region Настройка графиков
 
     def load_graphs(self):
-        print("начал работу")
         if os.path.isfile(full_path_ToGraphs):
             try:
                 data = import_js(full_path_ToGraphs)
@@ -424,31 +423,24 @@ class UiController:
         self.ui_settings.scroll_layout_graphs.addWidget(layer_widget)
 
     def save_graphs(self):
-        if os.path.isfile(full_path_ToGraphs):
-            os.remove(full_path_ToGraphs)
-        data = {}
-        for x, y in self.graphs.items():
-            if isinstance(x, QtWidgets.QComboBox) and isinstance(y, QtWidgets.QComboBox):
-                name = f"{x.currentText()} / {y.currentText()}"
-                data[name] = {"x": x.currentText(), "y": y.currentText()}
-                # добавляем в список графиков
-                self.controller.graph_controller.create_graph(name, x.currentText(), y.currentText())
+        if self.graphs:
+            self.controller.graph_controller.graphs.clear()
+            if os.path.isfile(full_path_ToGraphs):
+                os.remove(full_path_ToGraphs)
+            data = {}
+            for x, y in self.graphs.items():
+                if isinstance(x, QtWidgets.QComboBox) and isinstance(y, QtWidgets.QComboBox):
+                    name = f"{x.currentText()} / {y.currentText()}"
+                    data[name] = {"x": x.currentText(), "y": y.currentText()}
 
-        # сохраняем в json
-        create_json("keys_graphs.json", data)
+                    # добавляем в список графиков
+                    self.controller.graph_controller.create_graph(name, x.currentText(), y.currentText())
 
-        # обновляем в ui список графиков
-        self.update_graphs()
+            # сохраняем в json
+            create_json("keys_graphs.json", data)
 
-    def update_graphs(self):
-        """Метод обновляет список графиков в слое для отображения"""
-        if self.controller.graph_controller.graphs:
-            # очищаем перед добавлением
-            self.clear_layout(self.ui_main.graph_Layout)
-
-            for params_graph in self.controller.graph_controller.graphs.values():
-                graph = params_graph.get("obj")
-                self.ui_main.graph_Layout.addWidget(graph.canvas)
+            # обновляем в ui список графиков
+            self.controller.update_graphs_widget()
 
     def remove_last_graph_layer(self):
         if self.graphs:  # Проверяем, есть ли слои для удаления
