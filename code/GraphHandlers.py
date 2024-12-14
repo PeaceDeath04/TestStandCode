@@ -19,16 +19,20 @@ class GraphController:
             '#e17055',  # Оранжевый
         ]
 
+        # количество выданных цветов
+        self.count_color = 0
+
     def create_graph(self,name_legend,x,y):
         """
         Метод получает имя легенды , Название параметра для дальнейшего парсинга по оси x and y
         Далее заносит данные в собственный словарь:
         self.graphs[Имя графика] = {"параметр по оси x ":x,"Параметр по оси y":y,'Обьект класса Graph':Graph(цвет лиинии,имя легенды)}
          """
-        self.graphs[name_legend] = {"x_target":x,"y_target":y,'obj':Graph(color=self.colors[0],name=name_legend,max_points=50)}
+        len(self.graphs)
 
-        # удаляем первый цвет из списка , т.к уже его применили
-        self.colors.pop(0)
+        self.graphs[name_legend] = {"x_target":x,"y_target":y,'obj':Graph(color=self.get_color(),name=name_legend,max_points=25)}
+        self.count_color += 1
+
 
     def update_graphs(self,packet):
         """Метод обновления графиков , принимает обьект класса Packet"""
@@ -53,13 +57,24 @@ class GraphController:
             widgets.append(obj.get_plot_widget())
         return widgets
 
+    def get_color(self):
+        if self.count_color < len(self.colors):
+            return self.colors[self.count_color]
+        else:
+            self.count_color = 0
+            return self.colors[self.count_color]
+
+
+
 class Graph:
     def __init__(self, color, name,max_points):
         # Используем OpenGL для рендеринга
         self.plot_widget = pg.PlotWidget(title=name, useOpenGL=True)
-        self.plot_widget.setBackground('w')  # Цвет фона
+        self.plot_widget.setBackground(None)  # Цвет фона
         self.plot_widget.showGrid(x=True, y=True, alpha=0.3)
         self.curve = self.plot_widget.plot(pen=pg.mkPen(color=color, width=2))
+
+        self.name = name
 
         self.max_points = max_points
 
@@ -85,6 +100,7 @@ class Graph:
     def update_graph(self):
         """Обновление графика"""
         self.curve.setData(self.x_data, self.y_data)
+        self.plot_widget.setTitle(f"{self.name} {self.y_data[-1]}")
 
     def get_plot_widget(self):
         """Возвращаем виджет для добавления в интерфейс"""
