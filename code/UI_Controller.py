@@ -42,9 +42,6 @@ class UiController:
         # подключаем события для окна настроек
         self.connect_events_settings()
 
-
-
-
     def clear_layout(self,layout):
         while layout.count():
             item = layout.takeAt(0)
@@ -65,15 +62,14 @@ class UiController:
 
         self.load_graphs()
 
-
     #region Работа с портами
 
     def toggle_port(self):
         is_open = self.controller.open_port(self.ui_main.ListPorts.currentText())
         if is_open:
-            self.ui_main.ButOpenPort.setText("Закрыть")
+            self.ui_main.ButOpenPort.setText("Закрыть порт")
         else:
-            self.ui_main.ButOpenPort.setText("Открыть")
+            self.ui_main.ButOpenPort.setText("Открыть порт")
 
     def refresh_port_list(self):
         self.ui_main.ListPorts.clear()
@@ -93,7 +89,7 @@ class UiController:
         self.ui_main.SlidePower.setMaximum(gas_max)
         self.ui_main.SlidePower.setValue(gas_min)
 
-        self.controller.transceiver.send_data(gas_min=gas_min, gas_max=gas_max)
+        self.controller.offset_gas_changed(gas_min=gas_min,gas_max=gas_max)
 
     def gas_changed(self):
         current_value = self.ui_main.SlidePower.value()
@@ -101,7 +97,8 @@ class UiController:
         self.ui_main.SlidePower.blockSignals(True)
         self.ui_main.SlidePower.setValue(adjusted_value)
         self.ui_main.SlidePower.blockSignals(False)
-        self.controller.transceiver.send_data(gas=adjusted_value)
+
+        self.controller.gas_changed(adjusted_value)
 
         gas_percent = self.get_gas_percentage()
         self.ui_main.valueGas.setText(f"Значение газа в процентах: {gas_percent}    Численное значние: {adjusted_value}")
@@ -168,7 +165,7 @@ class UiController:
         self.ui_main.ActionSettings.triggered.connect(self.ui_settings.show)
 
         # подключение работы автотеста
-        self.ui_main.ButAutoTest.clicked.connect(self.auto_test)
+        self.ui_main.ButAutoTest.clicked.connect(self.controller.start_auto_test)
 
         # подключение записи параметров
         self.ui_main.ButSaveExl.clicked.connect(self.controller.switch_recording)
@@ -201,20 +198,6 @@ class UiController:
         self.ui_settings.But_AddGraph.clicked.connect(self.create_graph)
         self.ui_settings.But_SaveGraphs.clicked.connect(self.save_graphs)
         self.ui_settings.pushButton_2.clicked.connect(self.remove_last_graph_layer)
-    #endregion
-
-    #region работа с автотестом и записью в exel
-    def auto_test(self):
-        if not self.controller.recorder_is_run():
-            self.ui_main.ButAutoTest.setText("Автотест запущен")
-            self.controller.start_auto_test()
-
-    def record_params(self):
-        self.controller.switch_recording()
-        if not self.controller.recorder_is_run():
-            self.ui_main.ButSaveExl.setText("Закончить запись параметров")
-        if self.controller.recorder_is_run():
-            self.ui_main.ButSaveExl.setText("Начать запись параметров")
     #endregion
 
     #region Настройка Автотеста

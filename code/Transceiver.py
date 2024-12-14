@@ -54,11 +54,7 @@ class Transceiver:
                         data = packet.strip().split(",")
                         if all(item != '' for item in data):
                             if self.validate_data_packet(data):
-                                self.controller.local_data.create_pack(data)
-
-                                # если начата запись то записываем последний обработанный пакет данных
-                                if self.controller.recorder_is_run():
-                                    self.controller.recorder.save_to_csv(self.controller.local_data.get_last_packet())
+                                self.controller.get_packet(data)
 
                 self.buffer = packets[-1]
         except Exception as e:

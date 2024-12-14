@@ -7,7 +7,7 @@ from datetime import datetime
 class Data:
     def __init__(self):
         # данный список нужен для работы с последними 25 обработанными пакетами
-        self.local_data = []
+        self.packet = None
 
         # переменная для работы с калибровкой
         self.calib_weight = 0
@@ -23,24 +23,14 @@ class Data:
 
     def create_pack(self,obj):
         """Метод добавляет пакет в общий список локальной памяти с максимальной длинной 25"""
-        packet = Packet(raw_packet=obj,data=self)
-        if len(self.local_data) < 25:
-            self.local_data.append(packet)
-        else:
-            self.local_data.pop(0)
-            self.local_data.append(packet)
+        packet = Packet(raw_packet=obj, data_control=self)
+        self.packet = packet
 
     def input_params_for_calib(self, key_param):
         """Добавляет коэффициент калибровки для указанного параметра."""
-        if not self.local_data:
+        if self.packet is None:
             print("Ошибка: список local_data пуст.")
             return
-
-        last_packet = self.local_data[-1]  # Последний элемент списка
-        if not isinstance(last_packet, Packet):
-            print("Ошибка: последний элемент local_data не является объектом Packet.")
-            return
-
 
         if self.calib_weight == 0:
             print("Ошибка: калибровочный вес равен нулю.")
@@ -48,13 +38,13 @@ class Data:
 
         # Расчет коэффициента калибровки
         if key_param == "Traction":
-            self.param_kef["Traction"] = last_packet._data.get("Traction") / self.calib_weight
+            self.param_kef["Traction"] = self.packet.data.get("Traction") / self.calib_weight
 
             print(f"Коэффициент калибровки для Traction: {self.param_kef.get('Traction')}")
 
         if key_param == "Weight":
-            self.param_kef["Weight_1"] = last_packet._data.get("Weight_1") / self.calib_weight
-            self.param_kef["Weight_2"] = last_packet._data.get("Weight_2") / self.calib_weight
+            self.param_kef["Weight_1"] = self.packet.data.get("Weight_1") / self.calib_weight
+            self.param_kef["Weight_2"] = self.packet.data.get("Weight_2") / self.calib_weight
 
             print(f"Коэффициент калибровки для Weight_1: {self.param_kef.get('Weight_1')}")
             print(f"Коэффициент калибровки для Weight_2: {self.param_kef.get('Weight_2')}")
@@ -62,50 +52,41 @@ class Data:
     def input_params_for_taring(self,key_param):
         """Добавляет из последнего обработанного вес для указанного параметра по ключу."""
 
-        if not self.local_data:
+        if self.packet is None:
             print("Ошибка: список local_data пуст.")
-            return
-
-        last_packet = self.local_data[-1]  # Последний элемент списка
-
-        if not isinstance(last_packet, Packet):
-            print("Ошибка: последний элемент local_data не является объектом Packet.")
             return
 
         if key_param == "Traction":
             if not self.taring_traction:
-                self.taring_traction["Traction"] = last_packet._data.get("Traction")
+                self.taring_traction["Traction"] = self.packet.data.get("Traction")
             else:
-                self.taring_traction["Traction2"] = last_packet._data.get("Traction")
+                self.taring_traction["Traction2"] = self.packet.data.get("Traction")
             return
 
         if key_param == "Weight":
             if not self.taring_weight:
-                self.taring_weight["Weight_1"] = last_packet._data.get("Weight_1", 0)
-                self.taring_weight["Weight_2"] = last_packet._data.get("Weight_2", 0)
+                self.taring_weight["Weight_1"] = self.packet.data.get("Weight_1", 0)
+                self.taring_weight["Weight_2"] = self.packet.data.get("Weight_2", 0)
             else:
-                self.taring_weight["Weight_12"] = last_packet._data.get("Weight_1", 0)
-                self.taring_weight["Weight_22"] = last_packet._data.get("Weight_2", 0)
-
-    def get_last_packet(self):
-        return (self.local_data[-1]._data)
+                self.taring_weight["Weight_12"] = self.packet.data.get("Weight_1", 0)
+                self.taring_weight["Weight_22"] = self.packet.data.get("Weight_2", 0)
 
 class Packet:
-    def __init__(self,raw_packet,data):
+    def __init__(self, raw_packet, data_control):
         # наименования параметров для будущего словаря
         self.keys_to_update_ard = ["T_flach_E", "T_flash_O","Voltage", "ShuntVoltage","Temp", "Traction","Weight_1","Weight_2","Time"]
 
         # здесь хранятся данные по каждому параметру
-        self._data = {}
+        self.data = {}
 
         # получаем словарь коэффициэнтов из экземпляра класса Data
-        self.param_kef = data.param_kef
+        self.param_kef = data_control.param_kef
 
         # получаем словарь тарирований traction из экземпляра класса Data
-        self.taring_traction = data.taring_traction
+        self.taring_traction = data_control.taring_traction
 
         # получаем словарь тарирований weight из экземпляра класса Data
-        self.taring_weight = data.taring_weight
+        self.taring_weight = data_control.taring_weight
 
         # номер иттерации для первичного и вторичного тарирования
         self.iter_taring = 1
@@ -118,7 +99,7 @@ class Packet:
 
         # 1. Обьединям наименования ключей с их значениями
         for key, value in zip(self.keys_to_update_ard, raw_packet):
-            self._data[key] = float(value)
+            self.data[key] = float(value)
 
         # 2. производим первичное тарирование
         self.taring_values(self.taring_traction)
@@ -128,7 +109,7 @@ class Packet:
         self.calibrate_values()
 
         # 4. Находим общий вес
-        self._data["Weight"] = (self._data["Weight_1"] - self._data["Weight_2"]) / 2
+        self.data["Weight"] = (self.data["Weight_1"] - self.data["Weight_2"]) / 2
 
         # 5. Производим вторичное тарирование
         self.iter_taring = 2
@@ -154,26 +135,26 @@ class Packet:
         if dict_tar is not None:  # Проверяем, есть ли данные для тарирования
             if self.iter_taring == 1:  # Первичное тарирование
                 for key in dict_tar:
-                    if key in self._data:
-                        self._data[key] -= dict_tar.get(key, 0)
+                    if key in self.data:
+                        self.data[key] -= dict_tar.get(key, 0)
                 # Убрали return, чтобы обработать все ключи
 
             else:  # Вторичное тарирование
-                for key in self._data:
+                for key in self.data:
                     _key = key + "2"  # Добавляем суффикс для поиска вторичных значений
                     if _key in dict_tar:
-                        self._data[key] -= dict_tar.get(_key, 0)
+                        self.data[key] -= dict_tar.get(_key, 0)
 
     def calibrate_values(self):
         if self.param_kef:
             for key, value_kef in self.param_kef:  # получаем все ключи и их значения в словаре
-                current_value = self._data.get(key)  # получаем текущее необработанное число
+                current_value = self.data.get(key)  # получаем текущее необработанное число
                 current_value /= value_kef  # производим деление на коэф
-                self._data[key] = current_value  # обновляем значение по ключу в словаре для return
+                self.data[key] = current_value  # обновляем значение по ключу в словаре для return
 
     def rounding_params(self):
-        for key, value in self._data.items():
-            self._data[key] = round(value, 2)
+        for key, value in self.data.items():
+            self.data[key] = round(value, 2)
 
 class DataRecorder:
     def __init__(self, base_filename='data'):
@@ -266,6 +247,8 @@ class DataRecorder:
             self.csv_file = None  # Сбрасываем текущее имя CSV файла
         except OSError as e:
             print(f"Ошибка при удалении файла {full_path}: {e}")
+
+        self.is_reading = False
 
     def clear_csv(self):
         """Очищает текущий CSV файл, оставляя только заголовки."""
