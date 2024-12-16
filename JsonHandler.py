@@ -5,10 +5,11 @@ import sys
 project_dir = os.path.dirname(os.path.abspath(sys.argv[0])) # Текущая директория проекта
 json_dir = os.path.join(project_dir, "Json Saves")  # Папка "jsons" внутри проекта
 exel_dir = os.path.join(project_dir,"Exel Tables") # папка с экселями
-print(project_dir)
 path_timings = os.path.join(json_dir, "timings.json")
 path_ToRead = os.path.join(json_dir, "ToRead.json")
 full_path_ToGraphs = os.path.join(json_dir, "keys_graphs.json")
+
+
 
 def export_to_json(name_file,**keys):
     """Получает ключ значение и сохраняет в json файл"""

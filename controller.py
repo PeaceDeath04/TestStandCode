@@ -2,7 +2,7 @@ from PyQt5.QtTest import QTest
 
 from GraphHandlers import GraphController
 from Transceiver import Transceiver
-from code.UI_Controller import UiController
+from UI_Controller import UiController
 from DataControl import *
 
 
@@ -15,9 +15,24 @@ class Controller:
         self.ui_controller = UiController(self)
         self.graph_controller = GraphController()
 
+        if not os.path.exists(json_dir):
+            os.makedirs(json_dir)
+
+            create_json(name_file="keys_graphs.json",data=None)
+            create_json(name_file="ToRead.json",data=None)
+            create_json(name_file="timings.json",data=None)
+            create_json(name_file="save_file.json",data=None)
+
+        if not os.path.exists(exel_dir):
+            os.makedirs(exel_dir)
+
+        self.ui_controller.OnStartUp()
+
     def save_ui_values(self):
         controller = self.ui_controller
-        export_to_json("save_file.json",gas_min=controller.ui_main.spinBoxMin,gas_max=controller.ui_main.spinBoxMax,step_size=controller.step_size,calib_weight=self.local_data.calib_weight)
+        print(controller.ui_main.spinBoxMin.value())
+        export_to_json("save_file.json", gas_min=controller.ui_main.spinBoxMin.value(), gas_max=controller.ui_main.spinBoxMax.value(),
+                       step_size=controller.step_size, calib_weight=self.local_data.calib_weight)
 
 
     def get_packet(self,packet):

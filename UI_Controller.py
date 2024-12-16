@@ -1,4 +1,4 @@
-from .UI import SettingsWindow,MainWindow
+from UI import SettingsWindow,MainWindow
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QCheckBox, QComboBox
 from JsonHandler import *
@@ -34,13 +34,8 @@ class UiController:
         # хранит в себе ключ значние где ключ это QWidget для оси x аналогично по оси y (self.graphs[comboBox_x] = comboBox_y)
         self.graphs = {}
 
-        self.OnStartUp()
-
-        # подключаем события у главного окна
-        self.connect_events_main()
-
-        # подключаем события для окна настроек
-        self.connect_events_settings()
+        # хранит в себе последнее значение газа для послед определения в большую или меньшую часть изменилось
+        self.last_value_gas = None
 
     def clear_layout(self,layout):
         while layout.count():
@@ -58,9 +53,27 @@ class UiController:
         #вводим максимальное значение для ввода
         self.ui_main.spinBoxMin.setMaximum(max_value)
         self.ui_main.spinBoxMax.setMaximum(max_value)
+
         self.ui_settings.calib_weight_spinbox.setMaximum(max_value)
 
         self.load_graphs()
+        self.save_graphs()
+
+        self.load_calib_weight()
+
+        self.load_state_check_box()
+
+        self.load_time_point()
+
+        self.load_offset_gas()
+
+        self.ui_main.SlidePower.setValue(self.ui_main.spinBoxMin.value())
+
+        # подключаем события у главного окна
+        self.connect_events_main()
+
+        # подключаем события для окна настроек
+        self.connect_events_settings()
 
     #region Работа с портами
 
@@ -93,58 +106,52 @@ class UiController:
 
     def gas_changed(self):
         current_value = self.ui_main.SlidePower.value()
-        adjusted_value = self.calculate_step_value(current_value)
+        step_size = self.get_value_from_percentage(self.step_size)
+
+        if self.last_value_gas is None:
+            self.last_value_gas = self.ui_main.spinBoxMin.value()
+
+        if current_value > self.last_value_gas:
+            current_value += step_size
+
+        else:
+            current_value -= step_size
+
         self.ui_main.SlidePower.blockSignals(True)
-        self.ui_main.SlidePower.setValue(adjusted_value)
+        self.ui_main.SlidePower.setValue(current_value)
         self.ui_main.SlidePower.blockSignals(False)
 
-        self.controller.gas_changed(adjusted_value)
+        self.controller.gas_changed(current_value)
 
-        gas_percent = self.get_gas_percentage()
-        self.ui_main.valueGas.setText(f"Значение газа в процентах: {gas_percent}    Численное значние: {adjusted_value}")
+        self.ui_main.valueGas.setText(f"{current_value}")
+        self.last_value_gas = current_value
 
-    def calculate_step_value(self, current_value):
-        """Рассчитывает ближайшее значение шага для слайдера"""
+    def get_value_from_percentage(self, percent):
+        """Вычисляет значение газа на основе процента"""
+        # Получаем минимальное и максимальное значения диапазона
         gas_min = self.ui_main.spinBoxMin.value()
         gas_max = self.ui_main.spinBoxMax.value()
-        step_size = self.step_size
 
-        range_size = gas_max - gas_min
-        step_value = range_size * step_size / 100
-
-        # Найти ближайший шаг
-        lower_bound = (current_value // step_value) * step_value
-        upper_bound = lower_bound + step_value
-
-        # Определить, к какому шагу ближе
-        if abs(current_value - lower_bound) < abs(current_value - upper_bound):
-            return round(lower_bound + gas_min)
-        else:
-            return round(upper_bound + gas_min)
-
-    def get_gas_percentage(self):
-        """Узнает текущее значение газа в процентах"""
-        gas_min,gas,gas_max = self.ui_main.spinBoxMin.value(),self.ui_main.SlidePower.value(),self.ui_main.spinBoxMax.value()
         try:
-            per = ((gas - gas_min) / (gas_max - gas_min)) * 100
-            return (round(per))
-        except:
-            return "Ошибка при вычилсении процента"
+            # Проверка, чтобы диапазон был корректным
+            if gas_max == gas_min:
+                raise ValueError("Диапазон некорректный: минимальное и максимальное значение равны")
 
-    def calculate_value_from_percentage(self,percentage):
-        """
-        Вычисляет число в заданном диапазоне для определенного процента.
+            # Вычисляем значение газа
+            gas = gas_min + (percent / 100) * (gas_max - gas_min)
+            return round(gas)
 
-        :param percentage: Процент (int или float, 0-100)
-        :return: Число, соответствующее percentage% от диапазона
-        """
-        try:
-            if not (0 <= percentage <= 100):
-                return "Ошибка: процент должен быть в диапазоне от 0 до 100"
+        except Exception as e:
+            return f"Ошибка при вычислении значения: {e}"
 
-            return int(self.ui_main.spinBoxMin.value() + (percentage / 100) * (self.ui_main.spinBoxMax.value() - self.ui_main.spinBoxMin.value()))
-        except TypeError:
-            return "Ошибка: переданы некорректные значения"
+    def load_offset_gas(self):
+        offset_gas = import_from_json("save_file.json", "gas_min", "gas_max")
+        self.ui_main.spinBoxMin.setValue(offset_gas[0])
+        self.ui_main.spinBoxMax.setValue(offset_gas[1])
+
+        self.ui_main.SlidePower.setMinimum(offset_gas[0])
+        self.ui_main.SlidePower.setMaximum(offset_gas[1])
+        self.ui_main.SlidePower.setValue(offset_gas[0])
     #endregion
 
     #regionработа с событиями
@@ -216,6 +223,7 @@ class UiController:
         spinBox_time.setRange(0, 100000)
         spinBox_time.setObjectName("spinBox_2")
 
+
         #добавляем в словарь
         self.values[spinBox_gas] = spinBox_time
 
@@ -245,6 +253,32 @@ class UiController:
             except Exception as e:
                 print(f"Ошибка при удалении файла: {e}")
         create_json("timings.json", self.points)
+
+    def load_time_point(self):
+        if not os.path.exists(path_timings):
+            return
+        data = import_js("timings.json")
+
+        if data is None:
+            return
+
+        for i in range(len(data)):
+            self.create_time_point()
+
+        gas_percents = []
+        time_ms = []
+
+        for point in data.values():
+            for gas,time in point.items():
+                gas_percents.append(int(gas))
+                time_ms.append(time//1000)
+
+        for percent,wait in self.values.items():
+            percent.setValue(gas_percents[0])
+            wait.setValue(time_ms[0])
+
+            gas_percents.pop(0)
+            time_ms.pop(0)
 
     # удаление последней точки автотеста в ui
     def remove_last_spinbox_layer(self):
@@ -331,7 +365,7 @@ class UiController:
 
     # изменение шага в процентах
     def change_step(self):
-        self.step_size = (self.ui_main.spinBoxMax.value() - self.ui_main.spinBoxMin.value()) // self.ui_settings.spinbox_change_step.value()
+        self.step_size = self.ui_settings.spinbox_change_step.value()
 
     #endregion
 

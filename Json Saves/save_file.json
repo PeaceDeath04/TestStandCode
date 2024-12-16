@@ -1,0 +1,6 @@
+{
+    "gas_min": 0,
+    "gas_max": 1000,
+    "step_size": 10,
+    "calib_weight": 5.0
+}
