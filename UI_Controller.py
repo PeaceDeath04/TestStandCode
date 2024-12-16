@@ -74,6 +74,7 @@ class UiController:
 
         # подключаем события для окна настроек
         self.connect_events_settings()
+        self.load_step_size()
 
     #region Работа с портами
 
@@ -97,34 +98,14 @@ class UiController:
         gas_min, gas_max = self.ui_main.spinBoxMin.value(), self.ui_main.spinBoxMax.value()
         if gas_min >= gas_max:
             return
-
-        self.ui_main.SlidePower.setMinimum(gas_min)
-        self.ui_main.SlidePower.setMaximum(gas_max)
-        self.ui_main.SlidePower.setValue(gas_min)
-
         self.controller.offset_gas_changed(gas_min=gas_min,gas_max=gas_max)
 
     def gas_changed(self):
         current_value = self.ui_main.SlidePower.value()
-        step_size = self.get_value_from_percentage(self.step_size)
-
-        if self.last_value_gas is None:
-            self.last_value_gas = self.ui_main.spinBoxMin.value()
-
-        if current_value > self.last_value_gas:
-            current_value += step_size
-
-        else:
-            current_value -= step_size
-
-        self.ui_main.SlidePower.blockSignals(True)
-        self.ui_main.SlidePower.setValue(current_value)
-        self.ui_main.SlidePower.blockSignals(False)
+        current_value = (current_value * 100) // self.step_size
+        print(self.get_value_from_percentage(current_value))
 
         self.controller.gas_changed(current_value)
-
-        self.ui_main.valueGas.setText(f"{current_value}")
-        self.last_value_gas = current_value
 
     def get_value_from_percentage(self, percent):
         """Вычисляет значение газа на основе процента"""
@@ -148,10 +129,6 @@ class UiController:
         offset_gas = import_from_json("save_file.json", "gas_min", "gas_max")
         self.ui_main.spinBoxMin.setValue(offset_gas[0])
         self.ui_main.spinBoxMax.setValue(offset_gas[1])
-
-        self.ui_main.SlidePower.setMinimum(offset_gas[0])
-        self.ui_main.SlidePower.setMaximum(offset_gas[1])
-        self.ui_main.SlidePower.setValue(offset_gas[0])
     #endregion
 
     #regionработа с событиями
@@ -162,7 +139,7 @@ class UiController:
         # подключение по работе с газом
         self.ui_main.spinBoxMin.valueChanged.connect(self.range_gas_changed)
         self.ui_main.spinBoxMax.valueChanged.connect(self.range_gas_changed)
-        self.ui_main.SlidePower.valueChanged.connect(self.gas_changed)
+        self.ui_main.SlidePower.sliderMoved.connect(self.gas_changed)
 
         # подключение работы с портом
         self.ui_main.ButOpenPort.clicked.connect(self.toggle_port)
@@ -365,7 +342,12 @@ class UiController:
 
     # изменение шага в процентах
     def change_step(self):
-        self.step_size = self.ui_settings.spinbox_change_step.value()
+        self.step_size = 100 // self.ui_settings.spinbox_change_step.value()
+        print(self.step_size)
+        self.ui_main.SlidePower.setMaximum(self.step_size)
+
+    def load_step_size(self):
+        self.ui_settings.spinbox_change_step.setValue(import_from_json("save_file.json","step_size")[0])
 
     #endregion
 

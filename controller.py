@@ -32,7 +32,7 @@ class Controller:
         controller = self.ui_controller
         print(controller.ui_main.spinBoxMin.value())
         export_to_json("save_file.json", gas_min=controller.ui_main.spinBoxMin.value(), gas_max=controller.ui_main.spinBoxMax.value(),
-                       step_size=controller.step_size, calib_weight=self.local_data.calib_weight)
+                       step_size=100 // controller.step_size, calib_weight=self.local_data.calib_weight)
 
 
     def get_packet(self,packet):
