@@ -2,5 +2,13 @@
     "Time / Traction": {
         "x": "Time",
         "y": "Traction"
+    },
+    "Time / Weight": {
+        "x": "Time",
+        "y": "Weight"
+    },
+    "Time / T_flach_E": {
+        "x": "Time",
+        "y": "T_flach_E"
     }
 }

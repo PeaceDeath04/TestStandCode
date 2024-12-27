@@ -83,6 +83,9 @@ class Controller:
             for point in points.values():
                 for gas, time in point.items():
                     gas, time = int(gas), int(time)
+
+                    #Значение переводится из процентов , в числа !!!!!
+
                     gas = self.ui_controller.calculate_value_from_percentage(gas)
                     self.ui_controller.ui_main.SlidePower.setValue(gas)
                     QTest.qWait(ms=time)

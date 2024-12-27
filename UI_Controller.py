@@ -67,7 +67,7 @@ class UiController:
 
         self.load_offset_gas()
 
-        self.ui_main.SlidePower.setValue(self.ui_main.spinBoxMin.value())
+        self.ui_main.SliderPower.setValue(self.ui_main.spinBoxMin.value())
 
         # подключаем события у главного окна
         self.connect_events_main()
@@ -101,7 +101,7 @@ class UiController:
         self.controller.offset_gas_changed(gas_min=gas_min,gas_max=gas_max)
 
     def gas_changed(self):
-        current_value = self.ui_main.SlidePower.value()
+        current_value = self.ui_main.SliderPower.value()
         current_value = (current_value * 100) // self.step_size
         print(self.get_value_from_percentage(current_value))
 
@@ -139,7 +139,7 @@ class UiController:
         # подключение по работе с газом
         self.ui_main.spinBoxMin.valueChanged.connect(self.range_gas_changed)
         self.ui_main.spinBoxMax.valueChanged.connect(self.range_gas_changed)
-        self.ui_main.SlidePower.sliderMoved.connect(self.gas_changed)
+        self.ui_main.SliderPower.sliderMoved.connect(self.gas_changed)
 
         # подключение работы с портом
         self.ui_main.ButOpenPort.clicked.connect(self.toggle_port)
@@ -344,7 +344,7 @@ class UiController:
     def change_step(self):
         self.step_size = 100 // self.ui_settings.spinbox_change_step.value()
         print(self.step_size)
-        self.ui_main.SlidePower.setMaximum(self.step_size)
+        self.ui_main.SliderPower.setMaximum(self.step_size+1)
 
     def load_step_size(self):
         self.ui_settings.spinbox_change_step.setValue(import_from_json("save_file.json","step_size")[0])
