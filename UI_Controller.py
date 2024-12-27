@@ -3,8 +3,9 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QCheckBox, QComboBox
 from JsonHandler import *
 
-class UiController:
+class UiController(QtWidgets.QWidget):
     def __init__(self,controller):
+        super().__init__()
         # ui (обертка главного окна)
         self.ui_main = MainWindow()
 
@@ -62,6 +63,7 @@ class UiController:
         self.load_calib_weight()
 
         self.load_state_check_box()
+        self.connect_checkboxes()
 
         self.load_time_point()
 
@@ -103,7 +105,6 @@ class UiController:
     def gas_changed(self):
         current_value = self.ui_main.SliderPower.value()
         current_value = (current_value * 100) // self.step_size
-        print(self.get_value_from_percentage(current_value))
 
         self.controller.gas_changed(current_value)
 
@@ -139,7 +140,7 @@ class UiController:
         # подключение по работе с газом
         self.ui_main.spinBoxMin.valueChanged.connect(self.range_gas_changed)
         self.ui_main.spinBoxMax.valueChanged.connect(self.range_gas_changed)
-        self.ui_main.SliderPower.sliderMoved.connect(self.gas_changed)
+        self.ui_main.SliderPower.valueChanged.connect(self.gas_changed)
 
         # подключение работы с портом
         self.ui_main.ButOpenPort.clicked.connect(self.toggle_port)
@@ -304,6 +305,7 @@ class UiController:
 
     def save_state_check_box(self, state):
         sender = self.sender()  # Определяем, какой чекбокс отправил сигнал
+        print(sender)
         if sender:
             # Сохраняем состояние чекбокса в JSON
             data = {}
@@ -343,8 +345,7 @@ class UiController:
     # изменение шага в процентах
     def change_step(self):
         self.step_size = 100 // self.ui_settings.spinbox_change_step.value()
-        print(self.step_size)
-        self.ui_main.SliderPower.setMaximum(self.step_size+1)
+        self.ui_main.SliderPower.setMaximum(self.step_size)
 
     def load_step_size(self):
         self.ui_settings.spinbox_change_step.setValue(import_from_json("save_file.json","step_size")[0])

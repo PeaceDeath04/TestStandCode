@@ -137,7 +137,6 @@ class Packet:
                 for key in dict_tar:
                     if key in self.data:
                         self.data[key] -= dict_tar.get(key, 0)
-                # Убрали return, чтобы обработать все ключи
 
             else:  # Вторичное тарирование
                 for key in self.data:
@@ -147,10 +146,13 @@ class Packet:
 
     def calibrate_values(self):
         if self.param_kef:
-            for key, value_kef in self.param_kef:  # получаем все ключи и их значения в словаре
-                current_value = self.data.get(key)  # получаем текущее необработанное число
-                current_value /= value_kef  # производим деление на коэф
-                self.data[key] = current_value  # обновляем значение по ключу в словаре для return
+            try:
+                for key, value_kef in self.param_kef.items():  # получаем все ключи и их значения в словаре
+                    current_value = self.data.get(key)  # получаем текущее необработанное число
+                    current_value /= value_kef  # производим деление на коэф
+                    self.data[key] = current_value  # обновляем значение по ключу в словаре для return
+            except ZeroDivisionError:
+                print("Число поделилось на 0")
 
     def rounding_params(self):
         for key, value in self.data.items():
@@ -197,7 +199,7 @@ class DataRecorder:
 
         print(f"Начата новая запись: {self.csv_file}")
 
-    def save_to_csv(self, data):
+    def save_to_csv(self, data,gas):
         """Добавляет данные в текущий CSV файл."""
         headers = self.passed_to_write()
 
@@ -211,7 +213,9 @@ class DataRecorder:
 
         # Преобразуем данные в строку в зависимости от типа
         if isinstance(data, dict):
-            data_row = [data.get(header, '') for header in headers]
+            # костыль тут если не находим хедер вставляем газ
+            data_row = [data.get(header, gas) for header in headers]
+            print(data_row)
         elif isinstance(data, list):
             data_row = data
         else:

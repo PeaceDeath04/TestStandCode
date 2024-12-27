@@ -40,7 +40,9 @@ class Controller:
         self.local_data.create_pack(packet)
 
         if self.recorder.is_reading:
-            self.recorder.save_to_csv(self.local_data.packet.data)
+            gas = self.ui_controller.ui_main.SliderPower.value()
+            gas = self.ui_controller.get_value_from_percentage(gas)
+            self.recorder.save_to_csv(self.local_data.packet.data,gas)
 
 
         #обновляем графики
@@ -83,16 +85,13 @@ class Controller:
             for point in points.values():
                 for gas, time in point.items():
                     gas, time = int(gas), int(time)
-
-                    #Значение переводится из процентов , в числа !!!!!
-
-                    gas = self.ui_controller.calculate_value_from_percentage(gas)
-                    self.ui_controller.ui_main.SlidePower.setValue(gas)
-                    QTest.qWait(ms=time)
+                    self.ui_controller.ui_main.SliderPower.setValue(gas)
+                    QTest.qWait(time)
 
             # прекращаем запись
             self.recorder.convert_csv_to_xlsx()
             self.ui_controller.ui_main.ButAutoTest.setText("Начать автотест")
+            self.ui_controller.ui_main.SliderPower.setValue(0)
 
 
     def open_port(self,port_name):

@@ -58,11 +58,10 @@ class Transceiver:
 
                 self.buffer = packets[-1]
         except Exception as e:
-            print(f"что то пошло не так с вводом данных {self.buffer} \n {e}")
+            print(f"что то пошло не так с вводом данных  \n {e}")
 
     def send_data(self, **packet_data):
         if not self.port_handler.serial.isOpen():
-            print("Откройте порт перед отправкой")
             return
 
         for key_packet, value in packet_data.items():
@@ -70,6 +69,7 @@ class Transceiver:
             if key_ard:
                 result = key_ard + str(value)
                 self.port_handler.serial.write(result.encode())
+                print(key_packet,value)
             else:
                 print(f"Не найдено соответствие для {key_packet}")
 
