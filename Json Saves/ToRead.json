@@ -1,12 +1,5 @@
 {
-    "T_flach_E": true,
-    "T_flash_O": true,
-    "Voltage": true,
-    "gas": true,
+    "T_flach_E": false,
     "Traction": true,
-    "Weight": true,
-    "ShuntVoltage": true,
-    "Temp": true,
-    "Weight_1": false,
-    "Weight_2": false
+    "Time": true
 }

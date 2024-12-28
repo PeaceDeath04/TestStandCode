@@ -101,10 +101,10 @@
    <widget class="QWidget" name="layoutWidget_2">
     <property name="geometry">
      <rect>
-      <x>210</x>
+      <x>600</x>
       <y>10</y>
-      <width>217</width>
-      <height>99</height>
+      <width>641</width>
+      <height>131</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="gas_menu_lay">
@@ -179,10 +179,10 @@
    <widget class="QWidget" name="layoutWidget_3">
     <property name="geometry">
      <rect>
-      <x>430</x>
+      <x>210</x>
       <y>10</y>
-      <width>361</width>
-      <height>101</height>
+      <width>381</width>
+      <height>131</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="settings_lay">
@@ -407,9 +407,9 @@
    <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
-      <x>800</x>
-      <y>10</y>
-      <width>171</width>
+      <x>10</x>
+      <y>80</y>
+      <width>191</width>
       <height>62</height>
      </rect>
     </property>

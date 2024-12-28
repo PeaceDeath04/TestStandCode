@@ -105,6 +105,7 @@ class UiController(QtWidgets.QWidget):
     def gas_changed(self):
         current_value = self.ui_main.SliderPower.value()
         current_value = (current_value * 100) // self.step_size
+        current_value = self.get_value_from_percentage(current_value)
 
         self.controller.gas_changed(current_value)
 
@@ -127,9 +128,12 @@ class UiController(QtWidgets.QWidget):
             return f"Ошибка при вычислении значения: {e}"
 
     def load_offset_gas(self):
-        offset_gas = import_from_json("save_file.json", "gas_min", "gas_max")
-        self.ui_main.spinBoxMin.setValue(offset_gas[0])
-        self.ui_main.spinBoxMax.setValue(offset_gas[1])
+        try:
+            offset_gas = import_from_json("save_file.json", "gas_min", "gas_max")
+            self.ui_main.spinBoxMin.setValue(offset_gas[0])
+            self.ui_main.spinBoxMax.setValue(offset_gas[1])
+        except Exception as e:
+            print(e)
     #endregion
 
     #regionработа с событиями
@@ -348,7 +352,10 @@ class UiController(QtWidgets.QWidget):
         self.ui_main.SliderPower.setMaximum(self.step_size)
 
     def load_step_size(self):
-        self.ui_settings.spinbox_change_step.setValue(import_from_json("save_file.json","step_size")[0])
+        try:
+            self.ui_settings.spinbox_change_step.setValue(import_from_json("save_file.json", "step_size")[0])
+        except Exception as e:
+            print(e)
 
     #endregion
 

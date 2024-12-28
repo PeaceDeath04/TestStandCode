@@ -1,6 +1,6 @@
 {
-    "gas_min": 0,
-    "gas_max": 1000,
+    "gas_min": 750,
+    "gas_max": 2800,
     "step_size": 1,
-    "calib_weight": 5.0
+    "calib_weight": 0
 }
