@@ -1,8 +1,8 @@
 {
-    "T_flach_E": true,
+    "T_flach_E": false,
     "Traction": true,
     "Time": true,
-    "Voltage": true,
-    "T_flash_O": true,
-    "ShuntVoltage": true
+    "Voltage": false,
+    "T_flash_O": false,
+    "ShuntVoltage": false
 }

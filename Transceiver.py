@@ -42,7 +42,6 @@ class Transceiver:
 
     def read_data(self):
         try:
-
             rx = self.port_handler.serial.readLine()
             rxs = str(rx, 'utf-8', errors='ignore')
             self.buffer += rxs

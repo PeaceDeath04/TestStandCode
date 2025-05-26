@@ -3,8 +3,8 @@
         "x": "Time",
         "y": "Traction"
     },
-    "Time / Weight": {
+    "Time / T_flach_E": {
         "x": "Time",
-        "y": "Weight"
+        "y": "T_flach_E"
     }
 }

@@ -65,7 +65,6 @@ class GraphController:
             return self.colors[self.count_color]
 
 
-
 class Graph:
     def __init__(self, color, name,max_points):
         # Используем OpenGL для рендеринга

@@ -6,7 +6,6 @@ from datetime import datetime
 
 class Data:
     def __init__(self):
-        # данный список нужен для работы с последними 25 обработанными пакетами
         self.packet = None
 
         # переменная для работы с калибровкой
